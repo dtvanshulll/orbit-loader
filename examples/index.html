@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OrbitLoader examples</title>
+<link rel="stylesheet" href="../orbit-loader.css">
+<style>
+  body { background: #0f0f12; color: #eee; font: 15px/1.5 system-ui, sans-serif; padding: 48px; display: flex; gap: 64px; flex-wrap: wrap; }
+  figure { margin: 0; text-align: center; color: #e8355c; }
+  figcaption { margin-top: 16px; color: #aaa; font-size: 13px; }
+  .logo-box { width: 84px; height: 84px; border-radius: 24px; background: #1a1a1e; display: flex; align-items: center; justify-content: center; font-size: 28px; }
+  .circle-box { width: 72px; height: 72px; }
+  .text-box { font-size: 20px; font-weight: 600; color: #eee; padding-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<figure>
+  <div class="orbit-loader-wrap logo-box" id="logo-demo">&#127916;</div>
+  <figcaption>roundedSquare(84, 24)</figcaption>
+</figure>
+
+<figure>
+  <div class="orbit-loader-wrap circle-box" id="circle-demo"></div>
+  <figcaption>circle(72)</figcaption>
+</figure>
+
+<figure>
+  <div class="orbit-loader-wrap text-box" id="text-demo">Loading</div>
+  <figcaption>underline(80, 4) under text</figcaption>
+</figure>
+
+<script src="../orbit-loader.js"></script>
+<script src="../shapes.js"></script>
+<script>
+  OrbitLoader.wrap(document.getElementById("logo-demo"), {
+    d: OrbitLoader.shapes.roundedSquare(84, 24),
+    viewBox: "0 0 84 84",
+  });
+
+  OrbitLoader.wrap(document.getElementById("circle-demo"), {
+    d: OrbitLoader.shapes.circle(72),
+    viewBox: "0 0 72 72",
+    durationMs: 1600,
+  });
+
+  OrbitLoader.wrap(document.getElementById("text-demo"), {
+    d: OrbitLoader.shapes.underline(80, 4),
+    viewBox: "0 0 80 12",
+    segmentFraction: 0.4,
+    direction: "reverse",
+  });
+</script>
+</body>
+</html>

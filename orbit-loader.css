@@ -1,0 +1,31 @@
+/*!
+ * OrbitLoader base styles. Sized/positioned to sit exactly over whatever
+ * `.orbit-loader-wrap` box you give it; the SVG's own rendered size MUST
+ * equal that box's CSS size or the thread will be shifted/scaled relative
+ * to the shape it's supposed to be tracing.
+ */
+.orbit-loader-wrap {
+  position: relative;
+  display: inline-block;
+}
+.orbit-loader-path {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.orbit-loader-thread {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.orbit-loader-thread.is-active { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .orbit-loader-thread.is-active { opacity: 0; }
+}
