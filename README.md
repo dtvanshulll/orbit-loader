@@ -10,6 +10,10 @@ rotated to approximate it.
 
 No dependencies, no build step. Two small files, loaded via `<script>`.
 
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for how and why it's
+built this way, and [docs/ROADMAP.md](docs/ROADMAP.md) for what's planned
+next (more loader styles, more shapes, optional npm packaging).
+
 ## Quick start
 
 ```html
