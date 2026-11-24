@@ -112,6 +112,20 @@
   }
   function exitIntro() {
     document.body.classList.remove("pg-intro");
+    // One-shot rise for the catalog as it arrives; cleared on end so the
+    // class never lingers to replay on later reflows.
+    document.body.classList.add("pg-arriving");
+    var cards = document.querySelector(".pg-cards");
+    if (cards && cards.getAnimations) {
+      var anims = cards.getAnimations();
+      if (anims.length) {
+        anims[anims.length - 1].addEventListener("finish", function () {
+          document.body.classList.remove("pg-arriving");
+        });
+      } else { document.body.classList.remove("pg-arriving"); }
+    } else {
+      window.setTimeout(function () { document.body.classList.remove("pg-arriving"); }, 320);
+    }
     // Cards that need a real measurement (textBox) queued while the
     // catalog was hidden — draw them now that layout exists.
     if (PG.renderPending) PG.renderPending();

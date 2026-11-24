@@ -230,6 +230,14 @@
     window.addEventListener("resize", onScroll);
     window.__pgSpyPaint = paint;
     paint();
+
+    // Header elevation: the sticky bar only casts a shadow once content
+    // has actually passed beneath it. Toggled here because this module
+    // already owns the page's scroll listening.
+    var headerEl = document.querySelector(".pg-header");
+    window.addEventListener("scroll", function () {
+      if (headerEl) headerEl.classList.toggle("is-scrolled", window.scrollY > 4);
+    }, { passive: true });
   }
 
   PG.wireNavDrawer = wireNavDrawer;

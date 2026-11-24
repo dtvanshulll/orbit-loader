@@ -8,7 +8,10 @@
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--pg-border);
   padding: 0 32px;
+  /* Flat at rest; content passing beneath it earns the shadow. */
+  transition: box-shadow var(--pg-dur-base) ease;
 }
+.pg-header.is-scrolled { box-shadow: 0 10px 24px rgba(0, 0, 0, 0.32); }
 .pg-header-inner {
   /* Full width, not a centered column: the brand sits above the rail so
      the header and sidebar read as one shell, not two stacked apps. */
@@ -64,7 +67,7 @@
   background: var(--pg-raised);
   transition: border-color 0.15s ease, background 0.15s ease;
 }
-.pg-git:hover { border-color: #4a473e; }
+.pg-git:hover { border-color: #4a473e; background: #2e2c27; }
 .pg-git:focus-visible { outline: 2px solid var(--pg-accent); outline-offset: 2px; }
 .pg-credit { font-size: 13px; color: var(--pg-secondary); }
 .pg-credit strong { color: var(--pg-text); font-weight: 500; }

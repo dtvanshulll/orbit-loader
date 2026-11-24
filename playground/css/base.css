@@ -44,9 +44,44 @@ body {
      the header stop 40px short of the viewport edge. */
   padding: 0 0 56px;
 }
+/* Reduced motion: the loaders are the product and collapse per their
+   own rules in src/css; this guard is for the chrome around them —
+   drawer slides, panel rises, hover lifts all become instant. */
+@media (prefers-reduced-motion: reduce) {
+  .pg-header, .pg-sidebar, .pg-nav-item, .pg-nav-group, .pg-git,
+  .pg-menu-btn, .pg-tune, .pg-search, .pg-search input, .pg-field input,
+  .pg-field select, .pg-copy, .pg-footer a, .pg-hero, .pg-cards {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
 /* Buttons and inputs don't inherit the page font by default — without
    this the CTA renders in the UA default and breaks the type system. */
 button, input, select, textarea {
   font: inherit;
+}
+input, textarea { caret-color: var(--pg-accent); }
+
+::selection {
+  background: rgba(217, 119, 87, 0.32);
+  color: var(--pg-text);
+}
+
+/* The page scrollbar gets the same treatment as the sidebar rail —
+   thin, warm-gray, invisible until needed — instead of the UA default
+   slab sitting on the dark bench. */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #3a3831 transparent;
+}
+html::-webkit-scrollbar { width: 8px; }
+html::-webkit-scrollbar-thumb { background: #3a3831; border-radius: 4px; }
+html::-webkit-scrollbar-thumb:hover { background: #4a473e; }
+
+/* Anchor, hash and keyboard jumps glide like the JS-driven ones do;
+   reduced-motion users keep the instant jump. */
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
 }
 

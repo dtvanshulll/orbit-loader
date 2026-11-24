@@ -12,6 +12,21 @@ body.pg-intro .pg-hero {
 }
 body.pg-intro .pg-hero-inner { width: 100%; }
 
+/* The two states hand over instead of cutting. The hero fades back in
+   on return (display:none restarts the animation); the catalog rises
+   once on arrival via a body class pg-nav adds and clears. One
+   container-level move each — 113 cards staggering would be noise. */
+body.pg-intro .pg-hero { animation: pg-fade-in var(--pg-dur-panel) var(--pg-ease-out); }
+body.pg-arriving .pg-cards { animation: pg-catalog-in var(--pg-dur-panel) var(--pg-ease-out); }
+@keyframes pg-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes pg-catalog-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
 /* ---------- search (intro) ---------- */
 
 /* The search lives in the header now — reachable from both the intro
@@ -27,9 +42,11 @@ body.pg-intro .pg-hero-inner { width: 100%; }
   background: var(--pg-card);
   border: 1px solid var(--pg-border);
   border-radius: 8px;
-  transition: border-color var(--pg-dur-fast) ease;
+  /* The box breathes open on focus — the header links glide aside
+     rather than jumping when the width changes. */
+  transition: border-color var(--pg-dur-fast) ease, flex-basis var(--pg-dur-base) var(--pg-ease-out);
 }
-.pg-search:focus-within { border-color: var(--pg-accent); }
+.pg-search:focus-within { border-color: var(--pg-accent); flex-basis: 360px; }
 .pg-search svg { color: var(--pg-muted); flex: none; }
 .pg-search:focus-within svg { color: var(--pg-accent); }
 .pg-search input {

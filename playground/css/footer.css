@@ -21,6 +21,7 @@
   font-weight: 500;
 }
 .pg-footer a:hover { text-decoration: underline; text-underline-offset: 2px; }
+.pg-footer a:focus-visible { outline: 2px solid var(--pg-accent); outline-offset: 2px; }
 .pg-footer strong { color: var(--pg-text); font-weight: 500; }
 
 @media (max-width: 760px) {
