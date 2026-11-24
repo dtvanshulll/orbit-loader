@@ -75,7 +75,21 @@ body.pg-arriving .pg-cards { animation: pg-catalog-in var(--pg-dur-panel) var(--
 /* The header is one row on phones; the drawer carries navigation there,
    and a 300px search would crowd it out. */
 @media (max-width: 719px) {
-  .pg-search { display: none; }
+  /* The search is the only search surface — hiding it left phones with
+     no way to search. Compact instead: fill the freed row, drop the kbd
+     hint, and skip the focus width-breathe (the row has no slack). */
+  .pg-search { display: flex; flex: 1 1 auto; }
+  .pg-search:focus-within { flex-basis: auto; }
+  .pg-search-kbd { display: none; }
+  /* The tagline rule below is dead (no <p> in the brand) — kept out.
+     The " Playground" suffix is what a phone row can't afford; the
+     wordmark alone carries it and the search gets the space back. */
+  .pg-brand-text h1 span { display: none; }
+  .pg-brand-text h1 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 /* The line between the search and the results, when a query is live. */

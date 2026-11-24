@@ -73,3 +73,12 @@
 .pg-credit { font-size: 13px; color: var(--pg-secondary); }
 .pg-credit strong { color: var(--pg-text); font-weight: 500; }
 
+/* Phones: one row has to carry menu, wordmark, search and the repo
+   link. About steps aside, GitHub keeps only its mark, gaps tighten. */
+@media (max-width: 719px) {
+  .pg-header-links { gap: 10px; }
+  .pg-about-link { display: none; }
+  .pg-git { padding: 8px 10px; }
+  .pg-git-label { display: none; }
+}
+
