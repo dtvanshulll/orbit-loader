@@ -63,12 +63,18 @@
             navItem("Deployments", false, 0) +
             navItem("Members", false, 0) +
             navItem("Settings", false, 0) +
+            "<div style='margin-top:auto;display:flex;align-items:center;gap:7px;padding:10px 14px 0;border-top:1px solid #262420'>" +
+            "<span style='width:18px;height:18px;border-radius:50%;background:#6a9bcc;flex:none'></span>" +
+            "<span style='" + DISPLAY + "font-size:10px;font-weight:500;color:#b0aea5'>mara.l</span></div>" +
             "</div>" +
             "<div style='flex:1;padding:16px;display:flex;flex-direction:column;gap:8px'>" +
             "<div style='" + DISPLAY + "font-size:12px;font-weight:600;color:#faf9f5'>Overview</div>" +
             "<div style='height:8px;width:70%;background:#262420;border-radius:4px'></div>" +
             "<div style='height:8px;width:55%;background:#262420;border-radius:4px'></div>" +
             "<div style='height:8px;width:62%;background:#262420;border-radius:4px'></div>" +
+            "<div style='margin-top:auto;display:flex;gap:6px'>" +
+            "<span style='background:#262420;border:1px solid #33312c;border-radius:6px;padding:4px 8px;font-size:9.5px;color:#8f8d84;" + DISPLAY + "'>4 synced</span>" +
+            "<span style='background:#262420;border:1px solid #33312c;border-radius:6px;padding:4px 8px;font-size:9.5px;color:#8f8d84;" + DISPLAY + "'>2 building</span></div>" +
             "</div></div>",
       styleCss: "position:relative;background:#141413;border:1px solid #33312c;border-radius:10px;box-shadow:" + SHADOW + ";overflow:hidden;"
     },
@@ -163,6 +169,10 @@
             "<span style='" + DISPLAY + "margin-left:auto;display:flex;gap:6px;color:#8f8d84'>" + lucide(CHEVL, 14, 14, "#8f8d84") + lucide(CHEVR, 14, 14, "#8f8d84") + "</span></div>" +
             "<div style='display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center'>" +
             dow() + calCells() +
+            "</div>" +
+            "<div style='display:flex;align-items:center;gap:14px;margin-top:auto;padding-top:2px'>" +
+            "<span style='display:flex;align-items:center;gap:5px'><span style='width:8px;height:8px;border-radius:2px;background:#d97757;flex:none'></span><span style='" + DISPLAY + "font-size:9.5px;color:#8f8d84'>Today</span></span>" +
+            "<span style='display:flex;align-items:center;gap:5px'><span style='width:8px;height:8px;border-radius:2px;background:#6a655c;flex:none'></span><span style='" + DISPLAY + "font-size:9.5px;color:#8f8d84'>Weekend</span></span>" +
             "</div></div>",
       styleCss: CARD
     },
@@ -175,7 +185,8 @@
 
   function kanCol(name, count, active) {
     var cards = "";
-    for (var i = 0; i < 2; i++) {
+    var n = Math.min(count, 3);
+    for (var i = 0; i < n; i++) {
       cards += "<div style='background:#262420;border:1px solid #33312c;border-radius:6px;padding:8px;margin-top:6px'>" +
         "<div style='height:6px;width:" + (i ? "70%" : "85%") + ";background:#3f3d34;border-radius:3px'></div>" +
         "<div style='display:flex;align-items:center;gap:5px;margin-top:7px'><span style='width:6px;height:6px;border-radius:50%;background:" +

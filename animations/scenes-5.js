@@ -70,6 +70,7 @@
             issueRow("Path clipping rounds wrong on curves", "#d97757", "bug") +
             issueRow("Add reduced-motion collapse to drawer", "#6a9bcc", "feat") +
             issueRow("Docs: document the to option", "#788c5d", "docs") +
+            issueRow("Ship the playground filter", "#6a9bcc", "feat") +
             "</div>",
       styleCss: CARD
     },
@@ -107,12 +108,13 @@
     style: "pulse",
     note: "A preferences list where the enabled toggle breathes softly",
     box: {
-      width: 320, height: 178,
+      width: 320, height: 184,
       html: "<div style='padding:12px 16px;display:flex;flex-direction:column;height:100%;box-sizing:border-box'>" +
             "<div style='" + DISPLAY + "font-size:12.5px;font-weight:600;color:#faf9f5;padding-bottom:8px'>Notifications</div>" +
             toggleRow("Deployment events", true) +
             toggleRow("Weekly digest", false) +
             toggleRow("Mentions only", true) +
+            toggleRow("Product updates", false) +
             "</div>",
       styleCss: CARD
     },
@@ -133,7 +135,15 @@
             "<div style='display:flex;align-items:baseline'><span style='" + DISPLAY + "font-size:12.5px;font-weight:600;color:#faf9f5'>Order #1042</span><span style='" + DISPLAY + "margin-left:auto;font-size:10px;color:#d97757'>In transit</span></div>" +
             "<div class='tl-route' style='position:relative;height:8px;width:100%'></div>" +
             "<div style='display:flex;justify-content:space-between'><span style='" + DISPLAY + "font-size:9px;color:#8f8d84'>Warehouse</span><span style='" + DISPLAY + "font-size:9px;font-weight:500;color:#faf9f5'>Regional hub</span><span style='" + DISPLAY + "font-size:9px;color:#8f8d84'>You</span></div>" +
-            "<div style='" + BODY + "font-size:10.5px;line-height:1.5;color:#b0aea5;margin-top:4px'>Arriving Thursday \u2014 2 items, signature not required.</div>" +
+            "<div style='" + BODY + "font-size:10.5px;line-height:1.5;color:#b0aea5'>Arriving Thursday \u2014 2 items, signature not required.</div>" +
+            "<div style='display:flex;align-items:center;gap:8px;border-top:1px solid #262420;padding-top:8px;margin-top:auto'>" +
+            "<span style='width:7px;height:7px;border-radius:50%;background:#788c5d;flex:none'></span>" +
+            "<span style='" + DISPLAY + "flex:1;font-size:10.5px;color:#b0aea5'>Picked up</span>" +
+            "<span style='" + DISPLAY + "font-size:9.5px;color:#8f8d84'>Mon 9:14</span></div>" +
+            "<div style='display:flex;align-items:center;gap:8px'>" +
+            "<span style='width:7px;height:7px;border-radius:50%;background:#d97757;flex:none'></span>" +
+            "<span style='" + DISPLAY + "flex:1;font-size:10.5px;font-weight:500;color:#faf9f5'>Out for delivery</span>" +
+            "<span style='" + DISPLAY + "font-size:9.5px;color:#8f8d84'>Thu 8:02</span></div>" +
             "</div>",
       styleCss: CARD
     },
@@ -149,13 +159,16 @@
     style: "orbit",
     note: "Integration tiles where the connected app's badge traces itself",
     box: {
-      width: 320, height: 172,
+      width: 320, height: 216,
       html: "<div style='padding:12px 16px;display:flex;flex-direction:column;gap:8px;height:100%;box-sizing:border-box'>" +
             "<div style='" + DISPLAY + "font-size:12.5px;font-weight:600;color:#faf9f5'>Connect a tool</div>" +
             "<div style='display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;flex:1'>" +
             integTile("Stripe", "#6a9bcc", false) +
             integTile("GitHub", "#faf9f5", true) +
             integTile("Slack", "#d97757", false) +
+            integTile("Figma", "#6a9bcc", false) +
+            integTile("Vercel", "#faf9f5", false) +
+            integTile("Notion", "#788c5d", false) +
             "</div></div>",
       styleCss: CARD
     },
@@ -179,12 +192,13 @@
             eventRow("v2.3.0 tagged", "main \u00b7 9:12") +
             eventRow("PR #88 merged", "grain-spanner \u00b7 8:44") +
             eventRow("Issue #91 opened", "reduced-motion \u00b7 8:01") +
+            eventRow("Release published", "npm \u00b7 7:38") +
             "</div></div></div>",
       styleCss: CARD
     },
     parts: [
       { style: "orbit", el: ".tl-spine",
-        options: { d: "M2,0 V118", durationMs: 2400, restMs: 1800, strokeWidth: 2, color: "#6a9bcc", guideOpacity: 0.25 } }
+        options: { d: "M2,0 V150", durationMs: 2400, restMs: 1800, strokeWidth: 2, color: "#6a9bcc", guideOpacity: 0.25 } }
     ]
   },
 
@@ -200,7 +214,9 @@
             fileRow("traceloop.zip", "4.2 MB", 1) +
             fileRow("assets/", "128 items", 1) +
             fileRow("demo-cut.mp4", "18.7 MB", 0) +
+            fileRow("brand-kit.pdf", "1.1 MB", 1) +
             "<div class='tl-up-bar' style='position:relative;height:6px;width:100%;margin-top:2px'></div>" +
+            "<div style='" + DISPLAY + "font-size:9.5px;color:#8f8d84'>3 of 4 complete &middot; 24 MB total</div>" +
             "</div>",
       styleCss: CARD
     },

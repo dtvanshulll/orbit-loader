@@ -34,6 +34,8 @@
    * a sibling positioned under the trigger.
    *
    * options:
+   *   placement: "top" forces the menu to open upward (footer selectors
+   *     near the bottom edge of a card); default "auto" decides by space.
    *   items       (default ['Option 1', 'Option 2', 'Option 3'])
    *   trigger     (default 'Options') the trigger button's label
    *   durationMs  (default 320)  one open or close
@@ -53,6 +55,7 @@
     var restMs = options.restMs != null ? options.restMs : 1400;
     var color = options.color != null ? options.color : null;
     var autoStart = options.autoStart !== false;
+    var placement = options.placement === "top" ? "top" : "auto";
 
     // The trigger: built here, so the component is self-contained —
     // the container just needs a position. Click toggles the menu.
@@ -161,14 +164,20 @@
       panel.style.visibility = "hidden";
       panel.classList.add("tl-open");
       var ph = panel.offsetHeight;
-      var host = el;
       var triggerBottom = trigger.getBoundingClientRect().bottom;
-      var limit = host.getBoundingClientRect().bottom;
+      // Flip decision: a container that tightly wraps the trigger has no
+      // meaningful "room below" (it IS the trigger's box), so fall back to
+      // the viewport in that case. Real stages keep their own measurement.
+      var hostBottom = el.getBoundingClientRect().bottom;
+      var limit = (el.getBoundingClientRect().height > trigger.offsetHeight + 48)
+        ? hostBottom
+        : (global.innerHeight || hostBottom);
       var roomBelow = limit - triggerBottom - 6;
-      panel.classList.toggle("tl-up", ph > roomBelow);
+      var flipUp = placement === "top" || ph > roomBelow;
+      panel.classList.toggle("tl-up", flipUp);
       // Anchor the panel to the TRIGGER's edge, not the container's —
       // the container may be much taller than the trigger.
-      if (ph > roomBelow) {
+      if (flipUp) {
         panel.style.top = "auto";
         panel.style.bottom = (el.clientHeight - trigger.offsetTop + 6) + "px";
       } else {

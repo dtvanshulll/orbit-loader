@@ -149,7 +149,7 @@
     style: "toast",
     note: "An announcement bar that drops in on load and auto-dismisses \u2014 seen, then gone",
     box: {
-      width: 320, height: 122,
+      width: 320, height: 114,
       html: "<div style='display:flex;flex-direction:column;height:100%;box-sizing:border-box'>" +
             "<div class='tl-banner' style='position:relative;display:flex;align-items:center;gap:9px;height:44px;padding:0 14px;background:#d97757;flex:none'>" +
             "<span style='" + DISPLAY + "font-size:9.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#d97757;background:#141413;border-radius:999px;padding:3px 8px;flex:none'>New</span>" +
@@ -319,45 +319,26 @@
     style: "dropdown",
     note: "A site footer's language selector opening its menu in place",
     box: {
-      width: 340, height: 120,
-      html: "<div style='padding:16px 20px;display:flex;flex-direction:column;height:100%;box-sizing:border-box;gap:10px'>" +
-            "<div style='display:flex;align-items:center;gap:7px'><span style='width:9px;height:9px;border-radius:3px;background:#d97757'></span><span style='" + DISPLAY + "font-size:13px;font-weight:600;color:#faf9f5'>TraceLoop</span>" +
-            "<div class='tl-lang' style='position:relative;margin-left:auto;width:140px;height:30px'></div></div>" +
+      width: 340, height: 220,
+      html: "<div style='padding:16px 20px;display:flex;flex-direction:column;height:100%;box-sizing:border-box;gap:12px'>" +
+            "<div style='display:flex;align-items:center;gap:7px'><span style='width:9px;height:9px;border-radius:3px;background:#d97757'></span><span style='" + DISPLAY + "font-size:13px;font-weight:600;color:#faf9f5'>TraceLoop</span></div>" +
             "<div style='display:flex;gap:24px'>" +
             "<div style='" + DISPLAY + "font-size:10.5px;line-height:1.9;color:#8f8d84'>PRODUCT<br>Styles<br>Playground</div>" +
             "<div style='" + DISPLAY + "font-size:10.5px;line-height:1.9;color:#8f8d84'>COMPANY<br>About<br>License</div>" +
             "<div style='" + DISPLAY + "font-size:10.5px;line-height:1.9;color:#8f8d84'>CONNECT<br>GitHub<br>X</div>" +
             "</div>" +
+            "<div style='display:flex;align-items:center;margin-top:auto;border-top:1px solid #262420;padding-top:10px'>" +
+            "<span style='" + DISPLAY + "font-size:10px;color:#8f8d84'>&copy; 2026 TraceLoop</span>" +
+            "<div class='tl-lang' style='position:relative;margin-left:auto;width:140px;height:30px'></div></div>" +
             "</div>",
       styleCss: CARD
     },
     parts: [
       { style: "dropdown", el: ".tl-lang",
-        options: { trigger: "English", items: ["English", "Deutsch", "Français", "日本語"], durationMs: 300, restMs: 1500, color: "#d97757" } }
+        options: { trigger: "English", items: ["English", "Deutsch", "Français", "日本語"], durationMs: 300, restMs: 1500, color: "#d97757", placement: "top" } }
     ]
   },
 
-  {
-    name: "Shell Toast",
-    category: "Application Shell",
-    style: "toast",
-    note: "An admin shell where a deploy notification drops in from the top edge",
-    box: {
-      width: 320, height: 190,
-      styleCss: "position:relative;background:#141413;border:1px solid #33312c;border-radius:10px;box-shadow:" + SHADOW + ";overflow:hidden;",
-      html: "<div style='position:absolute;top:0;left:0;right:0;height:34px;background:#1c1b19;border-bottom:1px solid #33312c;display:flex;align-items:center;padding:0 12px;gap:8px'>" +
-            "<span style='width:8px;height:8px;border-radius:2px;background:#d97757'></span>" +
-            "<span style='" + DISPLAY + "font-size:11px;font-weight:500;color:#b0aea5'>Admin</span>" +
-            "<span style='" + DISPLAY + "margin-left:auto;font-size:10px;color:#8f8d84'>Production</span></div>" +
-            "<div style='" + DISPLAY + "position:absolute;top:46px;left:16px;font-size:11px;color:#8f8d84'>3 deploys today &middot; all green</div>" +
-            "<div style='" + DISPLAY + "position:absolute;top:64px;left:16px;font-size:11px;color:#8f8d84'>api-service &middot; main &middot; 2m ago</div>" +
-            "<div class='tl-shell-toast' style='position:absolute;top:44px;right:12px;width:170px'></div>"
-    },
-    parts: [
-      { style: "toast", el: ".tl-shell-toast",
-        options: { title: "Deploy succeeded", message: "api-service is live on production", enter: "drop", durationMs: 3400, restMs: 1600, color: "#788c5d" } }
-    ]
-  },
   {
     name: "Review Highlight",
     category: "Reviews",

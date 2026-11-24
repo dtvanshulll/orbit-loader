@@ -319,7 +319,11 @@
       html: "<div style='position:absolute;top:0;left:0;right:0;height:34px;background:#1c1b19;border-bottom:1px solid #33312c;display:flex;align-items:center;padding:0 12px;gap:8px'>" +
             "<span style='width:8px;height:8px;border-radius:2px;background:#d97757'></span>" +
             "<span style='" + DISPLAY + "font-size:11px;font-weight:500;color:#b0aea5'>Admin</span></div>" +
-            "<div style='" + DISPLAY + "position:absolute;top:46px;left:16px;font-size:11px;color:#8f8d84'>Overview &middot; 4 projects synced</div>" +
+            "<div style='" + DISPLAY + "position:absolute;top:46px;left:134px;font-size:11px;color:#8f8d84'>Overview &middot; 4 projects synced</div>" +
+            "<div style='position:absolute;top:68px;left:134px;right:14px;height:56px;background:#1c1b19;border:1px solid #33312c;border-radius:8px'></div>" +
+            "<div style='position:absolute;top:132px;left:134px;right:14px;height:8px;background:#262420;border-radius:4px'></div>" +
+            "<div style='position:absolute;top:148px;left:134px;width:120px;height:8px;background:#262420;border-radius:4px'></div>" +
+            "<div style='position:absolute;top:164px;left:134px;width:88px;height:8px;background:#262420;border-radius:4px'></div>" +
             "<div class='tl-drawer' style='position:absolute;top:34px;bottom:0;left:0;width:118px;background:#1c1b19;border-right:1px solid #33312c;padding:14px 0;box-sizing:border-box'>" +
             "<div style='" + DISPLAY + "padding:6px 14px;font-size:11px;font-weight:500;color:#faf9f5;border-left:2px solid #d97757'>Dashboard</div>" +
             "<div style='" + DISPLAY + "padding:6px 14px;font-size:11px;color:#8f8d84'>Deployments</div>" +
