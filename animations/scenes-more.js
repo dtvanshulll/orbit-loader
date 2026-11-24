@@ -11,6 +11,24 @@
   var CARD = "background:#1c1b19;border:1px solid #33312c;border-radius:10px;box-shadow:" + SHADOW + ";";
   var DISPLAY = "font-family:var(--pg-font-head,Poppins,Arial,sans-serif);";
   var BODY = "font-family:var(--pg-font-body,Lora,Georgia,serif);";
+  function planRow(label, free, pro) {
+    var mark = function (on) {
+      return on
+        ? "<svg viewBox='0 0 16 16' width='13' height='13' aria-hidden='true'><path d='M3 8.5 L6.5 12 L13 4.5' fill='none' stroke='#788c5d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>"
+        : "<span style='color:#4a483f;font-size:11px'>&mdash;</span>";
+    };
+    return "<div style='display:flex;align-items:center;gap:8px;border-top:1px solid #262420;padding:7px 0'>" +
+      "<span style='" + BODY + "flex:1;font-size:11.5px;color:#b0aea5'>" + label + "</span>" +
+      "<span style='width:60px;display:flex;justify-content:center'>" + mark(free) + "</span>" +
+      "<span style='width:60px;display:flex;justify-content:center'>" + mark(pro) + "</span></div>";
+  }
+  function member(name, role, accent, n) {
+    return "<div style='flex:1;background:#262420;border:1px solid #33312c;border-radius:8px;padding:10px;display:flex;align-items:center;gap:10px'>" +
+      "<span class='tl-av-" + n + "' style='position:relative;width:30px;height:30px;flex:none;display:flex;align-items:center;justify-content:center'>" +
+      "<span style='width:20px;height:20px;border-radius:50%;background:" + accent + "'></span></span>" +
+      "<div style='min-width:0'><div style='" + DISPLAY + "font-size:11.5px;font-weight:600;color:#faf9f5;white-space:nowrap'>" + name + "</div>" +
+      "<div style='" + DISPLAY + "font-size:10px;color:#8f8d84'>" + role + "</div></div></div>";
+  }
   function tile(title, sub, accent) {
     return "<div style='flex:1;background:#262420;border:1px solid #33312c;border-radius:8px;padding:10px 8px;display:flex;flex-direction:column;gap:6px'>" +
       "<span class='tl-ic-" + (accent === "#d97757" ? 1 : accent === "#6a9bcc" ? 2 : 3) + "' style='position:relative;width:26px;height:26px;flex:none'></span>" +
@@ -253,6 +271,80 @@
       { style: "progress", el: ".tl-bar-1", options: { d: { shape: "underline", args: [110, 3] }, strokeWidth: 3, headRadius: 2.5, color: "#d97757", guideOpacity: 0.3, to: 0.42 } },
       { style: "progress", el: ".tl-bar-2", options: { d: { shape: "underline", args: [110, 3] }, strokeWidth: 3, headRadius: 2.5, color: "#6a9bcc", guideOpacity: 0.3, to: 0.68 } },
       { style: "progress", el: ".tl-bar-3", options: { d: { shape: "underline", args: [110, 3] }, strokeWidth: 3, headRadius: 2.5, color: "#788c5d", guideOpacity: 0.3, to: 0.91 } }
+    ]
+  },
+  {
+    name: "Plan Compare",
+    category: "Pricing",
+    style: "orbit",
+    note: "A two-plan table where the recommended column's header underlines itself",
+    box: {
+      width: 300, height: 252,
+      html: "<div style='padding:14px 16px;display:flex;flex-direction:column;gap:8px;height:100%;box-sizing:border-box'>" +
+            "<div style='display:flex;align-items:flex-end;gap:8px'>" +
+            "<span style='flex:1'></span>" +
+            "<div style='width:60px;text-align:center;padding-bottom:2px'>" +
+            "<div style='" + DISPLAY + "font-size:11px;font-weight:500;color:#b0aea5'>Free</div>" +
+            "<div style='" + DISPLAY + "font-size:16px;font-weight:600;color:#faf9f5'>$0</div></div>" +
+            "<div style='width:60px;text-align:center;background:#262420;border:1px solid #3f3d34;border-bottom:none;border-radius:8px 8px 0 0;padding:6px 0 4px'>" +
+            "<div style='" + DISPLAY + "font-size:11px;font-weight:600;color:#d97757'>Pro</div>" +
+            "<div style='" + DISPLAY + "font-size:16px;font-weight:600;color:#faf9f5'>$12</div>" +
+            "<div class='tl-pro' style='position:relative;height:6px;width:52px;margin:2px auto 0'></div></div>" +
+            "</div>" +
+            planRow("Styles", true, false) +
+            planRow("React adapter", true, false) +
+            planRow("Commercial use", true, true) +
+            planRow("Priority fixes", false, true) +
+            "</div>",
+      styleCss: CARD
+    },
+    parts: [
+      { style: "orbit", el: ".tl-pro",
+        options: { d: { shape: "underline", args: [52, 3] }, durationMs: 1600, restMs: 1600, strokeWidth: 2, color: "#d97757", guideOpacity: 0.3 } }
+    ]
+  },
+
+  {
+    name: "Team Presence",
+    category: "Team",
+    style: "orbit",
+    note: "Teammate cards whose avatar rings trace themselves \u2014 presence you can see",
+    box: {
+      width: 300, height: 96,
+      html: "<div style='display:flex;gap:8px;height:100%;padding:12px;box-sizing:border-box'>" +
+            member("Mara Lindqvist", "Design lead", "#d97757", 1) +
+            member("Tom Okafor", "Engineering", "#6a9bcc", 2) +
+            "</div>",
+      styleCss: CARD
+    },
+    parts: [
+      { style: "orbit", el: ".tl-av-1", options: { d: { shape: "circle", args: [30] }, durationMs: 2000, restMs: 1400, strokeWidth: 2, color: "#d97757", guideOpacity: 0.3 } },
+      { style: "orbit", el: ".tl-av-2", options: { d: { shape: "circle", args: [30] }, durationMs: 2000, restMs: 1400, strokeWidth: 2, color: "#6a9bcc", guideOpacity: 0.3 } }
+    ]
+  },
+
+  {
+    name: "Video Testimonial",
+    category: "Testimonial",
+    style: "orbit",
+    note: "A customer story card: the play button's ring traces itself before the quote",
+    box: {
+      width: 320, height: 120,
+      html: "<div style='display:flex;gap:14px;height:100%;padding:14px 16px;box-sizing:border-box'>" +
+            "<div style='position:relative;width:92px;border-radius:8px;background:#262420;border:1px solid #33312c;flex:none;display:flex;align-items:center;justify-content:center'>" +
+            "<span class='tl-play' style='position:relative;width:40px;height:40px;display:flex;align-items:center;justify-content:center'>" +
+            "<svg viewBox='0 0 12 14' width='11' height='13' aria-hidden='true'><path d='M1,1 L11,7 L1,13 Z' fill='#faf9f5'/></svg></span></div>" +
+            "<div style='flex:1;display:flex;flex-direction:column;gap:6px;min-width:0'>" +
+            "<div style='" + BODY + "font-size:12px;line-height:1.55;color:#faf9f5'>We shipped our rebrand with TraceLoop underlines everywhere.</div>" +
+            "<div style='display:flex;align-items:center;gap:8px;margin-top:auto'>" +
+            "<span style='width:22px;height:22px;border-radius:50%;background:#6a9bcc;flex:none'></span>" +
+            "<span style='" + DISPLAY + "font-size:11px;font-weight:500;color:#faf9f5'>Ana Duarte</span>" +
+            "<span style='" + DISPLAY + "font-size:10px;color:#8f8d84'>&middot; 2:14</span></div></div></div>",
+      styleCss: CARD
+    },
+    parts: [
+      { style: "orbit", el: ".tl-play",
+        options: { d: { shape: "circle", args: [40] }, durationMs: 2200, restMs: 1600, strokeWidth: 2, color: "#d97757", guideOpacity: 0.3 } }
     ]
   },
   );
