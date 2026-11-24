@@ -141,7 +141,7 @@
         opts.d = resolved.d;
         if (resolved.guideD) opts.guideD = resolved.guideD;
         if (resolved.viewBox) opts.viewBox = resolved.viewBox;
-        else if (opts.d) opts.viewBox = viewBoxOf(opts.d, boxEl);
+        else if (opts.d && opts.viewBox == null) opts.viewBox = viewBoxOf(opts.d, boxEl);
         c = window[GLOBALS[part.style]].wrap(target, opts);
       }
       controllers.push(c);

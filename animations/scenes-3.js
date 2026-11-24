@@ -36,7 +36,7 @@
       width: 320, height: 96,
       html: "<div style='padding:14px 20px;display:flex;flex-direction:column;gap:14px;height:100%;box-sizing:border-box;padding-bottom:24px'>" +
             "<div style='" + DISPLAY + "font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#8f8d84'>Trusted by teams at</div>" +
-            "<div class='tl-strip' style='position:relative;display:flex;align-items:center;justify-content:space-between;padding-bottom:6px'>" +
+            "<div class='tl-strip' style='position:relative;display:flex;align-items:center;justify-content:space-between;padding-bottom:10px'>" +
             "<span style='" + DISPLAY + "font-size:14px;font-weight:700;color:#b0aea5'>Acme</span>" +
             "<span style='" + BODY + "font-size:15px;font-style:italic;color:#8f8d84'>Fjord</span>" +
             "<span style='" + DISPLAY + "font-size:13px;font-weight:600;letter-spacing:0.12em;color:#b0aea5'>NIMBUS</span>" +
@@ -46,7 +46,7 @@
     },
     parts: [
       { style: "shimmer", el: ".tl-strip",
-        options: { d: { shape: "underline", args: [280, 2] }, durationMs: 3000, strokeWidth: 4, color: "#faf9f5", guideOpacity: 0.1 } }
+        options: { d: "M0,27 H280", viewBox: "0 0 280 29", durationMs: 3000, strokeWidth: 3, color: "#faf9f5", guideOpacity: 0.12 } }
     ]
   },
 
