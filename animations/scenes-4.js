@@ -244,14 +244,14 @@
             "<div style='display:flex;align-items:baseline'><span style='" + DISPLAY + "font-size:13px;font-weight:600;color:#faf9f5'>Profile setup</span><span style='" + DISPLAY + "margin-left:auto;font-size:10px;color:#8f8d84'>2 of 5</span></div>" +
             "<div style='display:flex;justify-content:space-between;padding:0 6px'>" +
             dot("Account", "done") + dot("Profile", "done") +
-            "<div style='display:flex;flex-direction:column;align-items:center;gap:6px'><span class='tl-dot-now' style='width:10px;height:10px;border-radius:50%;background:#d97757'></span><span style='" + DISPLAY + "font-size:9px;font-weight:500;color:#d97757'>Photo</span></div>" +
+            "<div style='display:flex;flex-direction:column;align-items:center;gap:6px'><span class='tl-dot-now' style='position:relative;width:28px;height:28px;display:flex;align-items:center;justify-content:center'><span style='width:10px;height:10px;border-radius:50%;background:#d97757'></span></span><span style='" + DISPLAY + "font-size:9px;font-weight:500;color:#d97757'>Photo</span></div>" +
             dot("Prefs", "todo") + dot("Done", "todo") +
             "</div></div>",
       styleCss: CARD
     },
     parts: [
       { style: "pulse", el: ".tl-dot-now",
-        options: { rings: 1, durationMs: 2000, strokeWidth: 3, maxOpacity: 0.4, color: "#d97757" } }
+        options: { rings: 1, dot: false, durationMs: 2000, strokeWidth: 3, maxOpacity: 0.4, color: "#d97757" } }
     ]
   },
   {

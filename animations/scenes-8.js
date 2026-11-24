@@ -59,7 +59,7 @@
     },
     parts: [
       { style: "pulse", el: ".tl-badge-live",
-        options: { rings: 1, durationMs: 2000, strokeWidth: 3, maxOpacity: 0.4, color: "#d97757" } }
+        options: { rings: 1, dot: false, durationMs: 2000, strokeWidth: 3, maxOpacity: 0.4, color: "#d97757" } }
     ]
   },
   {
