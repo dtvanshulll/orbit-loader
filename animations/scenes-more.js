@@ -34,7 +34,7 @@
   var ZAP = "<svg viewBox='0 0 24 24' width='16' height='16' aria-hidden='true'><path d='M15.914 4a1.5 1.5 0 0 0-2.474-1.561l-9 9A1.5 1.5 0 0 0 5.5 14h4.002a.5.5 0 0 1 .471.666L8.086 20a1.5 1.5 0 0 0 2.475 1.56l9-9A1.5 1.5 0 0 0 18.5 10h-3.997a.5.5 0 0 1-.472-.667z' fill='none' stroke='#d97757' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/></svg>";
   var LAYERS = "<svg viewBox='0 0 24 24' width='16' height='16' aria-hidden='true'><path d='M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z' fill='none' stroke='#6a9bcc' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/><path d='M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12' fill='none' stroke='#6a9bcc' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/><path d='M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9a1 1 0 0 0 0-1.83z' fill='none' stroke='#6a9bcc' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/></svg>";
   var SHIELD = "<svg viewBox='0 0 24 24' width='16' height='16' aria-hidden='true'><path d='M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z' fill='none' stroke='#788c5d' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/></svg>";
-  var XICON = "<svg viewBox='0 0 24 24' width='14' height='14' aria-hidden='true'><path d='M18 6L6 18M6 6l12 12' fill='none' stroke='#8f8d84' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/></svg>";
+  var XICON = "<svg viewBox='0 0 24 24' width='14' height='14' aria-hidden='true'><path d='M18 6L6 18M6 6l12 12' fill='none' stroke='#141413' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/></svg>";
   function feat(icon, title, sub, color, n) {
     return "<div style='display:flex;align-items:center;gap:10px'>" +
       "<span" + (n ? " class='tl-ic-" + n + "'" : "") + " style='position:relative;width:30px;height:30px;border-radius:8px;background:#262420;border:1px solid #33312c;display:flex;align-items:center;justify-content:center;flex:none'>" + icon + "</span>" +
@@ -95,7 +95,7 @@
             "<div style='display:flex;align-items:flex-start;margin-top:14px'>" +
             "<div style='display:flex;flex-direction:column;align-items:center;gap:5px;width:52px;flex:none'>" +
             "<span style='position:relative;width:24px;height:24px;border-radius:50%;background:#788c5d;display:flex;align-items:center;justify-content:center'>" +
-            "<span class='tl-check' style='position:relative;width:14px;height:14px;display:flex;align-items:center;justify-content:center'></span></span>" +
+            "<span class='tl-check' style='position:relative;width:16px;height:16px;display:flex;align-items:center;justify-content:center'></span></span>" +
             "<span style='" + DISPLAY + "font-size:9.5px;font-weight:500;color:#788c5d'>Cart</span></div>" +
             "<div style='flex:1;height:2px;background:#788c5d;margin-top:11px'></div>" +
             "<div style='display:flex;flex-direction:column;align-items:center;gap:5px;width:60px;flex:none'>" +
@@ -117,7 +117,7 @@
     },
     parts: [
       { style: "orbit", el: ".tl-check",
-        options: { d: "M20 6L9 17l-5-5", durationMs: 1400, restMs: 2200, strokeWidth: 2.5, color: "#faf9f5", guideOpacity: 0.35 } },
+        options: { d: "M20 6L9 17l-5-5", durationMs: 1400, restMs: 2200, strokeWidth: 3, color: "#faf9f5", guideOpacity: 0.35 } },
       { style: "pulse", el: ".tl-step2",
         options: { rings: 1, durationMs: 2000, strokeWidth: 4, maxOpacity: 0.4, color: "#d97757" } }
     ]
@@ -146,23 +146,23 @@
   {
     name: "Release Banner",
     category: "Banner",
-    style: "shimmer",
-    note: "An announcement bar with a shimmer sweeping its underline \u2014 noticed, not shouted",
+    style: "toast",
+    note: "An announcement bar that drops in on load and auto-dismisses \u2014 seen, then gone",
     box: {
       width: 320, height: 122,
       html: "<div style='display:flex;flex-direction:column;height:100%;box-sizing:border-box'>" +
             "<div class='tl-banner' style='position:relative;display:flex;align-items:center;gap:9px;height:44px;padding:0 14px;background:#d97757;flex:none'>" +
             "<span style='" + DISPLAY + "font-size:9.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#d97757;background:#141413;border-radius:999px;padding:3px 8px;flex:none'>New</span>" +
-            "<span style='" + DISPLAY + "font-size:12px;font-weight:500;color:#141413'>TraceLoop 2.0 \u2014 drawers &amp; dropdowns</span>" +
+            "<span style='" + DISPLAY + "font-size:12px;font-weight:500;color:#141413;white-space:nowrap'>v2.0 \u2014 drawers &amp; dropdowns</span>" +
             "<span style='margin-left:auto;display:flex;align-items:center;flex:none'>" + XICON + "</span>" +
             "</div>" +
             "<div style='flex:1;display:flex;align-items:center;gap:10px;padding:0 16px'>" +
             "<span style='width:9px;height:9px;border-radius:3px;background:#d97757;flex:none'></span>" +
             "<span style='" + DISPLAY + "font-size:12px;font-weight:600;color:#faf9f5'>TraceLoop</span>" +
             "<span style='display:flex;gap:12px;margin-left:auto'>" +
-            "<span style='" + DISPLAY + "font-size:10.5px;color:#8f8d84'>Styles</span>" +
-            "<span style='" + DISPLAY + "font-size:10.5px;color:#8f8d84'>Docs</span>" +
-            "<span style='" + DISPLAY + "font-size:10.5px;color:#8f8d84'>GitHub</span></span></div>" +
+            "<span style='" + DISPLAY + "font-size:10.5px;color:#b0aea5'>Styles</span>" +
+            "<span style='" + DISPLAY + "font-size:10.5px;color:#b0aea5'>Docs</span>" +
+            "<span style='" + DISPLAY + "font-size:10.5px;color:#b0aea5'>GitHub</span></span></div>" +
             "</div>",
       styleCss: CARD
     },

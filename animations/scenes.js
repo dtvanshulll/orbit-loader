@@ -195,15 +195,16 @@
     style: "toast",
     note: "A consent banner that drops in, counts down to auto-dismiss, then leaves",
     box: {
-      width: 320, height: 100,
-      html: "<div style='display:flex;align-items:center;gap:12px;height:100%;padding:14px 16px;box-sizing:border-box'>" +
+      width: 320, height: 108,
+      html: "<div style='display:flex;flex-direction:column;gap:7px;height:100%;padding:12px 14px;box-sizing:border-box'>" +
+            "<div style='display:flex;align-items:center;gap:9px'>" +
             COOKIE +
-            "<span style='flex:1;min-width:0'>" +
-            "<span style='" + DISPLAY + "display:block;font-size:11.5px;font-weight:600;color:#faf9f5'>We value your privacy</span>" +
-            "<span style='" + BODY + "display:block;font-size:10.5px;line-height:1.45;color:#8f8d84;margin-top:2px'>Cookies help us serve the demo. No tracking.</span></span>" +
-            "<span style='display:flex;gap:6px;flex:none;align-items:center'>" +
-            "<span style='display:flex;height:30px;padding:0 10px;align-items:center;border:1px solid #3f3d34;border-radius:6px;font-size:11px;font-weight:500;color:#b0aea5;" + DISPLAY + "'>Manage</span>" +
-            "<span style='display:flex;height:30px;padding:0 12px;align-items:center;background:#d97757;border-radius:6px;font-size:11px;font-weight:600;color:#141413;" + DISPLAY + "'>Accept</span></span>" +
+            "<span style='" + DISPLAY + "flex:1;font-size:11.5px;font-weight:600;color:#faf9f5'>We value your privacy</span>" +
+            "<span style='" + DISPLAY + "font-size:10px;color:#8f8d84'>Learn more</span></div>" +
+            "<div style='" + BODY + "font-size:10.5px;line-height:1.45;color:#8f8d84'>Cookies help us serve the demo. No tracking, no ads \u2014 just preferences.</div>" +
+            "<div style='display:flex;gap:6px;justify-content:flex-end;margin-top:auto'>" +
+            "<span style='display:flex;height:26px;padding:0 10px;align-items:center;border:1px solid #3f3d34;border-radius:6px;font-size:10.5px;font-weight:500;color:#b0aea5;" + DISPLAY + "'>Manage</span>" +
+            "<span style='display:flex;height:26px;padding:0 12px;align-items:center;background:#d97757;border-radius:6px;font-size:10.5px;font-weight:600;color:#141413;" + DISPLAY + "'>Accept</span></div>" +
             "</div>",
       styleCss: CARD
     },
@@ -303,7 +304,7 @@
     },
     parts: [
       { style: "chase", el: ".tl-rule",
-        options: { d: { shape: "underline", args: [200, 4] }, segments: 3, segmentFraction: 0.1, durationMs: 2200, strokeWidth: 2, color: "#788c5d", guideOpacity: 0.25 } }
+        options: { d: { shape: "underline", args: [200, 4] }, segments: 3, segmentFraction: 0.1, durationMs: 2200, strokeWidth: 2.5, color: "#788c5d", guideOpacity: 0.5 } }
     ]
   },
 
