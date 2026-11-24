@@ -17,6 +17,22 @@
 
   // Turn a `d` recipe into { d, guideD, viewBox }. "textBox" is resolved
   // against the animation's own box element (it measures real layout).
+  // Scene parts pass bare d strings (underline rules, icon outlines)
+  // with no viewBox; without one the svg falls back to 0 0 100 100 and
+  // the path renders as a sliver. Measure the path once and frame it.
+  function viewBoxOf(d, host) {
+    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.style.cssText = "position:absolute;left:-9999px;top:0;width:10px;height:10px;overflow:visible";
+    var p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    p.setAttribute("d", d);
+    svg.appendChild(p);
+    host.appendChild(svg);
+    var b = p.getBBox();
+    host.removeChild(svg);
+    var pad = 4;
+    return "" + (b.x - pad) + " " + (b.y - pad) + " " + (b.width + pad * 2) + " " + (b.height + pad * 2);
+  }
+
   function resolveD(spec, boxEl) {
     if (spec == null) return {}; // the loader supplies its own path (e.g. progress ring preset)
     if (typeof spec === "string") return { d: spec };
@@ -63,9 +79,12 @@
   function render(card) {
     var cfg = card.cfg;
     // A measurement-path card in a hidden subtree would draw a 0x0 box;
-    // queue it instead of rendering a broken animation.
-    if (cfg.options && cfg.options.d && cfg.options.d.shape === "textBox" &&
-        !card.stage.offsetWidth) {
+    // queue it instead of rendering a broken animation. Scene cards need
+    // the same deferral: their d-based parts measure the path bbox for a
+    // viewBox, and getBBox sees nothing inside display:none.
+    var needsMeasure = (cfg.options && cfg.options.d &&
+        cfg.options.d.shape === "textBox") || !!cfg.parts;
+    if (needsMeasure && !card.stage.offsetWidth) {
       if (pendingMeasure.indexOf(card) < 0) pendingMeasure.push(card);
       return;
     }
@@ -111,6 +130,9 @@
       for (var k in src) {
         if (Object.prototype.hasOwnProperty.call(src, k)) opts[k] = src[k];
       }
+      // A part may ask for a static fill (data-table bars, meters):
+      // skip the demo loop; the fraction is painted once after create.
+      if (opts.to != null) opts.autoStart = false;
       var c;
       if (CONTAINER_STYLES[part.style]) {
         c = window[GLOBALS[part.style]].create(target, opts);
@@ -119,9 +141,11 @@
         opts.d = resolved.d;
         if (resolved.guideD) opts.guideD = resolved.guideD;
         if (resolved.viewBox) opts.viewBox = resolved.viewBox;
+        else if (opts.d) opts.viewBox = viewBoxOf(opts.d, boxEl);
         c = window[GLOBALS[part.style]].wrap(target, opts);
       }
       controllers.push(c);
+      if (opts.to != null && c.setProgress) c.setProgress(opts.to);
     }
     return {
       destroy: function () {

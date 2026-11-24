@@ -15,8 +15,22 @@
 
   var SHADOW = "0 2px 8px rgba(0, 0, 0, 0.22)";
   var CARD = "background:#1c1b19;border:1px solid #33312c;border-radius:10px;box-shadow:" + SHADOW + ";";
-  var DISPLAY = "font-family:var(--pg-font-head,'Poppins',Arial,sans-serif);";
-  var BODY = "font-family:var(--pg-font-body,'Lora',Georgia,serif);";
+  var DISPLAY = "font-family:var(--pg-font-head,Poppins,Arial,sans-serif);";
+  var BODY = "font-family:var(--pg-font-body,Lora,Georgia,serif);";
+  function tile(title, sub, accent) {
+    return "<div style='flex:1;background:#262420;border:1px solid #33312c;border-radius:8px;padding:10px 8px;display:flex;flex-direction:column;gap:6px'>" +
+      "<span class='tl-ic-" + (accent === "#d97757" ? 1 : accent === "#6a9bcc" ? 2 : 3) + "' style='position:relative;width:26px;height:26px;flex:none'></span>" +
+      "<span style='" + DISPLAY + "font-size:11px;font-weight:600;color:#faf9f5'>" + title + "</span>" +
+      "<span style='" + BODY + "font-size:10.5px;line-height:1.45;color:#8f8d84'>" + sub + "</span></div>";
+  }
+  function row(name, pct, frac, color) {
+    var n = { "#d97757": 1, "#6a9bcc": 2, "#788c5d": 3 }[color];
+    return "<div style='display:flex;align-items:center;border-bottom:1px solid #262420;padding:7px 0'>" +
+      "<span style='" + DISPLAY + "flex:1;font-size:12px;font-weight:500;color:#faf9f5'>" + name + "</span>" +
+      "<span style='width:110px;display:flex;align-items:center;gap:8px'>" +
+      "<span class='tl-bar-" + n + "' style='position:relative;width:80px;height:8px;flex:none'></span>" +
+      "<span style='" + DISPLAY + "font-size:11px;color:#8f8d84;width:26px;text-align:right'>" + pct + "</span></span></div>";
+  }
 
   list.push(
   {
@@ -329,6 +343,94 @@
     parts: [
       { style: "progress", el: ".tl-steps",
         options: { d: { shape: "underline", args: [240] }, strokeWidth: 3, headRadius: 3.5, steps: 4, color: "#788c5d", guideOpacity: 0.3 } }
+    ]
+  },
+  {
+    name: "Feature Icons",
+    category: "Feature Grid",
+    style: "orbit",
+    note: "A feature row where each icon outline draws itself, one accent per card",
+    box: {
+      width: 300, height: 170,
+      html: "<div style='display:flex;gap:6px;height:100%;padding:10px;box-sizing:border-box'>" +
+            tile("Path-native", "Motion follows your shape", "#d97757") +
+            tile("Zero deps", "One script tag, done", "#6a9bcc") +
+            tile("React ready", "Thin adapter included", "#788c5d") +
+            "</div>",
+      styleCss: CARD
+    },
+    parts: [
+      { style: "orbit", el: ".tl-ic-1", options: { d: { shape: "roundRect", args: [26, 26, 6] }, durationMs: 1800, restMs: 1200, strokeWidth: 2, color: "#d97757", guideOpacity: 0.35 } },
+      { style: "orbit", el: ".tl-ic-2", options: { d: { shape: "roundRect", args: [26, 26, 6] }, durationMs: 1800, restMs: 1200, strokeWidth: 2, color: "#6a9bcc", guideOpacity: 0.35 } },
+      { style: "orbit", el: ".tl-ic-3", options: { d: { shape: "roundRect", args: [26, 26, 6] }, durationMs: 1800, restMs: 1200, strokeWidth: 2, color: "#788c5d", guideOpacity: 0.35 } }
+    ]
+  },
+
+  {
+    name: "Release Banner",
+    category: "Banner",
+    style: "shimmer",
+    note: "An announcement bar with a shimmer sweeping its underline \u2014 noticed, not shouted",
+    box: {
+      width: 320, height: 64,
+      html: "<div style='display:flex;align-items:center;gap:10px;height:100%;padding:12px 16px;box-sizing:border-box;padding-bottom:18px'>" +
+            "<span style='" + DISPLAY + "font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#141413;background:#d97757;border-radius:999px;padding:3px 8px;flex:none'>New</span>" +
+            "<span style='" + DISPLAY + "font-size:13px;font-weight:500;color:#faf9f5'>TraceLoop 2.0 \u2014 drawers &amp; dropdowns</span>" +
+            "<span style='" + DISPLAY + "margin-left:auto;font-size:12px;font-weight:500;color:#d97757;flex:none'>Read \u2192</span>" +
+            "</div>" +
+            "<div class='tl-sweep' style='position:absolute;left:16px;bottom:12px;width:288px;height:10px'></div>",
+      styleCss: CARD
+    },
+    parts: [
+      { style: "shimmer", el: ".tl-sweep",
+        options: { d: { shape: "underline", args: [288, 2] }, durationMs: 2600, strokeWidth: 5, color: "#d97757", guideOpacity: 0.2 } }
+    ]
+  },
+
+  {
+    name: "Footer Rule",
+    category: "Footer",
+    style: "orbit",
+    note: "A site footer whose divider draws itself above the legal line",
+    box: {
+      width: 320, height: 186,
+      html: "<div style='padding:16px 20px;display:flex;flex-direction:column;height:100%;box-sizing:border-box'>" +
+            "<div style='display:flex;gap:28px'>" +
+            "<div style='flex:1'><div style='display:flex;align-items:center;gap:7px'><span style='width:9px;height:9px;border-radius:3px;background:#d97757'></span><span style='" + DISPLAY + "font-size:13px;font-weight:600;color:#faf9f5'>TraceLoop</span></div>" +
+            "<div style='" + BODY + "font-size:11px;line-height:1.5;color:#8f8d84;margin-top:6px'>Path-native loading<br>and transition motion.</div></div>" +
+            "<div style='" + DISPLAY + "font-size:11px;line-height:2;color:#b0aea5'>Styles<br>Docs<br>GitHub</div>" +
+            "<div style='" + DISPLAY + "font-size:11px;line-height:2;color:#b0aea5'>License<br>Changelog<br>Releases</div>" +
+            "</div>" +
+            "<div class='tl-rule' style='position:relative;height:6px;width:280px;margin-top:auto'></div>" +
+            "<div style='" + DISPLAY + "font-size:10px;color:#8f8d84;margin-top:6px'>&copy; 2026 TraceLoop &middot; MIT</div>" +
+            "</div>",
+      styleCss: CARD
+    },
+    parts: [
+      { style: "orbit", el: ".tl-rule",
+        options: { d: { shape: "underline", args: [280, 1.5] }, durationMs: 2000, restMs: 2400, strokeWidth: 1.5, color: "#8f8d84", guideOpacity: 0.4 } }
+    ]
+  },
+
+  {
+    name: "Usage Table",
+    category: "Data Table",
+    style: "progress",
+    note: "A table whose usage bars hold static fills \u2014 data, not a demo loop",
+    box: {
+      width: 320, height: 190,
+      html: "<div style='padding:14px 18px;display:flex;flex-direction:column;gap:10px;height:100%;box-sizing:border-box'>" +
+            "<div style='" + DISPLAY + "display:flex;font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#8f8d84;border-bottom:1px solid #33312c;padding-bottom:6px'><span style='flex:1'>Project</span><span style='width:110px'>Usage</span></div>" +
+            row("Atlas", "42%", 0.42, "#d97757") +
+            row("Beacon", "68%", 0.68, "#6a9bcc") +
+            row("Cinder", "91%", 0.91, "#788c5d") +
+            "</div>",
+      styleCss: CARD
+    },
+    parts: [
+      { style: "progress", el: ".tl-bar-1", options: { d: { shape: "underline", args: [110, 3] }, strokeWidth: 3, headRadius: 2.5, color: "#d97757", guideOpacity: 0.3, to: 0.42 } },
+      { style: "progress", el: ".tl-bar-2", options: { d: { shape: "underline", args: [110, 3] }, strokeWidth: 3, headRadius: 2.5, color: "#6a9bcc", guideOpacity: 0.3, to: 0.68 } },
+      { style: "progress", el: ".tl-bar-3", options: { d: { shape: "underline", args: [110, 3] }, strokeWidth: 3, headRadius: 2.5, color: "#788c5d", guideOpacity: 0.3, to: 0.91 } }
     ]
   },
   );

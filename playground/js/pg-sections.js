@@ -61,7 +61,7 @@
   // category map) built as mockups and animated by the existing styles.
   // Each category becomes its own titled section after the style groups.
   var SCENE_SECTIONS = [
-    "Navbar", "Hero", "Login", "Stats", "FAQ", "Feedback", "Cookie Banner", "CTA", "Pricing", "Newsletter", "Testimonial", "Application Shell", "Countdown", "Onboarding"
+    "Navbar", "Hero", "Login", "Stats", "FAQ", "Feedback", "Cookie Banner", "CTA", "Pricing", "Newsletter", "Testimonial", "Application Shell", "Countdown", "Onboarding", "Feature Grid", "Banner", "Footer", "Data Table"
   ];
 
   PG.SECTIONS = SECTIONS;
