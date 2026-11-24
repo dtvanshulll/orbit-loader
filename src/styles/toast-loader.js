@@ -72,6 +72,13 @@
     svg.setAttribute("class", "orbit-loader-path orbit-loader-toast");
     svg.setAttribute("aria-hidden", "true");
     svg.style.top = "auto";
+    // `.orbit-loader-path` stretches its SVG to the container's full
+    // height (inset:0 + height:100%) so the traced path can overlay the
+    // whole shape. The toast rail must NOT stretch: an edge/bar rail is
+    // a `thickness`-px line pinned to the bottom edge — at full height
+    // the viewBox's meet-scaling centers the line mid-toast, which read
+    // as a stray underline through the banner copy. Pin it explicitly.
+    if (variant !== "ring") svg.style.height = thickness + "px";
 
     var customD = options.d || null;
     var bar = document.createElementNS(SVG_NS, "path");
