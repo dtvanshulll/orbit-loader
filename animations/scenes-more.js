@@ -11,10 +11,11 @@
   var CARD = "background:#1c1b19;border:1px solid #33312c;border-radius:10px;box-shadow:" + SHADOW + ";";
   var DISPLAY = "font-family:var(--pg-font-head,Poppins,Arial,sans-serif);";
   var BODY = "font-family:var(--pg-font-body,Lora,Georgia,serif);";
+
   function planRow(label, free, pro) {
     var mark = function (on) {
       return on
-        ? "<svg viewBox='0 0 16 16' width='13' height='13' aria-hidden='true'><path d='M3 8.5 L6.5 12 L13 4.5' fill='none' stroke='#788c5d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>"
+        ? "<svg viewBox='0 0 24 24' width='13' height='13' aria-hidden='true'><path d='M20 6L9 17l-5-5' fill='none' stroke='#788c5d' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/></svg>"
         : "<span style='color:#4a483f;font-size:11px'>&mdash;</span>";
     };
     return "<div style='display:flex;align-items:center;gap:8px;border-top:1px solid #262420;padding:7px 0'>" +
@@ -213,7 +214,7 @@
     style: "orbit",
     note: "Teammate cards whose avatar rings trace themselves \u2014 presence you can see",
     box: {
-      width: 300, height: 96,
+      width: 308, height: 96,
       html: "<div style='display:flex;gap:8px;height:100%;padding:12px;box-sizing:border-box'>" +
             member("Mara Lindqvist", "Design lead", "#d97757", 1) +
             member("Tom Okafor", "Engineering", "#6a9bcc", 2) +
@@ -236,7 +237,7 @@
       html: "<div style='display:flex;gap:14px;height:100%;padding:14px 16px;box-sizing:border-box'>" +
             "<div style='position:relative;width:92px;border-radius:8px;background:#262420;border:1px solid #33312c;flex:none;display:flex;align-items:center;justify-content:center'>" +
             "<span class='tl-play' style='position:relative;width:40px;height:40px;display:flex;align-items:center;justify-content:center'>" +
-            "<svg viewBox='0 0 12 14' width='11' height='13' aria-hidden='true'><path d='M1,1 L11,7 L1,13 Z' fill='#faf9f5'/></svg></span></div>" +
+            "<svg viewBox='0 0 24 24' width='14' height='14' aria-hidden='true'><path d='M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z' fill='#faf9f5' stroke='#faf9f5' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/></svg></span></div>" +
             "<div style='flex:1;display:flex;flex-direction:column;gap:6px;min-width:0'>" +
             "<div style='" + BODY + "font-size:12px;line-height:1.55;color:#faf9f5'>We shipped our rebrand with TraceLoop underlines everywhere.</div>" +
             "<div style='display:flex;align-items:center;gap:8px;margin-top:auto'>" +
@@ -277,10 +278,10 @@
     style: "dropdown",
     note: "A site footer's language selector opening its menu in place",
     box: {
-      width: 320, height: 120,
+      width: 340, height: 120,
       html: "<div style='padding:16px 20px;display:flex;flex-direction:column;height:100%;box-sizing:border-box;gap:10px'>" +
             "<div style='display:flex;align-items:center;gap:7px'><span style='width:9px;height:9px;border-radius:3px;background:#d97757'></span><span style='" + DISPLAY + "font-size:13px;font-weight:600;color:#faf9f5'>TraceLoop</span>" +
-            "<div class='tl-lang' style='position:relative;margin-left:auto;width:120px;height:30px'></div></div>" +
+            "<div class='tl-lang' style='position:relative;margin-left:auto;width:140px;height:30px'></div></div>" +
             "<div style='display:flex;gap:24px'>" +
             "<div style='" + DISPLAY + "font-size:10.5px;line-height:1.9;color:#8f8d84'>PRODUCT<br>Styles<br>Playground</div>" +
             "<div style='" + DISPLAY + "font-size:10.5px;line-height:1.9;color:#8f8d84'>COMPANY<br>About<br>License</div>" +
@@ -316,5 +317,37 @@
         options: { title: "Deploy succeeded", message: "api-service is live on production", enter: "drop", durationMs: 3400, restMs: 1600, color: "#788c5d" } }
     ]
   },
+  {
+    name: "Review Highlight",
+    category: "Reviews",
+    style: "shimmer",
+    note: "A review card where a light band sweeps the rating row \u2014 the stars get noticed",
+    box: {
+      width: 320, height: 168,
+      html: "<div style='padding:16px 18px;display:flex;flex-direction:column;gap:10px;height:100%;box-sizing:border-box'>" +
+            "<div style='display:flex;align-items:center;gap:10px;padding-right:36px'>" +
+            "<span style='" + DISPLAY + "font-size:20px;font-weight:600;color:#faf9f5'>4.9</span>" +
+            "<span class='tl-stars' style='position:relative;height:16px;width:96px;flex:none'>" +
+            "<svg viewBox='0 0 96 16' width='96' height='16' aria-hidden='true' fill='#d97757'>" +
+            "<path d='M8 1 L10 6 L15 6 L11 9.5 L12.5 15 L8 11.8 L3.5 15 L5 9.5 L1 6 L6 6 Z'/>" +
+            "<path d='M28 1 L30 6 L35 6 L31 9.5 L32.5 15 L28 11.8 L23.5 15 L25 9.5 L21 6 L26 6 Z'/>" +
+            "<path d='M48 1 L50 6 L55 6 L51 9.5 L52.5 15 L48 11.8 L43.5 15 L45 9.5 L41 6 L46 6 Z'/>" +
+            "<path d='M68 1 L70 6 L75 6 L71 9.5 L72.5 15 L68 11.8 L63.5 15 L65 9.5 L61 6 L66 6 Z'/>" +
+            "<path d='M88 1 L90 6 L95 6 L91 9.5 L92.5 15 L88 11.8 L83.5 15 L85 9.5 L81 6 L86 6 Z' opacity='0.35'/></svg></span>" +
+            "<span style='" + DISPLAY + "font-size:11px;color:#8f8d84'>2,314 reviews</span></div>" +
+            "<div style='" + BODY + "font-size:12.5px;line-height:1.6;color:#faf9f5'>The only loader library where the animation follows our logo instead of sitting next to it.</div>" +
+            "<div style='display:flex;align-items:center;gap:8px;margin-top:auto'>" +
+            "<span style='width:22px;height:22px;border-radius:50%;background:#788c5d;flex:none'></span>" +
+            "<span style='" + DISPLAY + "font-size:11px;font-weight:500;color:#faf9f5'>Mara Lindqvist</span>" +
+            "<span style='" + DISPLAY + "font-size:10px;color:#8f8d84'>&middot; verified</span></div>" +
+            "</div>",
+      styleCss: CARD
+    },
+    parts: [
+      { style: "shimmer", el: ".tl-stars",
+        options: { d: { shape: "underline", args: [96, 2] }, durationMs: 2400, strokeWidth: 6, color: "#faf9f5", guideOpacity: 0.12 } }
+    ]
+  },
+
   );
 })(typeof window !== "undefined" ? window : this);
