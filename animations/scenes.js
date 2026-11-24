@@ -19,6 +19,7 @@
   var SEND = "<svg viewBox='0 0 24 24' width='14' height='14' aria-hidden='true'><path d='M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11zm7.318-19.539l-10.94 10.939' fill='none' stroke='#141413' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/></svg>";
   var COOKIE = "<svg viewBox='0 0 24 24' width='20' height='20' aria-hidden='true'><path d='M11 17h.01m.486-15c.324-.016.558.292.529.615a4 4 0 0 0 4.235 4.368a.713.713 0 0 1 .758.757a4 4 0 0 0 4.366 4.237c.323-.03.63.204.614.527a10 10 0 0 1-2.915 6.566A1 1 0 1 1 4.93 4.918A10 10 0 0 1 11.496 2M12 12h.01M16 16h.01M16 3h.01M21 4h.01M21 8h.01M7 14h.01M9 8h.01' fill='none' stroke='#d97757' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/></svg>";
   var CHEVD = "<svg viewBox='0 0 24 24' width='15' height='15' aria-hidden='true'><path d='m6 9l6 6l6-6' fill='none' stroke='#8f8d84' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/></svg>";
+  var TREND = "<svg viewBox='0 0 24 24' width='12' height='12' aria-hidden='true'><path d='M16 7h6v6' fill='none' stroke='#788c5d' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/><path d='m22 7l-8.5 8.5l-5-5L2 17' fill='none' stroke='#788c5d' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/></svg>";
   var DISPLAY = "font-family:var(--pg-font-head,Poppins,Arial,sans-serif);";
   var BODY = "font-family:var(--pg-font-body,Lora,Georgia,serif);";
   function rankRow(place, name, score, frac, color, n) {
@@ -72,18 +73,18 @@
     style: "orbit",
     note: "A hero headline with an ambient flourish tracing itself beneath it, forever",
     box: {
-      width: 340, height: 190,
+      width: 340, height: 172,
       html: "<div style='padding:20px 22px;display:flex;flex-direction:column;gap:10px;height:100%;box-sizing:border-box'>" +
             "<span style='" + DISPLAY + "align-self:flex-start;font-size:10px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:#d97757;border:1px solid #3f3d34;border-radius:999px;padding:3px 10px'>New &middot; v2.0</span>" +
             "<div style='" + DISPLAY + "font-size:21px;font-weight:600;line-height:1.25;color:#faf9f5'>Ship interfaces<br>that <em style='font-style:normal;color:#d97757'>move</em></div>" +
-            "<div class='tl-flourish' style='position:relative;height:26px;width:240px'></div>" +
+            "<div class='tl-flourish' style='position:relative;height:12px;width:196px;margin:-4px 0 0 2px'></div>" +
             "<div style='" + BODY + "font-size:12px;color:#b0aea5'>Nineteen path-driven styles. Zero dependencies.</div>" +
             "</div>",
       styleCss: CARD
     },
     parts: [
       { style: "orbit", el: ".tl-flourish",
-        options: { d: { shape: "underline", args: [240, 10] }, durationMs: 2600, segmentFraction: 0.3, strokeWidth: 2.5, color: "#d97757", guideOpacity: 0.3 } }
+        options: { d: { shape: "underline", args: [190, 6] }, durationMs: 2600, segmentFraction: 0.3, strokeWidth: 2.5, color: "#d97757", guideOpacity: 0.3 } }
     ]
   },
 
@@ -119,7 +120,7 @@
             "<div style='display:flex;flex-direction:column;gap:6px'>" +
             "<span style='" + DISPLAY + "font-size:11px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:#b0aea5'>Weekly active</span>" +
             "<span style='" + DISPLAY + "font-size:26px;font-weight:600;color:#faf9f5'>12,480</span>" +
-            "<span style='" + DISPLAY + "font-size:11px;font-weight:500;color:#788c5d'>&#9650; 8.2% vs last week</span>" +
+            "<span style='" + DISPLAY + "display:flex;align-items:center;gap:4px;font-size:11px;font-weight:500;color:#788c5d'>" + TREND + "8.2% vs last week</span>" +
             "</div>" +
             "<div class='tl-ring' style='position:relative;width:72px;height:72px;flex:none'></div>" +
             "</div>",
