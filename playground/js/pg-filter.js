@@ -139,6 +139,13 @@
   // goes home; "/" from anywhere jumps into the box.
   function wireSearch(cards, filter) {
     var form = document.getElementById("pg-search");
+    // The row is the target: a tap on its padding or icon still lands
+    // in the input instead of dying on dead space.
+    form.addEventListener("click", function (e) {
+      if (e.target === form || e.target.closest("svg, .pg-search-kbd")) {
+        document.getElementById("pg-search-input").focus();
+      }
+    });
     var input = document.getElementById("pg-search-input");
     if (!form || !input) return;
     form.addEventListener("submit", function (e) {
