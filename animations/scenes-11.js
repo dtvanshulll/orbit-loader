@@ -138,6 +138,75 @@
         options: { rings: 1, dot: false, durationMs: 1600, strokeWidth: 3, maxOpacity: 0.45, color: "#d97757" } }
     ]
   }
+  ,
+  {
+    name: "Handwritten Annotation",
+    category: "Annotation",
+    style: "orbit",
+    note: "A note that annotates itself — a rough circle loops a phrase, a hand underline stamps the deadline",
+    box: {
+      width: 320, height: 150,
+      html: "<div style='padding:16px 18px;display:flex;flex-direction:column;gap:10px;height:100%;box-sizing:border-box'>" +
+            "<span style='" + DISPLAY + "font-size:13px;font-weight:600;color:#faf9f5'>Sprint note</span>" +
+            "<p style='" + BODY + "font-size:12px;line-height:1.6;color:#b0aea5;margin:0'>Ship the trace loop " +
+            "<span class='tl-ann-circle' style='position:relative;padding:3px 6px;color:#faf9f5;font-weight:600'>before Friday</span>" +
+            " — the launch " +
+            "<span class='tl-ann-line' style='position:relative;padding:1px 2px;color:#faf9f5;font-weight:600'>demo needs it</span>" +
+            ".</p>" +
+            "<span style='" + DISPLAY + "margin-top:auto;font-size:10px;color:#8f8d84'>reviewed &middot; 2 comments</span>" +
+            "</div>",
+      styleCss: CARD
+    },
+    parts: [
+      { style: "orbit", el: ".tl-ann-circle",
+        options: { d: "M50,2 C74,1 96,5 97,12 C98,19 76,22 50,23 C24,23 3,20 2,12 C1,5 24,2 50,2", viewBox: "0 0 100 24", durationMs: 2400, restMs: 2600, strokeWidth: 2, color: "#d97757", guideOpacity: 0.25 } },
+      { style: "orbit", el: ".tl-ann-line",
+        options: { d: "M2,6 C20,2 40,8 60,4 C75,2 88,7 98,5", viewBox: "0 0 100 10", durationMs: 1300, restMs: 3700, strokeWidth: 2, color: "#6a9bcc", guideOpacity: 0.25, delayMs: 1400 } }
+    ]
+  },
+  {
+    name: "Burst Confirm",
+    category: "Confirmation",
+    style: "orbit",
+    note: "The check draws while two rings burst from the tile behind it — done, loudly",
+    box: {
+      width: 320, height: 140,
+      html: "<div style='display:flex;align-items:center;gap:14px;height:100%;padding:0 20px;box-sizing:border-box'>" +
+            "<div class='tl-burst-tile' style='position:relative;width:56px;height:56px;border-radius:50%;background:#262420;border:1px solid #33312c;display:flex;align-items:center;justify-content:center;flex:none;color:#788c5d'></div>" +
+            "<div style='display:flex;flex-direction:column;gap:3px'>" +
+            "<span style='" + DISPLAY + "font-size:13.5px;font-weight:600;color:#faf9f5'>Payment confirmed</span>" +
+            "<span style='" + DISPLAY + "font-size:11px;color:#8f8d84'>$49.00 &middot; just now</span></div>" +
+            "<span style='" + DISPLAY + "margin-left:auto;" + BODY + "font-style:italic;font-size:10.5px;color:#788c5d'>receipt sent</span>" +
+            "</div>",
+      styleCss: CARD
+    },
+    parts: [
+      { style: "orbit", el: ".tl-burst-tile",
+        options: { d: "M20,6 L9,17 L5,13", viewBox: "0 0 24 24", durationMs: 1200, restMs: 2400, strokeWidth: 2.5, color: "#788c5d", guideOpacity: 0.3 } },
+      { style: "pulse", el: ".tl-burst-tile",
+        options: { rings: 2, dot: false, durationMs: 2400, strokeWidth: 2, maxOpacity: 0.4, color: "#788c5d" } }
+    ]
+  },
+  {
+    name: "Price Strike",
+    category: "Pricing",
+    style: "orbit",
+    note: "The old price is struck out in reverse — the stroke starts at the far end, like a hand crossing it off",
+    box: {
+      width: 320, height: 110,
+      html: "<div style='display:flex;align-items:center;gap:12px;height:100%;padding:0 20px;box-sizing:border-box'>" +
+            "<span class='tl-strike' style='position:relative;padding:2px 6px;" + DISPLAY + "font-size:17px;font-weight:600;color:#8f8d84;text-decoration:none'>$99</span>" +
+            "<span style='" + DISPLAY + "font-size:26px;font-weight:600;color:#d97757'>$49</span>" +
+            "<span style='" + DISPLAY + "padding:4px 9px;background:#262420;border:1px solid #3f3d34;border-radius:99px;font-size:10px;font-weight:500;color:#b0aea5'>launch week</span>" +
+            "</div>",
+      styleCss: CARD
+    },
+    parts: [
+      { style: "orbit", el: ".tl-strike",
+        options: { d: "M3,8 C22,4 48,10 97,6", viewBox: "0 0 100 12", durationMs: 900, restMs: 3200, strokeWidth: 2.4, color: "#d97757", direction: "reverse" } }
+    ]
+  }
+
   );
 
   function checkRow(label, done, mode) {
