@@ -3,7 +3,7 @@
  * portion that grows from the path's start toward its end, with a
  * glowing head dot at the frontier. Sibling style module with its own
  * create(), like orbit-loader.js itself (path-based). Needs only
- * orbit-loader.css; does NOT require shapes.js.
+ * the shared CSS in src/css/; does NOT require the shape files.
  *
  * What makes it different from every progress bar: the track is any
  * SVG path you hand it — a circle, an underline, a lightning bolt, a

@@ -49,7 +49,7 @@ The core crawler: a glowing segment traces the path forever.
 
 Controller also exposes: `path`, `guide`, `svg`, `anim`.
 
-## DotLoader — `dot-loader.js`
+## DotLoader — `src/styles/dot-loader.js`
 
 A traveling dot with a family of behaviors. Takes the same options as
 OrbitLoader (`d`, `viewBox`, `durationMs`, `direction`, `offset`,
@@ -68,7 +68,7 @@ OrbitLoader (`d`, `viewBox`, `durationMs`, `direction`, `offset`,
 
 Controller also exposes: `dot(s)`, `twins`, `ghosts`.
 
-## ShimmerLoader — `shimmer-loader.js`
+## ShimmerLoader — `src/styles/shimmer-loader.js`
 
 A soft light band sweeps the path like brushed metal.
 
@@ -80,7 +80,7 @@ A soft light band sweeps the path like brushed metal.
 | `color` | `null` | stroke color for band + shimmer |
 | `durationMs`, `viewBox`, `offset`, `guideOpacity`, `guideD`, `autoStart` | as OrbitLoader | |
 
-## RippleLoader — `ripple-loader.js`
+## RippleLoader — `src/styles/ripple-loader.js`
 
 Rings radiate from the container's center. Container-based:
 `create()` and `wrap()` are the same call and take the container.
@@ -93,7 +93,7 @@ Rings radiate from the container's center. Container-based:
 | `strokeWidth` | `3` | ring stroke width, in the SVG's 100-unit space |
 | `color` | `null` | ring color |
 
-## PulseLoader — `pulse-loader.js`
+## PulseLoader — `src/styles/pulse-loader.js`
 
 A ring that breathes in place — swells and softens on the spot instead of
 sending a segment around a path. Container-based: `create()` and
@@ -109,12 +109,12 @@ sending a segment around a path. Container-based: `create()` and
 | `dot` | `true` | the steady center dot anchoring the pulse; `false` for rings only |
 | `color` | `null` | ring and dot color |
 
-## ChaseLoader — `chase-loader.js`
+## ChaseLoader — `src/styles/chase-loader.js`
 
 Several short dashes evenly spaced around the path, chasing each other in
 formation — the multi-runner relative of OrbitLoader. Path-based like the
 core: `create()` takes a path element, `wrap()` takes a container plus
-`options.d` (raw string or a shapes.js spec).
+`options.d` (raw string, or a resolved shape from `src/shapes/`).
 
 | option | default | meaning |
 |---|---|---|
@@ -125,7 +125,7 @@ core: `create()` takes a path element, `wrap()` takes a container plus
 | `guideOpacity` | `0` | faint static copy of the path under the dashes (wrap only) |
 | `color`, `strokeWidth`, `activeClass`, `autoStart` | as OrbitLoader | |
 
-## TypingLoader — `typing-loader.js`
+## TypingLoader — `src/styles/typing-loader.js`
 
 The chat "typing…" wave. Container-based.
 
@@ -140,7 +140,7 @@ The chat "typing…" wave. Container-based.
 
 Controller also exposes: `dots` (the elements).
 
-## HandshakeLoader — `handshake-loader.js`
+## HandshakeLoader — `src/styles/handshake-loader.js`
 
 Two segments crawl from opposite ends, overlap and flash at the
 meeting point, retract, rest, restart. Same options and controller as
@@ -152,7 +152,7 @@ OrbitLoader (plus `paths`, the two segment elements), plus:
 | `meetAt` | `0.5` | where along the path the fronts meet, as a fraction of total length |
 | `overlap` | `0.12` | how far past each other the fronts push during the flash |
 
-## TabLoader — `tab-loader.js`
+## TabLoader — `src/styles/tab-loader.js`
 
 The tab underline, as a one-shot primitive: `play(from, to)` crawls it
 from one fraction of the rail to another, stretching mid-flight.
@@ -172,7 +172,7 @@ Container-based. `start()` runs a demo loop that switches tabs forever.
 
 Controller also exposes: `segment`, `play(from, to)`, `set(f)`.
 
-## PageLoader — `page-loader.js`
+## PageLoader — `src/styles/page-loader.js`
 
 The top-of-page progress bar: `start()` trickles toward 90%,
 `done()` sweeps to 100% and fades. Container-based; pins to the
@@ -188,7 +188,7 @@ container's top edge.
 
 Controller also exposes: `bar`.
 
-## ButtonLoader — `button-loader.js`
+## ButtonLoader — `src/styles/button-loader.js`
 
 The button's own border is the pending-progress track: `begin()`
 crawls the perimeter, `success()` lights the whole border and fades,
@@ -202,7 +202,7 @@ crawls the perimeter, `success()` lights the whole border and fades,
 | `strokeWidth` | `2` | trace thickness, px |
 | `color` | `null` | trace color |
 
-## ToastLoader — `toast-loader.js`
+## ToastLoader — `src/styles/toast-loader.js`
 
 The toast's countdown: `begin(ms)` drains a bar along the bottom edge
 over `ms`, then stops. `dismiss()` stops early. Container-based.
@@ -217,7 +217,7 @@ over `ms`, then stops. `dismiss()` stops early. Container-based.
 
 Controller also exposes: `bar`, `begin(ms)`, `dismiss()`.
 
-## ProgressLoader — `progress-loader.js`
+## ProgressLoader — `src/styles/progress-loader.js`
 
 Determinate progress along any path: `setProgress(p)` fills the path
 from its start to fraction `p`, with a glowing head dot at the
@@ -236,7 +236,7 @@ pass a path element, or a container plus `d`.
 
 Controller also exposes: `path`, `head`, `setProgress(p)`, `done()`.
 
-## SearchLoader — `search-loader.js`
+## SearchLoader — `src/styles/search-loader.js`
 
 The search bar: `open()` widens the field and draws its underline out
 from the left with a glowing head; `close()` retracts both. The
@@ -258,7 +258,7 @@ Controller also exposes: `open()`, `close()`, `toggle()`, `line`,
 `icon` (the Lucide magnifier — ring draws, then the handle),
 `placeholder`.
 
-## ModalLoader — `modal-loader.js`
+## ModalLoader — `src/styles/modal-loader.js`
 
 The dialog entrance: the backdrop fades, the panel rises and settles,
 and the panel's border traces itself once on arrival. A modal whose
@@ -279,7 +279,7 @@ Controller also exposes: `open()`, `close()`, `frame`,
 `closeBtn` (the Lucide X — draws after the border trace; clicking it
 closes the dialog).
 
-## AccordionLoader — `accordion-loader.js`
+## AccordionLoader — `src/styles/accordion-loader.js`
 
 The expanding section: `open()` grows the panel's height and draws its
 left edge downward with a glowing head, so the eye follows the reveal
@@ -299,7 +299,7 @@ Controller also exposes: `open()`, `close()`, `toggle()`, `edge`,
 every toggle after).
 
 
-## DrawerLoader — `drawer-loader.js`
+## DrawerLoader — `src/styles/drawer-loader.js`
 
 The drawer, as a component: the panel slides in from its edge while
 the edge facing the content draws itself — a left drawer's right edge
@@ -323,7 +323,7 @@ Controller also exposes: `open()`, `close()`, `toggle()`, `edge`,
 `backdrop`.
 
 
-## DropdownLoader — `dropdown-loader.js`
+## DropdownLoader — `src/styles/dropdown-loader.js`
 
 The select menu: the panel drops from the trigger while its border
 draws itself, items stagger in top-down, and `select(i)` draws a
@@ -335,6 +335,7 @@ for you inside the container.
 |---|---|---|
 | `items` | `['Option 1', …]` | the menu rows |
 | `trigger` | `'Options'` | the trigger button's label |
+| `placement` | `'auto'` | `"top"` forces the menu to open upward (footer selectors near a card's bottom edge) |
 | `durationMs` | `320` | one open or close |
 | `restMs` | `1400` | the demo loop's pause per state |
 | `color` | `null` | border/check color; omit for currentColor |
@@ -343,7 +344,7 @@ for you inside the container.
 Controller also exposes: `open()`, `close()`, `toggle()`,
 `select(i)`, `value()`, `trigger`, `panel`, `frame`.
 
-## InputLoader — `input-loader.js`
+## InputLoader — `src/styles/input-loader.js`
 
 The text field: `focus()` draws the underline with the label floating
 up, `success()` hands the line to mint and draws a Lucide check at the

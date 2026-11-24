@@ -123,7 +123,7 @@
    * Container form: build the SVG (and an optional faint guide) around
    * options.d, then run create() on the path — the same contract as
    * OrbitLoader.wrap, so swapping between the two is a one-word change.
-   * `d` accepts a raw path string or a shapes.js spec like
+   * `d` accepts a raw path string or a resolved shape (src/shapes/) like
    * { shape: "circle", args: [64] }.
    */
   function wrap(container, options) {

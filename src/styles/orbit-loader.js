@@ -168,7 +168,7 @@
    * absolutely positioned edge-to-edge, lines up over its contents.
    *
    * Takes every option `create()` takes, plus:
-   *   d              (required) the path's "d" attribute — see shapes.js
+   *   d              (required) the path's "d" attribute — see src/shapes/
    *                  for ready-made generators, or supply your own
    *   viewBox        (default "0 0 100 100") — MUST match the shape's own
    *                  coordinate space (e.g. "0 0 84 84" for a path built

@@ -18,6 +18,7 @@ export interface LoaderOptions {
   variant?: string;
   items?: string[];
   trigger?: string;
+  placement?: 'auto' | 'top';
   label?: string;
   value?: string;
   closedHeight?: number;

@@ -4,7 +4,7 @@
  * border perimeter; on success the whole border lights and settles.
  * Sibling style module with its own create(), container-based like
  * ripple/typing/tether. Needs only orbit-loader.css; does NOT require
- * orbit-loader.js or shapes.js.
+ * orbit-loader.js or the files in src/shapes/.
  *
  * What makes it different from a spinner dropped next to a button:
  * the feedback happens ON the button — its own silhouette becomes the

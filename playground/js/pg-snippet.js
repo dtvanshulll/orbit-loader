@@ -161,7 +161,10 @@
     out.push("</div>");
     out.push("");
     out.push('<script src="' + SCRIPTS[cfg.style] + '"><\/script>');
-    if (opts.d && typeof opts.d === "object" && opts.d.shape) out.push('<script src="shapes.js"><\/script>');
+    if (opts.d && typeof opts.d === "object" && opts.d.shape) out.push('<script src="src/shapes/shapes-core.js"><\/script>');
+    out.push('<script src="src/shapes/shapes-text.js"><\/script>');
+    out.push('<script src="src/shapes/shapes-outline.js"><\/script>');
+    out.push('<script src="src/shapes/outline-glyphs.js"><\/script>');
     out.push("<script>");
     if (pre.length) out.push(pre.join("\n"));
     out.push("  " + GLOBALS[cfg.style] + "." + (isRipple ? "create" : "wrap") + "(document.querySelector('.orbit-loader-wrap'), {");

@@ -64,19 +64,6 @@ change.
   meeting point (both paths render at reduced opacity, so the overlap
   paints twice and flashes), then retract. Pure WAAPI on interpolated
   dasharray+dashoffset, no rAF.
-- `src/styles/clock-loader.js` — the clockface style (`ClockLoader`): a hand
-  sweeps the path while marker dots light up permanently as it passes;
-  when all are lit the face holds, pulses and resets. The one
-  state-keeping style: a rAF loop tracks laps and which markers are
-  lit.
-- `src/styles/gravity-loader.js` — the gravity style (`GravityLoader`): the dot's
-  speed obeys the path's slope — fast on descents, slow on climbs,
-  clamped so it never stalls. rAF, per-frame tangent sampling.
-- `src/styles/tether-loader.js` — the tetherball style (`TetherLoader`): a ball on
-  a rope swings, flips over the top, winds around the pole (spiral rope,
-  spin accelerating as the rope shortens), hangs, unwinds. The third
-  container-based style: `create()` and `wrap()` are the same call and
-  take the container. rAF state machine.
 - `src/styles/tab-loader.js`, `page-loader.js`, `button-loader.js`,
   `toast-loader.js`, `progress-loader.js` — the transition styles
   (`TabLoader`, `PageLoader`, `ButtonLoader`, `ToastLoader`,
@@ -120,7 +107,7 @@ change.
 - `package.json` — metadata, files whitelist, `exports` map and the
   esbuild build scripts. No runtime dependencies; dev dependencies
   (esbuild, react) only produce `dist/`.
-- `examples/index.html` — a live demo of all five styles plus the
+- `examples/index.html` — a live demo of the looping styles and the
   letter, alphabet, text-box, polygon, dot-train and infinity shapes (serve it over HTTP,
   not `file://`, since the loaders attach to `window` and some browsers
   restrict module/script behavior on local files).
