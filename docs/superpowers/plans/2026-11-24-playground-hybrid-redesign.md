@@ -1,7 +1,7 @@
 # TraceLoop Playground — Hybrid Redesign Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to
-> implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Date:** 2026-11-24
 **Direction chosen by owner:** Hybrid — docs shell + showcase hero.
@@ -79,7 +79,7 @@ snippet → actions. Six stacked zones with unequal padding is the "disarray".
 - [x] Sidebar items scroll to sections AND set the filter (current behaviour
       keeps filter only — add scroll-to-section)
 - [x] `text-wrap: pretty` on notes; straggler advisories re-checked
-- [ ] Verify: click sidebar item → correct section in view, filter applied
+- [x] Verify: click sidebar item → correct section in view, filter applied
 
 ### Task 3 — Hero: one cinematic moment, then out of the way
 
@@ -88,7 +88,7 @@ snippet → actions. Six stacked zones with unequal padding is the "disarray".
 - [x] The instrument (ring + dot train) stays the only large animation above
       the fold's end
 - [x] Hero height ≤ 60vh; content column starts above the fold's end
-- [ ] Verify: screenshot at 1440×900 — first screen shows hero end + first
+- [x] Verify: screenshot at 1440×900 — first screen shows hero end + first
       section title
 
 ### Task 4 — Sidebar as the permanent map
@@ -96,42 +96,42 @@ snippet → actions. Six stacked zones with unequal padding is the "disarray".
 - [x] Sidebar groups mirror sections 1:1 with counts (done — keep)
 - [x] Active section highlights on scroll (scrollspy), not just on filter
 - [x] Mobile: sidebar hidden, hamburger toggles; Esc closes; focus trap
-- [ ] Verify: scrollspy at 1440, toggle + Esc at 400
+- [x] Verify: scrollspy at 1440, toggle + Esc at 400
 
 ### Task 5 — impeccable re-audit to zero
 
-- [ ] `impeccable detect` on the page → fix remaining failures
+- [x] `impeccable detect` on the page → fix remaining failures
 - [x] Contrast ≥ 4.5:1 for all functional text (verified via computed styles)
 - [x] Mark todo #28 done
 
 ### Task 6 — ui-ux-pro-max audit
 
-- [ ] Run the skill's data (typography pairings, UX guidelines) against the
+- [x] Run the skill's data (typography pairings, UX guidelines) against the
       shell; fix what it flags
-- [ ] Mark todo #29 done
+- [x] Mark todo #29 done
 
 ### Task 7 — Awwwards-level motion pass (motion-design + apple-motion)
 
-- [ ] One easing family, named durations; reveal choreography on scroll
+- [x] One easing family, named durations; reveal choreography on scroll
       (staggered, once, respects reduced-motion)
-- [ ] Hover states: color/surface only, no scale on cards
-- [ ] The hero instrument gets the single showpiece moment (dot train
+- [x] Hover states: color/surface only, no scale on cards
+- [x] The hero instrument gets the single showpiece moment (dot train
       entrance), everything else stays quiet
-- [ ] Mark todo #30 done
+- [x] Mark todo #30 done
 
 ### Task 8 — hallmark detail pass
 
-- [ ] Nested radii audit (inner = outer − padding)
-- [ ] Signature detail: the path-traced motif appears exactly twice — hero
+- [x] Nested radii audit (inner = outer − padding)
+- [x] Signature detail: the path-traced motif appears exactly twice — hero
       instrument and the section rule lines — nowhere else
-- [ ] Mark todo #31 done
+- [x] Mark todo #31 done
 
 ### Task 9 — Rules doc + final verification
 
-- [ ] DESIGN.md: write **"UI rules"** section (shell, type scale, spacing
+- [x] DESIGN.md: write **"UI rules"** section (shell, type scale, spacing
       grid, color roles, motion, iconography, verification bar)
-- [ ] AGENTS.md/CLAUDE.md: add binding rule "all UI work follows DESIGN.md
+- [x] AGENTS.md/CLAUDE.md: add binding rule "all UI work follows DESIGN.md
       UI rules; run the verification battery before done"
-- [ ] Full battery: 1440 + 400 screenshots, all 55 cards, filters, sidebar,
+- [x] Full battery: 1440 + 400 screenshots, all 55 cards, filters, sidebar,
       keyboard focus, reduced-motion
-- [ ] Mark todo #32 done
+- [x] Mark todo #32 done
