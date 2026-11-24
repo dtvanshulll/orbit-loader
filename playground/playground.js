@@ -394,10 +394,10 @@
     var el = document.createElement("section");
     el.className = "pg-card";
 
-    // Card anatomy (one rhythm for every card): head row — title, tag,
-    // copy action — then note, stage, snippet, and tuning controls
-    // collapsed behind a toggle. The demo and the code are the content;
-    // everything else is chrome.
+    // Card anatomy (one rhythm for every card): head row — title and tag —
+    // then note, stage, and the code block. The Copy button lives in the
+    // code block's own header, right above the code it copies — not stranded
+    // at the top of the card, far from the thing it acts on.
     var head = document.createElement("div");
     head.className = "pg-card-head";
     var title = document.createElement("h3");
@@ -407,12 +407,6 @@
     tag.textContent = cfg.style;
     title.appendChild(tag);
     head.appendChild(title);
-    var copyCode = document.createElement("button");
-    copyCode.className = "pg-copy";
-    copyCode.textContent = "Copy";
-    copyCode.dataset.label = "Copy";
-    copyCode.addEventListener("click", function () { copy(buildSnippet(card), copyCode); });
-    head.appendChild(copyCode);
     el.appendChild(head);
 
     if (cfg.note) {
@@ -427,13 +421,32 @@
     card.stage = stage;
     el.appendChild(stage);
 
+    // The code block: a labeled panel, not a bare <pre>. The label names
+    // what the code is; Copy sits at the opposite end of the same row.
+    var code = document.createElement("div");
+    code.className = "pg-code";
+    var codeHead = document.createElement("div");
+    codeHead.className = "pg-code-head";
+    var codeLabel = document.createElement("span");
+    codeLabel.className = "pg-code-label";
+    codeLabel.textContent = "Usage";
+    codeHead.appendChild(codeLabel);
+    var copyCode = document.createElement("button");
+    copyCode.className = "pg-copy";
+    copyCode.textContent = "Copy";
+    copyCode.dataset.label = "Copy";
+    copyCode.addEventListener("click", function () { copy(buildSnippet(card), copyCode); });
+    codeHead.appendChild(copyCode);
+    code.appendChild(codeHead);
+
     // The small usage snippet — this is a library, so the card shows
     // the code you would actually write, not the playground's config.
     var snippet = document.createElement("pre");
     snippet.className = "pg-snippet";
     snippet.textContent = buildSnippet(card);
     card.snippet = snippet;
-    el.appendChild(snippet);
+    code.appendChild(snippet);
+    el.appendChild(code);
 
     var controls = buildControls(card);
     if (controls.childNodes.length) {
@@ -459,11 +472,37 @@
 
   /* ---------- style filter + chrome ---------- */
 
+  // The live search's state, shared by the filter and the intro wiring.
+  var searchState = { query: "" };
+
+  // The page has two states: the intro (hero + search, no catalog) and
+  // the catalog (sections + cards). The home page is the intro only —
+  // the library is one deliberate step away, not crammed under the hero.
+
   // One filter for the whole page. The sidebar is the only control that
   // drives it — it *is* the map of the library, so there is no second row
   // of chips repeating the same seventeen names in the body.
   function makeFilter(cards, sections) {
-    return function applyFilter(style) {
+    // Shared tail for every way the catalog can be narrowed: hide empty
+    // sections, refresh their counts, let the spy re-pick.
+    function syncSections() {
+      for (var s = 0; s < sections.length; s++) {
+        var sec = sections[s];
+        var visible = 0;
+        var kids = sec.grid.children;
+        for (var c = 0; c < kids.length; c++) {
+          // the "Add your own" card matches no style — skip it
+          if (kids[c].classList.contains("pg-add")) continue;
+          if (kids[c].style.display !== "none") visible++;
+        }
+        sec.el.style.display = visible ? "" : "none";
+        if (sec.countEl) sec.countEl.textContent = visible;
+      }
+      if (window.__pgSpyPaint) window.__pgSpyPaint();
+    }
+
+    function applyFilter(style) {
+      clearSearch();
       for (var k = 0; k < cards.length; k++) {
         cards[k].el.style.display =
           style === "all" || cards[k].cfg.style === style ? "" : "none";
@@ -474,27 +513,61 @@
         items[n].classList.toggle("is-on",
           items[n].getAttribute("data-style") === style);
       }
-      // A section with no visible cards hides with its title.
-      for (var s = 0; s < sections.length; s++) {
-        var sec = sections[s];
-        var visible = false;
-        var kids = sec.grid.children;
-        for (var c = 0; c < kids.length; c++) {
-          // the "Add your own" card matches no style — skip it
-          if (kids[c].classList.contains("pg-add")) continue;
-          if (kids[c].style.display !== "none") { visible = true; break; }
-        }
-        sec.el.style.display = visible ? "" : "none";
+      syncSections();
+    }
+
+    // Free-text search across name, style and note. Runs against the
+    // catalog view; typing switches you out of the intro.
+    function applyQuery(q) {
+      var query = (q || "").trim().toLowerCase();
+      searchState.query = query;
+      // A live search suspends the style filter — the box is the truth.
+      var items = document.querySelectorAll(".pg-nav-item");
+      for (var n = 0; n < items.length; n++) {
+        items[n].classList.toggle("is-on", false);
       }
-      // Section heights just changed — let the spy re-pick the current one.
-      if (window.__pgSpyPaint) window.__pgSpyPaint();
-    };
+      var hits = 0;
+      for (var k = 0; k < cards.length; k++) {
+        var cfg = cards[k].cfg;
+        var hay = (cfg.name + " " + cfg.style + " " + (cfg.note || "")).toLowerCase();
+        var show = !query || hay.indexOf(query) >= 0;
+        cards[k].el.style.display = show ? "" : "none";
+        if (show) hits++;
+      }
+      var results = document.getElementById("pg-results");
+      if (results) {
+        results.hidden = !query;
+        results.textContent = query
+          ? hits + " result" + (hits === 1 ? "" : "s") + " for \u201C" + q.trim() + "\u201D"
+          : "";
+      }
+      syncSections();
+    }
+
+    function clearSearch() {
+      var input = document.getElementById("pg-search-input");
+      if (input && input.value) input.value = "";
+      searchState.query = "";
+      var results = document.getElementById("pg-results");
+      if (results) results.hidden = true;
+      // Clearing the query also clears what it filtered — the catalog
+      // returns to "all" so the sidebar state and the cards agree.
+      for (var k = 0; k < cards.length; k++) cards[k].el.style.display = "";
+      var items = document.querySelectorAll(".pg-nav-item");
+      for (var n = 0; n < items.length; n++) {
+        items[n].classList.toggle("is-on",
+          items[n].getAttribute("data-style") === "all");
+      }
+      syncSections();
+    }
+
+    return { applyFilter: applyFilter, applyQuery: applyQuery, clearSearch: clearSearch, syncSections: syncSections };
   }
 
   // The sidebar: the permanent map of the library and the page's only
   // filter control. On narrow screens a hamburger slides it in; each entry
   // filters to its style and jumps to that group's section.
-  function wireNavDrawer(cards, applyFilter) {
+  function wireNavDrawer(cards, filter) {
     var sidebar = document.getElementById("pg-sidebar");
     var btn = document.getElementById("pg-menu-btn");
     if (!sidebar || !btn) return;
@@ -567,7 +640,8 @@
       allItem.textContent = "All styles";
       allItem.addEventListener("click", function (e) {
         e.preventDefault();
-        applyFilter("all");
+        filter.applyFilter("all");
+        exitIntro();
         window.scrollTo({ top: 0, behavior: "smooth" });
         if (window.matchMedia("(max-width: 999px)").matches) {
           document.body.classList.remove("pg-sidebar-open");
@@ -605,7 +679,8 @@
         a.textContent = label;
         a.addEventListener("click", function (e) {
           e.preventDefault();
-          applyFilter(style);
+          filter.applyFilter(style);
+          exitIntro();
           scrollToSection(style);
         });
         list.appendChild(a);
@@ -678,6 +753,58 @@
   }
 
   // The little orbiting logo in the header — the library demoing itself.
+  // Intro <-> catalog. Entering the intro hides the catalog; leaving it
+  // reveals the sections. The brand wordmark is the way back home.
+  function enterIntro() {
+    document.body.classList.add("pg-intro");
+    window.scrollTo(0, 0);
+    var input = document.getElementById("pg-search-input");
+    if (input) input.focus({ preventScroll: true });
+  }
+  function exitIntro() {
+    document.body.classList.remove("pg-intro");
+  }
+  function isIntro() {
+    return document.body.classList.contains("pg-intro");
+  }
+
+  // The intro's search box: real filtering, not a decorative demo. Typing
+  // drops you into the catalog with the query applied; Esc clears it and
+  // goes home; "/" from anywhere jumps into the box.
+  function wireSearch(cards, filter) {
+    var form = document.getElementById("pg-search");
+    var input = document.getElementById("pg-search-input");
+    if (!form || !input) return;
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (!input.value.trim()) { exitIntro(); filter.syncSections(); return; }
+      filter.applyQuery(input.value);
+      exitIntro();
+    });
+    input.addEventListener("input", function () {
+      if (!input.value.trim()) {
+        if (!isIntro()) { filter.clearSearch(); filter.syncSections(); }
+        return;
+      }
+      filter.applyQuery(input.value);
+      exitIntro();
+    });
+    input.addEventListener("keydown", function (e) {
+      if (e.key !== "Escape") return;
+      filter.clearSearch();
+      filter.syncSections();
+      enterIntro();
+    });
+    // "/" focuses the search from anywhere, like every docs site.
+    document.addEventListener("keydown", function (e) {
+      if (e.key !== "/" || isIntro()) return;
+      var t = e.target;
+      if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA")) return;
+      e.preventDefault();
+      enterIntro();
+    });
+  }
+
   // The brand mark: a coiled loop, not a generic circle — the path-trace
   // motif at icon scale. The segment crawls the spiral and a single dot
   // rides its head, so the mark IS the product: a path being traced.
@@ -856,13 +983,26 @@
     for (var c = 0; c < sections.length; c++) {
       sections[c].countEl.textContent = sections[c].grid.querySelectorAll(".pg-card").length;
     }
-    var applyFilter = makeFilter(cards, sections);
+    var filter = makeFilter(cards, sections);
     startMark();
     startHero();
     wireReveal();
-    wireNavDrawer(cards, applyFilter);
+    wireNavDrawer(cards, filter);
     // After the nav exists — the spy paints into its items.
     wireSectionSpy(sections, cards);
+    wireSearch(cards, filter);
+    var browse = document.getElementById("pg-browse");
+    if (browse) browse.addEventListener("click", function (e) {
+      e.preventDefault();
+      filter.clearSearch();
+      filter.applyFilter("all");
+      exitIntro();
+    });
+    var brand = document.querySelector(".pg-brand");
+    if (brand) {
+      brand.addEventListener("click", function () { enterIntro(); });
+      brand.setAttribute("title", "Back to the intro");
+    }
     // Small debug hook for console testing of the generators.
     window.__playgroundDebug = {
       cards: cards,
