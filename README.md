@@ -117,7 +117,7 @@ The `src/shapes/` files (optional) generate `d` strings so you don't have to wri
 
 ## Try it
 
-- **Playground** — all 147 animations with live sliders and copy-paste code: clone the repo, serve the folder, open `playground/index.html`
+- **Playground** — all 152 animations with live sliders and copy-paste code: clone the repo, serve the folder, open `playground/index.html`
 - **Components library** — the same playground, categories view: 19 real-world blocks (navbar, hero, login, stats, FAQ, pricing, footer, data table and more) built as mockups and animated by the styles above — the way you'd actually ship them
 - **UI transitions in context** — `examples/ui-transitions.html`: one mock app where every trigger is wired
 - **Classic demos** — `examples/index.html`
