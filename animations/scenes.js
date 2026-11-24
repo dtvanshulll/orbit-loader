@@ -7,8 +7,8 @@
  * a `category` (its own playground section + sidebar group) and
  * `parts`: one loader per animated element inside box.html, bound by
  * selector. The loaders are the same ones the style sections demo —
- * scenes show them doing a real job. Scenes 9+ live in scenes-more.js
- * (this file stays under the 400-line ceiling).
+ * scenes show them doing a real job. The rest live in scenes-more.js
+ * (both files stay under the 400-line ceiling).
  */
 (function (global) {
   "use strict";
@@ -206,5 +206,102 @@
         options: { variant: "fill", durationMs: 1100, color: "#788c5d" } }
     ]
   },
+  {
+    name: "Pricing Popular",
+    category: "Pricing",
+    style: "pulse",
+    note: "A plan card whose Popular badge breathes \u2014 the quiet pulse pulling the eye to the recommended tier",
+    box: {
+      width: 280, height: 224,
+      html: "<div style='padding:18px 20px;display:flex;flex-direction:column;gap:8px;height:100%;box-sizing:border-box'>" +
+            "<div style='display:flex;align-items:center;gap:8px'>" +
+            "<span style='" + DISPLAY + "font-size:15px;font-weight:600;color:#faf9f5'>Pro</span>" +
+            "<span class='tl-badge' style='position:relative;margin-left:auto;width:74px;height:22px;display:flex;align-items:center;justify-content:center;border:1px solid #3f3d34;border-radius:999px;font-size:10px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:#d97757;" + DISPLAY + "'>Popular</span></div>" +
+            "<div style='" + DISPLAY + "font-size:24px;font-weight:600;color:#faf9f5'>$12<span style='font-size:12px;font-weight:400;color:#b0aea5'>/mo</span></div>" +
+            "<div style='" + BODY + "font-size:11.5px;line-height:1.6;color:#b0aea5'>Everything in Starter, plus:<br>React adapter &middot; Commercial license<br>Priority fixes &middot; New styles first</div>" +
+            "<div style='" + DISPLAY + "margin-top:auto;height:38px;display:flex;align-items:center;justify-content:center;background:#262420;border:1px solid #3f3d34;border-radius:8px;font-size:13px;font-weight:500;color:#faf9f5'>Choose Pro</div>" +
+            "</div>",
+      styleCss: CARD
+    },
+    parts: [
+      { style: "pulse", el: ".tl-badge",
+        options: { rings: 1, durationMs: 2200, strokeWidth: 10, maxOpacity: 0.35, color: "#d97757" } }
+    ]
+  },
+
+  {
+    name: "Newsletter Field",
+    category: "Newsletter",
+    style: "input",
+    note: "A footer signup: the email field types itself in before the subscribe click",
+    box: {
+      width: 320, height: 164,
+      html: "<div style='padding:18px 20px;display:flex;flex-direction:column;gap:12px;height:100%;box-sizing:border-box'>" +
+            "<div style='" + DISPLAY + "font-size:15px;font-weight:600;color:#faf9f5'>Ship better interfaces</div>" +
+            "<div style='" + BODY + "font-size:12px;line-height:1.5;color:#b0aea5'>One email a month on motion, paths and perf. No noise.</div>" +
+            "<div style='display:flex;gap:8px;align-items:flex-end'>" +
+            "<div class='tl-field' style='position:relative;flex:1;height:46px;background:#262420;border:1px solid #33312c;border-radius:8px'></div>" +
+            "<div style='" + DISPLAY + "height:46px;display:flex;align-items:center;padding:0 16px;background:#d97757;border-radius:8px;font-size:13px;font-weight:500;color:#141413;flex:none'>Subscribe</div>" +
+            "</div></div>",
+      styleCss: CARD
+    },
+    parts: [
+      { style: "input", el: ".tl-field",
+        options: { label: "Email", value: "dev@studio.co", durationMs: 360, restMs: 1500, color: "#d97757" } }
+    ]
+  },
+
+  {
+    name: "Testimonial Quote",
+    category: "Testimonial",
+    style: "chase",
+    note: "A quote card with a formation of dashes chasing along the rule beneath the author \u2014 quiet proof the page is alive",
+    box: {
+      width: 320, height: 186,
+      html: "<div style='padding:18px 20px;display:flex;flex-direction:column;gap:10px;height:100%;box-sizing:border-box'>" +
+            "<svg viewBox='0 0 88 16' width='88' height='16' aria-hidden='true' fill='#d97757' style='flex:none'>" +
+            "<path d='M2 14 L2 8 Q2 2 8 2 L8 6 Q5 6 5 8 L8 8 L8 14 Z'/><path d='M20 14 L20 8 Q20 2 26 2 L26 6 Q23 6 23 8 L26 8 L26 14 Z'/>" +
+            "<g fill='none' stroke='#d97757' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>" +
+            "<path d='M44 8 l3 3 6-6'/><path d='M62 8 l3 3 6-6'/><path d='M80 8 l3 3 6-6'/></g></svg>" +
+            "<div style='" + BODY + "font-size:13px;line-height:1.6;color:#faf9f5'>The only loader library where the animation follows our logo instead of sitting next to it.</div>" +
+            "<div style='display:flex;align-items:center;gap:10px;margin-top:auto'>" +
+            "<span style='width:26px;height:26px;border-radius:50%;background:#788c5d;flex:none'></span>" +
+            "<span style='" + DISPLAY + "font-size:12px;font-weight:500;color:#faf9f5'>Mara Lindqvist</span>" +
+            "<span style='" + DISPLAY + "font-size:11px;color:#8f8d84'>&middot; Design lead, Fjord</span></div>" +
+            "<div class='tl-rule' style='position:relative;height:8px;width:200px'></div>" +
+            "</div>",
+      styleCss: CARD
+    },
+    parts: [
+      { style: "chase", el: ".tl-rule",
+        options: { d: { shape: "underline", args: [200, 4] }, segments: 3, segmentFraction: 0.1, durationMs: 2200, strokeWidth: 2, color: "#788c5d", guideOpacity: 0.25 } }
+    ]
+  },
+
+  {
+    name: "App Shell Drawer",
+    category: "Application Shell",
+    style: "drawer",
+    note: "An admin shell: the sidebar slides in from the left while its leading edge draws down the nav",
+    box: {
+      width: 320, height: 190,
+      styleCss: "position:relative;background:#141413;border:1px solid #33312c;border-radius:10px;box-shadow:" + SHADOW + ";overflow:hidden;",
+      html: "<div style='position:absolute;top:0;left:0;right:0;height:34px;background:#1c1b19;border-bottom:1px solid #33312c;display:flex;align-items:center;padding:0 12px;gap:8px'>" +
+            "<span style='width:8px;height:8px;border-radius:2px;background:#d97757'></span>" +
+            "<span style='" + DISPLAY + "font-size:11px;font-weight:500;color:#b0aea5'>Admin</span></div>" +
+            "<div style='" + DISPLAY + "position:absolute;top:46px;left:16px;font-size:11px;color:#8f8d84'>Overview &middot; 4 projects synced</div>" +
+            "<div class='tl-drawer' style='position:absolute;top:34px;bottom:0;left:0;width:118px;background:#1c1b19;border-right:1px solid #33312c;padding:14px 0;box-sizing:border-box'>" +
+            "<div style='" + DISPLAY + "padding:6px 14px;font-size:11px;font-weight:500;color:#faf9f5;border-left:2px solid #d97757'>Dashboard</div>" +
+            "<div style='" + DISPLAY + "padding:6px 14px;font-size:11px;color:#8f8d84'>Deployments</div>" +
+            "<div style='" + DISPLAY + "padding:6px 14px;font-size:11px;color:#8f8d84'>Members</div>" +
+            "<div style='" + DISPLAY + "padding:6px 14px;font-size:11px;color:#8f8d84'>Settings</div>" +
+            "</div>"
+    },
+    parts: [
+      { style: "drawer", el: ".tl-drawer",
+        options: { side: "left", durationMs: 420, restMs: 1600, color: "#d97757", backdrop: false } }
+    ]
+  },
+
   );
 })(typeof window !== "undefined" ? window : this);
