@@ -34,6 +34,7 @@
   var ZAP = "<svg viewBox='0 0 24 24' width='16' height='16' aria-hidden='true'><path d='M15.914 4a1.5 1.5 0 0 0-2.474-1.561l-9 9A1.5 1.5 0 0 0 5.5 14h4.002a.5.5 0 0 1 .471.666L8.086 20a1.5 1.5 0 0 0 2.475 1.56l9-9A1.5 1.5 0 0 0 18.5 10h-3.997a.5.5 0 0 1-.472-.667z' fill='none' stroke='#d97757' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/></svg>";
   var LAYERS = "<svg viewBox='0 0 24 24' width='16' height='16' aria-hidden='true'><path d='M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z' fill='none' stroke='#6a9bcc' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/><path d='M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12' fill='none' stroke='#6a9bcc' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/><path d='M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9a1 1 0 0 0 0-1.83z' fill='none' stroke='#6a9bcc' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/></svg>";
   var SHIELD = "<svg viewBox='0 0 24 24' width='16' height='16' aria-hidden='true'><path d='M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z' fill='none' stroke='#788c5d' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/></svg>";
+  var CHECK = "<svg viewBox='0 0 24 24' width='12' height='12' aria-hidden='true'><path d='M20 6L9 17l-5-5' fill='none' stroke='#788c5d' stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5'/></svg>";
   var XICON = "<svg viewBox='0 0 24 24' width='14' height='14' aria-hidden='true'><path d='M18 6L6 18M6 6l12 12' fill='none' stroke='#141413' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/></svg>";
   function feat(icon, title, sub, color, n) {
     return "<div style='display:flex;align-items:center;gap:10px'>" +
@@ -54,13 +55,21 @@
       "<span style='" + DISPLAY + "font-size:11px;font-weight:600;color:#faf9f5'>" + title + "</span>" +
       "<span style='" + BODY + "font-size:10.5px;line-height:1.45;color:#8f8d84'>" + sub + "</span></div>";
   }
-  function row(name, pct, frac, color) {
-    var n = { "#d97757": 1, "#6a9bcc": 2, "#788c5d": 3 }[color];
-    return "<div style='display:flex;align-items:center;border-bottom:1px solid #262420;padding:7px 0'>" +
+  function row(name, pct, frac, color, status, n) {
+    return "<div style='display:flex;align-items:center;border-bottom:1px solid #262420;padding:8px 0'>" +
       "<span style='" + DISPLAY + "flex:1;font-size:12px;font-weight:500;color:#faf9f5'>" + name + "</span>" +
-      "<span style='width:110px;display:flex;align-items:center;gap:8px'>" +
-      "<span class='tl-bar-" + n + "' style='position:relative;width:80px;height:8px;flex:none'></span>" +
+      "<span style='display:inline-flex;align-items:center;gap:5px;width:64px;flex:none'>" +
+      "<span style='width:6px;height:6px;border-radius:50%;background:" + color + ";flex:none'></span>" +
+      "<span style='" + DISPLAY + "font-size:9.5px;color:#b0aea5'>" + status + "</span></span>" +
+      "<span style='width:104px;display:flex;align-items:center;gap:8px;flex:none'>" +
+      "<span class='tl-bar-" + n + "' style='position:relative;width:70px;height:8px;flex:none'></span>" +
       "<span style='" + DISPLAY + "font-size:11px;color:#8f8d84;width:26px;text-align:right'>" + pct + "</span></span></div>";
+  }
+
+  function noteRow(text) {
+    return "<div style='display:flex;align-items:center;gap:8px'>" +
+      "<span style='display:flex;flex:none;color:#788c5d'>" + CHECK + "</span>" +
+      "<span style='" + DISPLAY + "font-size:11px;color:#b0aea5'>" + text + "</span></div>";
   }
 
   list.push(
@@ -147,22 +156,21 @@
     name: "Release Banner",
     category: "Banner",
     style: "toast",
-    note: "An announcement bar that drops in on load and auto-dismisses \u2014 seen, then gone",
+    note: "An announcement bar drops in, counts down and dismisses \u2014 the notes it announces stay",
     box: {
-      width: 320, height: 114,
+      width: 320, height: 158,
       html: "<div style='display:flex;flex-direction:column;height:100%;box-sizing:border-box'>" +
             "<div class='tl-banner' style='position:relative;display:flex;align-items:center;gap:9px;height:44px;padding:0 14px;background:#d97757;flex:none'>" +
             "<span style='" + DISPLAY + "font-size:9.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#d97757;background:#141413;border-radius:999px;padding:3px 8px;flex:none'>New</span>" +
             "<span style='" + DISPLAY + "font-size:12px;font-weight:500;color:#141413;white-space:nowrap'>v2.0 \u2014 drawers &amp; dropdowns</span>" +
             "<span style='margin-left:auto;display:flex;align-items:center;flex:none'>" + XICON + "</span>" +
             "</div>" +
-            "<div style='flex:1;display:flex;align-items:center;gap:10px;padding:0 16px'>" +
-            "<span style='width:9px;height:9px;border-radius:3px;background:#d97757;flex:none'></span>" +
-            "<span style='" + DISPLAY + "font-size:12px;font-weight:600;color:#faf9f5'>TraceLoop</span>" +
-            "<span style='display:flex;gap:12px;margin-left:auto'>" +
-            "<span style='" + DISPLAY + "font-size:10.5px;color:#b0aea5'>Styles</span>" +
-            "<span style='" + DISPLAY + "font-size:10.5px;color:#b0aea5'>Docs</span>" +
-            "<span style='" + DISPLAY + "font-size:10.5px;color:#b0aea5'>GitHub</span></span></div>" +
+            "<div style='flex:1;padding:12px 16px 10px;display:flex;flex-direction:column;gap:8px'>" +
+            "<div style='" + DISPLAY + "font-size:9.5px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#8f8d84'>What's new</div>" +
+            noteRow("Drawer \u2014 slide and draw entrance") +
+            noteRow("Dropdown \u2014 placement: top option") +
+            noteRow("Typing dots \u2014 bubble anchoring fix") +
+            "</div>" +
             "</div>",
       styleCss: CARD
     },
@@ -201,21 +209,29 @@
     name: "Usage Table",
     category: "Data Table",
     style: "progress",
-    note: "A table whose usage bars hold static fills \u2014 data, not a demo loop",
+    note: "A project table where each row's bar fills to its progress, summed by an Overall row",
     box: {
-      width: 320, height: 190,
-      html: "<div style='padding:14px 18px;display:flex;flex-direction:column;gap:10px;height:100%;box-sizing:border-box'>" +
-            "<div style='" + DISPLAY + "display:flex;font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#8f8d84;border-bottom:1px solid #33312c;padding-bottom:6px'><span style='flex:1'>Project</span><span style='width:110px'>Usage</span></div>" +
-            row("Atlas", "42%", 0.42, "#d97757") +
-            row("Beacon", "68%", 0.68, "#6a9bcc") +
-            row("Cinder", "91%", 0.91, "#788c5d") +
+      width: 320, height: 226,
+      html: "<div style='padding:14px 18px;display:flex;flex-direction:column;gap:4px;height:100%;box-sizing:border-box'>" +
+            "<div style='" + DISPLAY + "display:flex;font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#8f8d84;border-bottom:1px solid #33312c;padding-bottom:6px'><span style='flex:1'>Project</span><span style='width:64px'>Status</span><span style='width:104px'>Progress</span></div>" +
+            row("Atlas", "42%", 0.42, "#d97757", "Building", 1) +
+            row("Beacon", "68%", 0.68, "#6a9bcc", "Building", 2) +
+            row("Cinder", "91%", 0.91, "#788c5d", "Review", 3) +
+            row("Delta", "24%", 0.24, "#b0aea5", "Queued", 4) +
+            "<div style='display:flex;align-items:center;padding:9px 0 0;margin-top:auto;border-top:1px solid #33312c'>" +
+            "<span style='" + DISPLAY + "flex:1;font-size:11px;font-weight:600;color:#faf9f5'>Overall</span>" +
+            "<span style='width:104px;display:flex;align-items:center;gap:8px;flex:none'>" +
+            "<span class='tl-bar-5' style='position:relative;width:70px;height:8px;flex:none'></span>" +
+            "<span style='" + DISPLAY + "font-size:11px;font-weight:600;color:#faf9f5;width:26px;text-align:right'>56%</span></span></div>" +
             "</div>",
       styleCss: CARD
     },
     parts: [
-      { style: "progress", el: ".tl-bar-1", options: { d: { shape: "underline", args: [110, 3] }, strokeWidth: 3, headRadius: 2.5, color: "#d97757", guideOpacity: 0.3, to: 0.42 } },
-      { style: "progress", el: ".tl-bar-2", options: { d: { shape: "underline", args: [110, 3] }, strokeWidth: 3, headRadius: 2.5, color: "#6a9bcc", guideOpacity: 0.3, to: 0.68 } },
-      { style: "progress", el: ".tl-bar-3", options: { d: { shape: "underline", args: [110, 3] }, strokeWidth: 3, headRadius: 2.5, color: "#788c5d", guideOpacity: 0.3, to: 0.91 } }
+      { style: "progress", el: ".tl-bar-1", options: { d: { shape: "underline", args: [70, 3] }, strokeWidth: 3, headRadius: 2.5, color: "#d97757", guideOpacity: 0.3, to: 0.42 } },
+      { style: "progress", el: ".tl-bar-2", options: { d: { shape: "underline", args: [70, 3] }, strokeWidth: 3, headRadius: 2.5, color: "#6a9bcc", guideOpacity: 0.3, to: 0.68 } },
+      { style: "progress", el: ".tl-bar-3", options: { d: { shape: "underline", args: [70, 3] }, strokeWidth: 3, headRadius: 2.5, color: "#788c5d", guideOpacity: 0.3, to: 0.91 } },
+      { style: "progress", el: ".tl-bar-4", options: { d: { shape: "underline", args: [70, 3] }, strokeWidth: 3, headRadius: 2.5, color: "#b0aea5", guideOpacity: 0.3, to: 0.24 } },
+      { style: "progress", el: ".tl-bar-5", options: { d: { shape: "underline", args: [70, 3] }, strokeWidth: 3, headRadius: 2.5, color: "#faf9f5", guideOpacity: 0.3, to: 0.56 } }
     ]
   },
   {

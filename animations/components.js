@@ -109,7 +109,7 @@
     options: {
       items: ["1080p \u00b7 Full HD", "720p \u00b7 HD", "480p \u00b7 SD", "Auto"],
       trigger: "Quality",
-      durationMs: 320, restMs: 1400, color: "#6a9bcc"
+      durationMs: 320, restMs: 1400, color: "#6a9bcc", placement: "bottom"
     }
   },
 
@@ -150,7 +150,7 @@
     options: {
       items: ["Duplicate", "Rename", "Move", "Delete"],
       trigger: "Actions",
-      durationMs: 320, restMs: 1400, color: "#d97757"
+      durationMs: 320, restMs: 1400, color: "#d97757", placement: "bottom"
     }
   },
   {

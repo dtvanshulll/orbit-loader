@@ -46,7 +46,7 @@
     },
     parts: [
       { style: "shimmer", el: ".tl-strip",
-        options: { d: { shape: "underline", args: [280, 2] }, durationMs: 3000, strokeWidth: 9, color: "#faf9f5", guideOpacity: 0.1 } }
+        options: { d: { shape: "underline", args: [280, 2] }, durationMs: 3000, strokeWidth: 4, color: "#faf9f5", guideOpacity: 0.1 } }
     ]
   },
 

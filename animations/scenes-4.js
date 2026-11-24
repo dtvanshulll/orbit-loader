@@ -206,7 +206,94 @@
         options: { d: { shape: "underline", args: [120, 4] }, segments: 3, segmentFraction: 0.12, durationMs: 2200, strokeWidth: 2, color: "#d97757", guideOpacity: 0.25 } }
     ]
   },
+  {
+    name: "Vertical Stepper",
+    category: "Stepper",
+    style: "orbit",
+    note: "Steps stacked vertically: the current circle traces itself while the line below it draws ahead",
+    box: {
+      width: 300, height: 224,
+      html: "<div style='padding:16px 18px;display:flex;flex-direction:column;height:100%;box-sizing:border-box'>" +
+            "<div style='display:flex;align-items:baseline'><span style='" + DISPLAY + "font-size:13.5px;font-weight:600;color:#faf9f5'>Ship release</span><span style='" + DISPLAY + "margin-left:auto;font-size:10px;color:#8f8d84'>Step 2 of 4</span></div>" +
+            "<div style='display:flex;flex-direction:column;margin-top:12px;flex:1'>" +
+            vStep("Build", "done") +
+            "<div style='display:flex;gap:10px;flex:1'><span style='width:20px;display:flex;justify-content:center'><span class='tl-vline' style='position:relative;width:2px;height:100%'></span></span><span style='flex:1'></span></div>" +
+            vStep("Test", "current") +
+            "<div style='display:flex;gap:10px;flex:1'><span style='width:20px;display:flex;justify-content:center'><span style='width:2px;height:100%;background:#3f3d34'></span></span><span style='flex:1'></span></div>" +
+            vStep("Deploy", "todo") +
+            "<div style='display:flex;gap:10px;flex:1'><span style='width:20px;display:flex;justify-content:center'><span style='width:2px;height:100%;background:#3f3d34'></span></span><span style='flex:1'></span></div>" +
+            vStep("Announce", "todo") +
+            "</div></div>",
+      styleCss: CARD
+    },
+    parts: [
+      { style: "orbit", el: ".tl-vs-circle",
+        options: { d: { shape: "circle", args: [20] }, durationMs: 1600, restMs: 1800, strokeWidth: 2, color: "#d97757", guideOpacity: 0.3 } },
+      { style: "orbit", el: ".tl-vline",
+        options: { d: "M1,0 V100", durationMs: 1400, restMs: 2000, strokeWidth: 2, color: "#788c5d", guideOpacity: 0.25 } }
+    ]
+  },
+  {
+    name: "Dots Stepper",
+    category: "Stepper",
+    style: "pulse",
+    note: "A minimal dots rail: done dots fill in, the current one breathes",
+    box: {
+      width: 320, height: 92,
+      html: "<div style='padding:14px 18px;display:flex;flex-direction:column;gap:10px;height:100%;box-sizing:border-box'>" +
+            "<div style='display:flex;align-items:baseline'><span style='" + DISPLAY + "font-size:13px;font-weight:600;color:#faf9f5'>Profile setup</span><span style='" + DISPLAY + "margin-left:auto;font-size:10px;color:#8f8d84'>2 of 5</span></div>" +
+            "<div style='display:flex;justify-content:space-between;padding:0 6px'>" +
+            dot("Account", "done") + dot("Profile", "done") +
+            "<div style='display:flex;flex-direction:column;align-items:center;gap:6px'><span class='tl-dot-now' style='width:10px;height:10px;border-radius:50%;background:#d97757'></span><span style='" + DISPLAY + "font-size:9px;font-weight:500;color:#d97757'>Photo</span></div>" +
+            dot("Prefs", "todo") + dot("Done", "todo") +
+            "</div></div>",
+      styleCss: CARD
+    },
+    parts: [
+      { style: "pulse", el: ".tl-dot-now",
+        options: { rings: 1, durationMs: 2000, strokeWidth: 3, maxOpacity: 0.4, color: "#d97757" } }
+    ]
+  },
+  {
+    name: "Setup Progress",
+    category: "Stepper",
+    style: "progress",
+    note: "One bar fills to how far onboarding has come, its frontier dot landing on the reached step",
+    box: {
+      width: 320, height: 104,
+      html: "<div style='padding:14px 18px;display:flex;flex-direction:column;gap:12px;height:100%;box-sizing:border-box'>" +
+            "<div style='display:flex;align-items:baseline'><span style='" + DISPLAY + "font-size:13px;font-weight:600;color:#faf9f5'>Complete your workspace</span><span style='" + DISPLAY + "margin-left:auto;font-size:10px;color:#8f8d84'>3 of 4 done</span></div>" +
+            "<div class='tl-sp-bar' style='position:relative;width:100%;height:8px'></div>" +
+            "<div style='display:flex;justify-content:space-between'>" +
+            spLabel("Invite", true) + spLabel("Import", true) + spLabel("Connect", true) + spLabel("Launch", false) +
+            "</div></div>",
+      styleCss: CARD
+    },
+    parts: [
+      { style: "progress", el: ".tl-sp-bar",
+        options: { d: { shape: "underline", args: [284, 3] }, strokeWidth: 4, headRadius: 3, color: "#d97757", guideOpacity: 0.3, to: 0.75 } }
+    ]
+  },
   );
+
+  function vStep(label, state) {
+    var body;
+    if (state === "done") body = "<span style='width:20px;height:20px;border-radius:50%;background:#788c5d;display:flex;align-items:center;justify-content:center;flex:none'>" + lucide(CHECK, 11, 11, "#faf9f5") + "</span>";
+    else if (state === "current") body = "<span class='tl-vs-circle' style='position:relative;width:20px;height:20px;border-radius:50%;background:#d97757;display:flex;align-items:center;justify-content:center;flex:none;" + DISPLAY + "font-size:10px;font-weight:600;color:#141413'>2</span>";
+    else body = "<span style='width:20px;height:20px;border-radius:50%;background:#262420;border:1px solid #3f3d34;display:flex;align-items:center;justify-content:center;flex:none;" + DISPLAY + "font-size:10px;font-weight:600;color:#8f8d84'></span>";
+    var col = state === "done" ? "#788c5d" : state === "current" ? "#d97757" : "#8f8d84";
+    var w = state === "current" ? "600" : "500";
+    return "<div style='display:flex;align-items:center;gap:10px'><span style='width:20px;display:flex;justify-content:center;flex:none'>" + body + "</span><span style='" + DISPLAY + "font-size:11.5px;font-weight:" + w + ";color:" + col + "'>" + label + "</span></div>";
+  }
+  function dot(label, state) {
+    var d = state === "done" ? "<span style='width:10px;height:10px;border-radius:50%;background:#788c5d'></span>"
+      : "<span style='width:10px;height:10px;border-radius:50%;background:#262420;border:1px solid #3f3d34'></span>";
+    var col = state === "done" ? "#788c5d" : "#8f8d84";
+    return "<div style='display:flex;flex-direction:column;align-items:center;gap:6px'>" + d + "<span style='" + DISPLAY + "font-size:9px;color:" + col + "'>" + label + "</span></div>";
+  }
+  function spLabel(label, done) {
+    return "<span style='" + DISPLAY + "font-size:9.5px;font-weight:" + (done ? "600;color:#788c5d" : "400;color:#8f8d84") + "'>" + label + "</span>";
+  }
 
   function tile(grad) {
     return "<div style='border-radius:8px;background:linear-gradient(135deg," + grad + ")'></div>";
