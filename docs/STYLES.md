@@ -85,6 +85,38 @@ Rings radiate from the container's center. Container-based:
 | `strokeWidth` | `3` | ring stroke width, in the SVG's 100-unit space |
 | `color` | `null` | ring color |
 
+## PulseLoader — `pulse-loader.js`
+
+A ring that breathes in place — swells and softens on the spot instead of
+sending a segment around a path. Container-based: `create()` and
+`wrap()` are the same call and take the container.
+
+| option | default | meaning |
+|---|---|---|
+| `rings` | `2` | rings breathing at once, half a period apart |
+| `durationMs` | `2000` | one full breath: swell out, settle back |
+| `minScale` | `0.82` | the ring's rest size as a fraction of the box |
+| `maxOpacity` | `0.7` | the ring's peak opacity at full swell |
+| `strokeWidth` | `4` | ring stroke width, in the SVG's 100-unit space |
+| `dot` | `true` | the steady center dot anchoring the pulse; `false` for rings only |
+| `color` | `null` | ring and dot color |
+
+## ChaseLoader — `chase-loader.js`
+
+Several short dashes evenly spaced around the path, chasing each other in
+formation — the multi-runner relative of OrbitLoader. Path-based like the
+core: `create()` takes a path element, `wrap()` takes a container plus
+`options.d` (raw string or a shapes.js spec).
+
+| option | default | meaning |
+|---|---|---|
+| `segments` | `3` | dashes in the formation |
+| `segmentFraction` | `0.12` | each dash's length as a fraction of the path; clamped so gaps always remain |
+| `durationMs` | `1600` | one full lap of the formation |
+| `direction` | `'forward'` | `'reverse'` runs the lap the other way |
+| `guideOpacity` | `0` | faint static copy of the path under the dashes (wrap only) |
+| `color`, `strokeWidth`, `activeClass`, `autoStart` | as OrbitLoader | |
+
 ## TypingLoader — `typing-loader.js`
 
 The chat "typing…" wave. Container-based.

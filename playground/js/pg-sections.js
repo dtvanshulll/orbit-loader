@@ -8,7 +8,7 @@
   // Card sections: every animation belongs to one of three groups,
   // rendered as titled sections so the growing library stays scannable.
   var SECTIONS = [
-    { label: "Looping loaders", styles: ["orbit", "dot", "shimmer", "ripple", "typing", "handshake"] },
+    { label: "Looping loaders", styles: ["orbit", "dot", "shimmer", "ripple", "pulse", "chase", "typing", "handshake"] },
     { label: "UI transitions", styles: ["tab", "page", "button", "toast", "progress"] },
     { label: "Components", styles: ["search", "modal", "accordion", "drawer", "dropdown", "input"] }
   ];

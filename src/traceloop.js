@@ -16,6 +16,8 @@ import './styles/orbit-loader.js';
 import './styles/dot-loader.js';
 import './styles/shimmer-loader.js';
 import './styles/ripple-loader.js';
+import './styles/pulse-loader.js';
+import './styles/chase-loader.js';
 import './styles/typing-loader.js';
 import './styles/handshake-loader.js';
 import './styles/tab-loader.js';
@@ -38,6 +40,8 @@ export const OrbitLoader = window.OrbitLoader;
 export const DotLoader = window.DotLoader;
 export const ShimmerLoader = window.ShimmerLoader;
 export const RippleLoader = window.RippleLoader;
+export const PulseLoader = window.PulseLoader;
+export const ChaseLoader = window.ChaseLoader;
 export const TypingLoader = window.TypingLoader;
 export const HandshakeLoader = window.HandshakeLoader;
 export const TabLoader = window.TabLoader;
@@ -59,6 +63,8 @@ export const styles = {
   dot: DotLoader,
   shimmer: ShimmerLoader,
   ripple: RippleLoader,
+  pulse: PulseLoader,
+  chase: ChaseLoader,
   typing: TypingLoader,
   handshake: HandshakeLoader,
   tab: TabLoader,

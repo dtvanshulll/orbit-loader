@@ -40,6 +40,13 @@ change.
   path drawn as a wide translucent band with a bright shimmer line and
   glow head traveling its center. A sibling style module with the same
   rules.
+- `src/styles/pulse-loader.js` — the pulse style (`PulseLoader`): a ring
+  that breathes in place — swells and softens on the spot, anchored by a
+  steady center dot. The quiet/ambient style. Container-based: `create()`
+  and `wrap()` are the same call and take the container. rAF-free WAAPI.
+- `src/styles/chase-loader.js` — the chase style (`ChaseLoader`): several
+  short dashes evenly spaced around the path, chasing in formation (a
+  dasharray with more than one dash/gap pair). Path-based like the core.
 - `src/styles/ripple-loader.js` — the ripple style (`RippleLoader`): concentric
   rings born at the center, growing to fill the container and fading —
   staggered delays over infinite WAAPI loops, no rAF, no path. The one

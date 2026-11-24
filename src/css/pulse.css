@@ -1,0 +1,18 @@
+/* PulseLoader: the breathing rings and the steady center dot.
+   transform-box/origin make the scale animation swell each ring from
+   its own center; opacity stays 0 whenever no animation is driving it,
+   so stopped/reduced-motion rings are simply invisible. The dot uses
+   the same fill-box origin for its subtle breathing scale. */
+.orbit-loader-pulse-ring {
+  fill: none;
+  stroke: currentColor;
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+}
+.orbit-loader-pulse-dot {
+  fill: currentColor;
+  stroke: none;
+  transform-box: fill-box;
+  transform-origin: center;
+}

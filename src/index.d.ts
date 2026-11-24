@@ -176,6 +176,15 @@ export const InputLoader: {
   };
 };
 
+export const PulseLoader: {
+  create(el: HTMLElement | string, options?: LoaderOptions): LoaderController;
+  wrap(el: HTMLElement | string, options?: LoaderOptions): LoaderController;
+};
+export const ChaseLoader: {
+  create(pathEl: SVGPathElement, options?: LoaderOptions): LoaderController;
+  wrap(container: HTMLElement | string, options?: LoaderOptions): LoaderController;
+};
+
 export const shapes: {
   circle(size: number): string;
   roundedSquare(size: number, radius: number): string;

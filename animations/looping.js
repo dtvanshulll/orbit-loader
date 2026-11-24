@@ -241,5 +241,43 @@
       guideOpacity: 0.35
     }
   },
+  {
+    name: "Pulse Halo",
+    style: "pulse",
+    note: "A ring that breathes in place \u2014 swell and soften on the spot, with a steady center dot to anchor the eye",
+    box: { width: 84, height: 84 },
+    options: { rings: 2, durationMs: 2000, color: "#d97757" }
+  },
+  {
+    name: "Pulse Badge",
+    style: "pulse",
+    note: "The same breath at badge scale \u2014 rings only, no dot, for status dots and idle markers",
+    box: { width: 48, height: 48 },
+    options: { rings: 2, durationMs: 1800, strokeWidth: 6, dot: false, maxOpacity: 0.55, color: "#788c5d" }
+  },
+  {
+    name: "Chase Triple",
+    style: "chase",
+    note: "Three short dashes in formation around a circle \u2014 the multi-runner take on the chasing segment",
+    box: { width: 84, height: 84 },
+    options: {
+      d: { shape: "circle", args: [84] },
+      viewBox: "0 0 84 84",
+      segments: 3, segmentFraction: 0.14,
+      durationMs: 1600, color: "#6a9bcc", guideOpacity: 0.3
+    }
+  },
+  {
+    name: "Chase Word",
+    style: "chase",
+    note: "A four-dash formation sweeping a drawn word \u2014 extra runners keep long paths always in motion",
+    box: { width: 240, height: 76 },
+    options: {
+      d: { shape: "text", args: ["LOOP", 40, 6] },
+      segments: 4, segmentFraction: 0.05,
+      durationMs: 2600, strokeWidth: 2.5,
+      color: "#d97757", guideOpacity: 0.3
+    }
+  },
   );
 })(typeof window !== "undefined" ? window : this);

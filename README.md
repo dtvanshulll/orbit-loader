@@ -6,7 +6,7 @@ Loading and UI-transition animations that trace real SVG paths — zero dependen
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg)](package.json)
 
-**TraceLoop** draws a glowing segment that crawls along any `<path>` you give it: circles, squares, letters, words, infinity signs, your logo. Seventeen styles — six looping loaders and eleven one-shot transitions (tab switches, page loads, buttons, toasts, progress, search bars, modals, accordions, drawers, dropdowns, inputs) — all driven by the path itself, so the motion follows your shape instead of being bolted next to it.
+**TraceLoop** draws a glowing segment that crawls along any `<path>` you give it: circles, squares, letters, words, infinity signs, your logo. Nineteen styles — six looping loaders and eleven one-shot transitions (tab switches, page loads, buttons, toasts, progress, search bars, modals, accordions, drawers, dropdowns, inputs) — all driven by the path itself, so the motion follows your shape instead of being bolted next to it.
 
 ## Quick start
 
@@ -91,6 +91,8 @@ Most loader libraries give you a spinner: a shape rotated by CSS, blind to your 
 | `src/styles/dot-loader.js` | `DotLoader` | a traveling dot — with flutter, breadcrumb trails, relay batons, crossing twins |
 | `src/styles/shimmer-loader.js` | `ShimmerLoader` | a soft light band sweeps the path like brushed metal |
 | `src/styles/ripple-loader.js` | `RippleLoader` | rings radiate from the container — container-based, no path |
+| `src/styles/pulse-loader.js` | `PulseLoader` | a ring breathes in place, anchored by a steady center dot — container-based, no path |
+| `src/styles/chase-loader.js` | `ChaseLoader` | several dashes chase in formation around the path — the multi-runner orbit |
 | `src/styles/typing-loader.js` | `TypingLoader` | the chat "typing…" wave — container-based, no path |
 | `src/styles/handshake-loader.js` | `HandshakeLoader` | two segments converge, flash where they meet, retract |
 | `src/styles/tab-loader.js` | `TabLoader` | the tab underline crawls to the tab you clicked — one-shot |
@@ -108,7 +110,7 @@ The `src/shapes/` files (optional) generate `d` strings so you don't have to wri
 
 ## Try it
 
-- **Playground** — all 57 animations with live sliders and copy-paste code: clone the repo, serve the folder, open `playground/index.html`
+- **Playground** — all 61 animations with live sliders and copy-paste code: clone the repo, serve the folder, open `playground/index.html`
 - **UI transitions in context** — `examples/ui-transitions.html`: one mock app where every trigger is wired
 - **Classic demos** — `examples/index.html`
 
