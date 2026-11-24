@@ -46,6 +46,7 @@
     box: {
       width: 240, background: "#262420",
       border: "1px solid #33312c", borderRadius: 8,
+      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.22)",
       color: "#788c5d",
       html: "<div style=\"height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 14px\"><span style=\"font-size:13px;font-weight:500;color:#faf9f5\">Session details</span></div>" +
             "<div style=\"padding:2px 14px 14px;font-size:12px;line-height:1.55;color:#b0aea5\">Started 2:14 pm \u00b7 3 edits<br>Autosaved just now</div>"
@@ -102,6 +103,7 @@
     box: {
       width: 210, height: 208, background: "#262420",
       border: "1px solid #33312c", borderRadius: 8,
+      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.22)",
       padding: "16px", color: "#6a9bcc"
     },
     options: {
@@ -118,6 +120,7 @@
     box: {
       width: 240, height: 56, background: "#262420",
       border: "1px solid #33312c", borderRadius: 8,
+      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.22)",
       padding: "14px 12px 12px", color: "#6a9bcc"
     },
     options: { label: "Email", value: "hi@traceloop.dev", durationMs: 360, restMs: 1500, color: "#6a9bcc" }
@@ -129,6 +132,7 @@
     box: {
       width: 240, height: 56, background: "#262420",
       border: "1px solid #33312c", borderRadius: 8,
+      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.22)",
       padding: "14px 12px 12px", color: "#d97757"
     },
     options: { label: "Search docs", value: "orbit loader", durationMs: 360, restMs: 1500, color: "#d97757" }
@@ -140,6 +144,7 @@
     box: {
       width: 190, height: 208, background: "#262420",
       border: "1px solid #33312c", borderRadius: 8,
+      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.22)",
       padding: "16px", color: "#d97757"
     },
     options: {
@@ -155,6 +160,7 @@
     box: {
       width: 240, background: "#262420",
       border: "1px solid #33312c", borderRadius: 8,
+      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.22)",
       color: "#6a9bcc",
       html: "<div style=\"height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 14px\"><span style=\"font-size:13px;font-weight:500;color:#faf9f5\">No bundler?</span></div>" +
             "<div style=\"padding:2px 14px 14px;font-size:12px;line-height:1.55;color:#b0aea5\">Yes \u2014 every style is a plain script tag. Load the UMD build and go.</div>"

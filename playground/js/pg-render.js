@@ -39,6 +39,7 @@
     if (box.background) s.push("background:" + box.background);
     if (box.borderRadius) s.push("border-radius:" + box.borderRadius + "px");
     if (box.border) s.push("border:" + box.border);
+    if (box.boxShadow) s.push("box-shadow:" + box.boxShadow);
     if (box.padding) s.push("padding:" + box.padding);
     if (box.fontSize) s.push("font-size:" + box.fontSize + "px");
     if (box.fontWeight) s.push("font-weight:" + box.fontWeight);

@@ -44,6 +44,7 @@
     box: {
       width: 158, height: 44, background: "#262420",
       border: "1px solid #33312c", borderRadius: 8,
+      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.22)",
       fontSize: 13, fontWeight: 500, color: "#faf9f5",
       html: "<span style='display:inline-flex;align-items:center;gap:8px'><svg viewBox='0 0 24 24' width='15' height='15' aria-hidden='true' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='flex:none'><path d='M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h10.2z'/><path d='M17 21v-8H7v8'/><path d='M7 3v5h8'/></svg><span>Save changes</span></span>"
     },
@@ -57,6 +58,7 @@
     box: {
       width: 240, height: 56, background: "#262420",
       border: "1px solid #33312c", borderRadius: 10,
+      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.22)",
       color: "#faf9f5", padding: "10px 14px 12px",
       html: "<span style='display:flex;align-items:center;gap:10px;width:100%'><svg viewBox='0 0 24 24' width='18' height='18' aria-hidden='true' fill='none' stroke='#788c5d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='flex:none'><circle cx='12' cy='12' r='10'/><path d='m9 12 2 2 4-4'/></svg><span style='display:flex;flex-direction:column;gap:2px;flex:1;min-width:0'><span style='font-size:13px;font-weight:500;color:#faf9f5'>File uploaded</span><span style='font-size:11px;color:#b0aea5'>report.pdf \u00b7 2.4 MB</span></span><svg viewBox='0 0 24 24' width='14' height='14' aria-hidden='true' fill='none' stroke='#8f8d84' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='flex:none'><path d='M18 6 6 18'/><path d='m6 6 12 12'/></svg></span>"
     },
@@ -135,6 +137,7 @@
     box: {
       width: 158, height: 44, background: "#262420",
       border: "1px solid #33312c", borderRadius: 8,
+      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.22)",
       fontSize: 13, fontWeight: 500, color: "#faf9f5",
       html: "<span style='display:inline-flex;align-items:center;gap:8px'><svg viewBox='0 0 24 24' width='15' height='15' aria-hidden='true' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='flex:none'><circle cx='12' cy='12' r='10'/><path d='m9 12 2 2 4-4'/></svg><span>Upgrade plan</span></span>"
     },
@@ -148,6 +151,7 @@
     box: {
       width: 158, height: 44, background: "#262420",
       border: "1px solid #33312c", borderRadius: 8,
+      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.22)",
       fontSize: 13, fontWeight: 500, color: "#faf9f5",
       html: "<span style='display:inline-flex;align-items:center;gap:8px'><svg viewBox='0 0 24 24' width='15' height='15' aria-hidden='true' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='flex:none'><path d='M5 12h14'/><path d='m12 5 7 7-7 7'/></svg><span>Press me</span></span>"
     },
@@ -161,6 +165,7 @@
     box: {
       width: 240, height: 56, background: "#262420",
       border: "1px solid #33312c", borderRadius: 10,
+      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.22)",
       color: "#faf9f5", padding: "10px 14px 12px",
       html: "<span style='display:flex;align-items:center;gap:10px;width:100%'><svg viewBox='0 0 24 24' width='18' height='18' aria-hidden='true' fill='none' stroke='#788c5d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='flex:none'><circle cx='12' cy='12' r='10'/><path d='m9 12 2 2 4-4'/></svg><span style='display:flex;flex-direction:column;gap:2px;flex:1;min-width:0'><span style='font-size:13px;font-weight:500;color:#faf9f5'>File uploaded</span><span style='font-size:11px;color:#b0aea5'>report.pdf \u00b7 2.4 MB</span></span><svg viewBox='0 0 24 24' width='14' height='14' aria-hidden='true' fill='none' stroke='#8f8d84' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='flex:none'><path d='M18 6 6 18'/><path d='m6 6 12 12'/></svg></span>"
     },
@@ -174,6 +179,7 @@
     box: {
       width: 240, height: 56, background: "#262420",
       border: "1px solid #33312c", borderRadius: 10,
+      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.22)",
       color: "#faf9f5", padding: "10px 40px 12px 14px",
       html: "<span style='display:flex;align-items:center;gap:10px;width:100%'><svg viewBox='0 0 24 24' width='18' height='18' aria-hidden='true' fill='none' stroke='#6a9bcc' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='flex:none'><circle cx='12' cy='12' r='10'/><polyline points='12 6 12 12 16 14'/></svg><span style='display:flex;flex-direction:column;gap:2px;flex:1;min-width:0'><span style='font-size:13px;font-weight:500;color:#faf9f5'>Scheduled for 9:00</span><span style='font-size:11px;color:#b0aea5'>Calendar invite sent</span></span></span>"
     },

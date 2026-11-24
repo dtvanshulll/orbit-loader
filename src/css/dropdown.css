@@ -5,6 +5,8 @@
   left: 0;
   min-width: 160px;
   background: var(--tl-raised, #262420);
+  border: 1px solid var(--tl-border, #33312c);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 2px 6px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
   padding: 6px;
   opacity: 0;
@@ -25,15 +27,25 @@
   transform-origin: bottom center;
 }
 .orbit-loader-dropdown-trigger {
-  font: 13px/1.4 system-ui, sans-serif;
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--tl-font-display, "Poppins", Arial, sans-serif);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
   padding: 8px 14px;
   background: var(--tl-raised, #262420);
   color: var(--tl-text, #faf9f5);
   border: 1px solid var(--tl-border, #33312c);
   border-radius: 8px;
   cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  transition: background 0.15s ease, border-color 0.15s ease;
 }
-.orbit-loader-dropdown-trigger:hover { background: var(--tl-border, #33312c); }
+.orbit-loader-dropdown-trigger:hover {
+  background: var(--tl-border, #33312c);
+  border-color: #3f3d34;
+}
 .orbit-loader-dropdown-trigger:focus-visible { outline: 2px solid #d97757; outline-offset: 2px; }
 .orbit-loader-dropdown-row {
   display: flex;
@@ -42,13 +54,17 @@
   gap: 12px;
   padding: 8px 10px;
   border-radius: 6px;
+  font-family: var(--tl-font-display, "Poppins", Arial, sans-serif);
   font-size: 13px;
   color: var(--tl-text, #faf9f5);
   cursor: pointer;
   white-space: nowrap;
+  transition: background 0.12s ease, color 0.12s ease;
 }
-.orbit-loader-dropdown-row:hover { background: var(--tl-border, #33312c); }
-.orbit-loader-dropdown-row.is-selected { color: var(--tl-text, #faf9f5); }
+.orbit-loader-dropdown-row:hover {
+  background: color-mix(in srgb, currentColor 10%, transparent);
+}
+.orbit-loader-dropdown-row.is-selected { color: inherit; }
 .orbit-loader-dropdown-check {
   width: 14px;
   height: 14px;
@@ -88,7 +104,8 @@
   width: 14px;
   height: 14px;
   margin-left: 8px;
-  vertical-align: -2px;
+  flex: none;
+  opacity: 0.7;
   fill: none;
   stroke: currentColor;
   stroke-width: 2;

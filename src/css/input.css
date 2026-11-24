@@ -18,6 +18,7 @@
   position: absolute;
   left: 12px;
   top: 50%;
+  font-family: var(--tl-font-display, "Poppins", Arial, sans-serif);
   font-size: 13px;
   color: var(--tl-muted, #8f8d84);
   pointer-events: none;
@@ -33,6 +34,7 @@
 }
 .tl-success .orbit-loader-input-label { color: #788c5d; }
 .tl-error .orbit-loader-input-label { color: #d97757; }
+.tl-error .orbit-loader-input-status path { stroke: #d97757; }
 .orbit-loader-input-status {
   position: absolute;
   right: 10px;
@@ -110,6 +112,7 @@
   left: 12px;
   top: 50%;
   transform: translateY(-50%);
+  font-family: var(--tl-font-body, "Lora", Georgia, serif);
   font-size: 13px;
   color: var(--tl-text, #faf9f5);
   pointer-events: none;
@@ -117,3 +120,23 @@
 }
 .tl-focused .orbit-loader-input-value,
 .tl-success .orbit-loader-input-value { opacity: 1; }
+/* The caret: a thin bar after the typed text, blinking while the field
+   is focused — the one detail that makes typed text read as live input.
+   Pure CSS, so it costs nothing and collapses under reduced motion. */
+.orbit-loader-input-value::after {
+  content: "";
+  display: inline-block;
+  width: 1px;
+  height: 13px;
+  margin-left: 1px;
+  vertical-align: -2px;
+  background: var(--tl-text, #faf9f5);
+  animation: orbit-input-caret 1.1s steps(1) infinite;
+}
+@keyframes orbit-input-caret {
+  0%, 55% { opacity: 1; }
+  56%, 100% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .orbit-loader-input-value::after { animation: none; }
+}

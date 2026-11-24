@@ -41,6 +41,7 @@
   left: 36px;
   top: 50%;
   transform: translateY(-50%);
+  font-family: var(--tl-font-display, "Poppins", Arial, sans-serif);
   font-size: 13px;
   color: var(--tl-muted, #8f8d84);
   pointer-events: none;
