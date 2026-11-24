@@ -150,6 +150,14 @@ by one padding step; nothing else may.
 **`box-sizing: border-box` globally.** The first shell bug on this project
 was a "240px" sidebar that measured 269px because width excluded padding.
 
+**A navigation rail is three zones:** pinned brand at the top, a
+scrolling middle (`flex: 1; min-height: 0; overflow-y: auto`) and a
+pinned footer. Never let the whole rail scroll — the last entries end
+up clipped against the viewport edge and the footer disappears. When a
+row is a flex pair (label + count), check that no stray pseudo-element
+is a third flex item: an `::after { content: "" }` left behind from a
+float layout silently pushes the count into the middle of the row.
+
 **One control per job.** If the sidebar already lists every style, there is
 no second row of filter chips repeating it. Duplicate navigation is the
 fastest way to look machine-assembled.
