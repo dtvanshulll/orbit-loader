@@ -37,7 +37,9 @@
 body {
   background: var(--pg-bg);
   color: var(--pg-text);
-  font: 15px/1.5 system-ui, sans-serif;
+  font: 0.9375rem/1.5 system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   text-wrap: pretty;
   margin: 0;
   /* No body padding: the header is full width and every content zone

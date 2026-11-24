@@ -117,8 +117,9 @@
 .pg-nav-group:first-child { margin-top: 0; }
 .pg-nav-count {
   flex: none;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 400;
+  font-variant-numeric: tabular-nums;
   font-variant-numeric: tabular-nums;
   color: var(--pg-muted);
 }

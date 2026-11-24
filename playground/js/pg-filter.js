@@ -33,6 +33,23 @@
       if (window.__pgSpyPaint) window.__pgSpyPaint();
     }
 
+    // One-shot fade on the grids a filter/search pass just narrowed.
+    // Opacity only (no layout, no movement) because this fires per
+    // keystroke; 0.35 start so the grid never looks blank mid-type.
+    function fadeGrids() {
+      if (window.matchMedia &&
+          window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      for (var s = 0; s < sections.length; s++) {
+        var g = sections[s].grid;
+        if (!g || g.style.display === "none" || !g.animate) continue;
+        if (!g.offsetParent) continue;
+        g.animate(
+          [{ opacity: 0.35 }, { opacity: 1 }],
+          { duration: 140, easing: "cubic-bezier(0.23, 1, 0.32, 1)" }
+        );
+      }
+    }
+
     function applyFilter(style) {
       clearSearch();
       var isCat = style.indexOf("cat:") === 0;
@@ -50,6 +67,7 @@
           items[n].getAttribute("data-style") === style);
       }
       syncSections();
+      fadeGrids();
     }
 
     // Free-text search across name, style and note. Runs against the
@@ -78,6 +96,7 @@
           : "";
       }
       syncSections();
+      fadeGrids();
     }
 
     function clearSearch() {

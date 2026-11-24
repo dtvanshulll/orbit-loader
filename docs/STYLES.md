@@ -335,7 +335,7 @@ for you inside the container.
 |---|---|---|
 | `items` | `['Option 1', …]` | the menu rows |
 | `trigger` | `'Options'` | the trigger button's label |
-| `placement` | `'auto'` | `"top"` forces the menu to open upward (footer selectors near a card's bottom edge) |
+| `placement` | `'auto'` | `"top"` forces the menu to open upward (footer selectors near a card's bottom edge); `"bottom"` forces it downward (navbar rows near a card's top edge). Default `auto` flips by viewport room. |
 | `durationMs` | `320` | one open or close |
 | `restMs` | `1400` | the demo loop's pause per state |
 | `color` | `null` | border/check color; omit for currentColor |

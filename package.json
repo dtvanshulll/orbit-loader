@@ -33,7 +33,8 @@
     "build:esm": "esbuild src/traceloop.js --bundle --minify --format=esm --outfile=dist/traceloop.esm.js --legal-comments=none",
     "build:umd": "esbuild src/traceloop.js --bundle --minify --format=iife --global-name=TraceLoop --outfile=dist/traceloop.umd.js --legal-comments=none",
     "build:react": "esbuild react/index.js --bundle --minify --format=esm --external:react --outfile=dist/react.js --legal-comments=none",
-    "build:css": "node scripts/build-css.js"
+    "build:css": "node scripts/build-css.js",
+    "test": "node scripts/smoke.js"
   },
   "keywords": [
     "loading",
