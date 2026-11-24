@@ -217,6 +217,24 @@ over `ms`, then stops. `dismiss()` stops early. Container-based.
 
 Controller also exposes: `bar`, `begin(ms)`, `dismiss()`.
 
+## SwapLoader — `src/styles/swap-loader.js`
+
+Two panels trading places: the leaving panel accelerates out (short,
+fading) while the arriving one decelerates in from the far side. The
+one-shot transition behind log-in/sign-up flips, tab bodies and wizard
+steps. Container-based — the panels are the container's element
+children, in swap order; give the container its final size.
+
+`swapTo(i)` drives it for real UI; the demo loop cycles the panels.
+
+| option | default | meaning |
+|---|---|---|
+| `axis` | `'x'` | `'x'` slides horizontally, `'y'` vertically |
+| `exitMs` | `170` | the leaving panel's slide-and-fade — shorter than the entrance, exits accelerate |
+| `durationMs` | `300` | the arriving panel's slide-and-fade |
+| `restMs` | `2600` | the demo loop's pause on each panel |
+| `distance` | `5` | slide distance, % of the container |
+| `autoStart` | `true` | run the demo loop immediately |
 ## ProgressLoader — `src/styles/progress-loader.js`
 
 Determinate progress along any path: `setProgress(p)` fills the path

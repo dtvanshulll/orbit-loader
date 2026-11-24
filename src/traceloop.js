@@ -24,6 +24,7 @@ import './styles/tab-loader.js';
 import './styles/page-loader.js';
 import './styles/button-loader.js';
 import './styles/toast-loader.js';
+import './styles/swap-loader.js';
 import './styles/progress-loader.js';
 import './styles/search-loader.js';
 import './styles/modal-loader.js';
@@ -48,6 +49,7 @@ export const TabLoader = window.TabLoader;
 export const PageLoader = window.PageLoader;
 export const ButtonLoader = window.ButtonLoader;
 export const ToastLoader = window.ToastLoader;
+export const SwapLoader = window.SwapLoader;
 export const ProgressLoader = window.ProgressLoader;
 export const SearchLoader = window.SearchLoader;
 export const ModalLoader = window.ModalLoader;
@@ -71,6 +73,7 @@ export const styles = {
   page: PageLoader,
   button: ButtonLoader,
   toast: ToastLoader,
+  swap: SwapLoader,
   progress: ProgressLoader,
   search: SearchLoader,
   modal: ModalLoader,

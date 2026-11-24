@@ -1,0 +1,13 @@
+/* swap: two panels trading places — the leaving one accelerates out,
+   the arriving one decelerates in. The loader animates opacity and
+   transform per swap; these classes hold the rest states so a panel
+   that finished its exit stays hidden without a running animation. */
+.orbit-loader-swap-panel {
+  position: absolute;
+  inset: 0;
+}
+.orbit-loader-swap-panel.is-in { opacity: 1; }
+.orbit-loader-swap-panel.is-out {
+  opacity: 0;
+  pointer-events: none;
+}

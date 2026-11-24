@@ -36,6 +36,12 @@
    *   strokeWidth (default 2)     underline thickness, px
    *   color       (default null)  focus underline; omit for currentColor
    *   autoStart   (default true)  run the demo loop immediately
+   *   delayMs     (default 0)     wait this long before the demo loop
+   *                               starts. Multi-field forms stagger their
+   *                               fields with it — without it every field
+   *                               on the card focuses, types and blurs
+   *                               in lockstep, which reads as one click
+   *                               editing every box at once
    *
    * Reduced motion is checked once at creation: if set, state changes
    * snap with no motion.
@@ -50,6 +56,7 @@
     var strokeWidth = options.strokeWidth != null ? options.strokeWidth : 2;
     var color = options.color != null ? options.color : null;
     var autoStart = options.autoStart !== false;
+    var delayMs = options.delayMs != null ? options.delayMs : 0;
 
     if (global.getComputedStyle(el).position === "static") {
       el.style.position = "relative";
@@ -230,10 +237,13 @@
       timer = global.setInterval(demoStep, durationMs + restMs / 2);
     }
 
+    var startTimer = null;
+
     function stop() {
       running = false;
       if (timer != null) { global.clearInterval(timer); timer = null; }
       if (typeTimer != null) { global.clearInterval(typeTimer); typeTimer = null; }
+      if (startTimer != null) { global.clearTimeout(startTimer); startTimer = null; }
     }
 
     function destroy() {
@@ -248,7 +258,14 @@
 
     function isRunning() { return running; }
 
-    if (autoStart) start();
+    if (autoStart && delayMs > 0) {
+      startTimer = global.setTimeout(function () {
+        startTimer = null;
+        start();
+      }, delayMs);
+    } else if (autoStart) {
+      start();
+    }
 
     return {
       el: el,

@@ -18,7 +18,11 @@ export interface LoaderOptions {
   variant?: string;
   items?: string[];
   trigger?: string;
-  placement?: 'auto' | 'top';
+  placement?: 'auto' | 'top' | 'bottom';
+  axis?: 'x' | 'y';
+  exitMs?: number;
+  distance?: number;
+  delayMs?: number;
   label?: string;
   value?: string;
   closedHeight?: number;
@@ -113,6 +117,18 @@ export const ToastLoader: {
   wrap(container: HTMLElement | string, options?: LoaderOptions): LoaderController & {
     begin(ms?: number): void;
     dismiss(): void;
+  };
+};
+export const SwapLoader: {
+  create(container: HTMLElement | string, options?: LoaderOptions): LoaderController & {
+    swapTo(i: number): void;
+    next(): void;
+    index(): number;
+  };
+  wrap(container: HTMLElement | string, options?: LoaderOptions): LoaderController & {
+    swapTo(i: number): void;
+    next(): void;
+    index(): number;
   };
 };
 export const ProgressLoader: {
