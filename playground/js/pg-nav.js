@@ -7,6 +7,7 @@
   var PG = global.PG = global.PG || {};
   var exitIntro = PG.exitIntro;
   var SECTIONS = PG.SECTIONS;
+  var SCENE_SECTIONS = PG.SCENE_SECTIONS;
   var sectionFor = PG.sectionFor;
   var slugify = PG.slugify;
   function wireNavDrawer(cards, filter) {
@@ -128,6 +129,43 @@
         list.appendChild(a);
       });
     });
+  // The components-library group: one item per scene category. Same
+  // contract as the style items — filter AND jump — but the filter key
+  // is "cat:<category>" and the jump goes straight to the section.
+  var sceneList = document.getElementById("pg-nav-scenes");
+  if (sceneList) {
+    var labelEl = sceneList.previousElementSibling;
+    if (labelEl) {
+      var count = document.createElement("span");
+      count.className = "pg-nav-count";
+      count.textContent = SCENE_SECTIONS.length;
+      labelEl.appendChild(count);
+    }
+    SCENE_SECTIONS.forEach(function (label) {
+      var a = document.createElement("a");
+      a.href = "#";
+      a.className = "pg-nav-item";
+      a.setAttribute("data-style", "cat:" + label.toLowerCase());
+      a.textContent = label;
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        filter.applyFilter("cat:" + label.toLowerCase());
+        exitIntro();
+        var el = document.getElementById("sec-" + slugify(label));
+        if (el) el.scrollIntoView({
+          behavior: window.matchMedia &&
+            window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+          block: "start"
+        });
+        if (window.matchMedia("(max-width: 999px)").matches) {
+          document.body.classList.remove("pg-sidebar-open");
+          var btn = document.getElementById("pg-nav-toggle");
+          if (btn) btn.setAttribute("aria-expanded", "false");
+        }
+      });
+      sceneList.appendChild(a);
+    });
+  }
   }
 
   // Section anchors: clicking a sidebar item filters AND jumps to that

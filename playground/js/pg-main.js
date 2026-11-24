@@ -19,6 +19,7 @@
   var startHero = PG.startHero;
   var wireReveal = PG.wireReveal;
   var SECTIONS = PG.SECTIONS;
+  var SCENE_SECTIONS = PG.SCENE_SECTIONS;
   var buildSection = PG.buildSection;
   var cardsEl = PG.cardsEl;
   function init() {
@@ -32,12 +33,23 @@
       cardsEl.appendChild(sec.el);
       for (var t = 0; t < sec.styles.length; t++) grids[sec.styles[t]] = sec.grid;
     }
+    // The components-library sections come after the style groups; each
+    // category gets a grid keyed "cat:<category>".
+    var firstSceneGrid = null;
+    for (var v = 0; v < SCENE_SECTIONS.length; v++) {
+      var ssec = buildSection({ label: SCENE_SECTIONS[v], styles: [] }, SECTIONS.length + v);
+      sections.push(ssec);
+      cardsEl.appendChild(ssec.el);
+      grids["cat:" + SCENE_SECTIONS[v].toLowerCase()] = ssec.grid;
+      if (!firstSceneGrid) firstSceneGrid = ssec.grid;
+    }
     var addGrid = grids.search || cardsEl; // leftover configs land in Components
     for (var i = 0; i < list.length; i++) {
       var card = buildCard(list[i], i);
       // Append BEFORE rendering: textBoxForElement measures real layout,
       // and a detached card measures 0x0.
-      (grids[list[i].style] || addGrid).appendChild(card.el);
+      var key = list[i].category ? "cat:" + list[i].category.toLowerCase() : list[i].style;
+      (grids[key] || (list[i].category ? firstSceneGrid : addGrid)).appendChild(card.el);
       try { render(card); } catch (e) { window.__initErr = e.message + " | cfg=" + list[i].name; }
       // Remember the resolved viewBox so the copied snippet has it.
       if (card.resolved && card.resolved.viewBox) card.cfg._viewBox = card.resolved.viewBox;
@@ -67,6 +79,27 @@
       brand.addEventListener("click", function () { enterIntro(); });
       brand.setAttribute("title", "Back to the intro");
     }
+    // The About view: a full-screen state like the intro. Esc or the
+    // close button returns to the catalog; the brand still goes home.
+    var aboutLink = document.getElementById("pg-about-link");
+    var aboutPanel = document.getElementById("pg-about");
+    function showAbout(show) {
+      document.body.classList.toggle("pg-about-open", show);
+      if (aboutPanel) aboutPanel.hidden = !show;
+      if (show) window.scrollTo({ top: 0 });
+    }
+    if (aboutLink) aboutLink.addEventListener("click", function (e) {
+      e.preventDefault();
+      showAbout(true);
+    });
+    var aboutClose = document.getElementById("pg-about-close");
+    if (aboutClose) aboutClose.addEventListener("click", function () { showAbout(false); });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && document.body.classList.contains("pg-about-open")) {
+        showAbout(false);
+      }
+    });
+
     // Small debug hook for console testing of the generators.
     window.__playgroundDebug = {
       cards: cards,

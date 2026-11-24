@@ -1,0 +1,195 @@
+/*!
+ * TraceLoop — SCENE CONFIGS (playground data): the components library.
+ *
+ * Real-world blocks inspired by shadcnblocks' category map — navbar,
+ * hero, login, stats, FAQ, feedback, cookie banner, CTA — built as
+ * mockups and animated by the existing styles. A scene config carries
+ * a `category` (its own playground section + sidebar group) and
+ * `parts`: one loader per animated element inside box.html, bound by
+ * selector. The loaders are the same ones the style sections demo —
+ * scenes show them doing a real job.
+ */
+(function (global) {
+  "use strict";
+  var list = global.ORBIT_ANIMATIONS = global.ORBIT_ANIMATIONS || [];
+
+  var SHADOW = "0 2px 8px rgba(0, 0, 0, 0.22)";
+  var CARD = "background:#1c1b19;border:1px solid #33312c;border-radius:10px;box-shadow:" + SHADOW + ";";
+  var DISPLAY = "font-family:var(--pg-font-head,'Poppins',Arial,sans-serif);";
+  var BODY = "font-family:var(--pg-font-body,'Lora',Georgia,serif);";
+
+  list.push(
+  {
+    name: "Navbar Active",
+    category: "Navbar",
+    style: "tab",
+    note: "A real navbar: the active underline crawls to whichever link you click",
+    box: {
+      width: 340, height: 56,
+      html: "<div style='display:flex;align-items:center;height:100%;padding:0 16px;gap:14px'>" +
+            "<span style='width:10px;height:10px;border-radius:3px;background:#d97757;flex:none'></span>" +
+            "<span style='" + DISPLAY + "font-size:13px;font-weight:600;color:#faf9f5;flex:none'>Acme</span>" +
+            "<div class='tl-nav-tabs' style='flex:1;align-self:stretch;display:flex;flex-direction:column;justify-content:center'></div>" +
+            "</div>",
+      styleCss: CARD
+    },
+    parts: [
+      { style: "tab", el: ".tl-nav-tabs",
+        options: { labels: ["Product", "Docs", "Pricing", "Blog"], durationMs: 700, restMs: 1400, color: "#d97757" } }
+    ]
+  },
+
+  {
+    name: "Hero Flourish",
+    category: "Hero",
+    style: "orbit",
+    note: "A hero headline with an ambient flourish tracing itself beneath it, forever",
+    box: {
+      width: 340, height: 190,
+      html: "<div style='padding:20px 22px;display:flex;flex-direction:column;gap:10px;height:100%;box-sizing:border-box'>" +
+            "<span style='" + DISPLAY + "align-self:flex-start;font-size:10px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:#d97757;border:1px solid #3f3d34;border-radius:999px;padding:3px 10px'>New &middot; v2.0</span>" +
+            "<div style='" + DISPLAY + "font-size:21px;font-weight:600;line-height:1.25;color:#faf9f5'>Ship interfaces<br>that <em style='font-style:normal;color:#d97757'>move</em></div>" +
+            "<div class='tl-flourish' style='position:relative;height:26px;width:240px'></div>" +
+            "<div style='" + BODY + "font-size:12px;color:#b0aea5'>Nineteen path-driven styles. Zero dependencies.</div>" +
+            "</div>",
+      styleCss: CARD
+    },
+    parts: [
+      { style: "orbit", el: ".tl-flourish",
+        options: { d: { shape: "underline", args: [240, 10] }, durationMs: 2600, segmentFraction: 0.3, strokeWidth: 2.5, color: "#d97757", guideOpacity: 0.3 } }
+    ]
+  },
+
+  {
+    name: "Login Field",
+    category: "Login",
+    style: "input",
+    note: "A sign-in card: the email field focuses, the address types itself in, the line hands over to mint",
+    box: {
+      width: 300, height: 210,
+      html: "<div style='padding:20px;display:flex;flex-direction:column;gap:12px;height:100%;box-sizing:border-box'>" +
+            "<div style='" + DISPLAY + "font-size:15px;font-weight:600;color:#faf9f5'>Welcome back</div>" +
+            "<div class='tl-field' style='position:relative;height:52px;background:#262420;border:1px solid #33312c;border-radius:8px'></div>" +
+            "<div style='position:relative;height:44px;background:#262420;border:1px solid #33312c;border-radius:8px;padding:12px;font-size:12px;color:#8f8d84;" + DISPLAY + "'>&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;</div>" +
+            "<div style='" + DISPLAY + "margin-top:auto;height:38px;display:flex;align-items:center;justify-content:center;background:#d97757;border-radius:8px;font-size:13px;font-weight:500;color:#141413'>Sign in</div>" +
+            "</div>",
+      styleCss: CARD
+    },
+    parts: [
+      { style: "input", el: ".tl-field",
+        options: { label: "Email", value: "hi@studio.co", durationMs: 360, restMs: 1500, color: "#6a9bcc" } }
+    ]
+  },
+
+  {
+    name: "Stat Ring",
+    category: "Stats",
+    style: "progress",
+    note: "A dashboard stat card: the metric's donut fills along a 270-degree arc, head dot riding the frontier",
+    box: {
+      width: 300, height: 120,
+      html: "<div style='padding:18px 20px;display:flex;align-items:center;justify-content:space-between;height:100%;box-sizing:border-box'>" +
+            "<div style='display:flex;flex-direction:column;gap:6px'>" +
+            "<span style='" + DISPLAY + "font-size:11px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:#b0aea5'>Weekly active</span>" +
+            "<span style='" + DISPLAY + "font-size:26px;font-weight:600;color:#faf9f5'>12,480</span>" +
+            "<span style='" + DISPLAY + "font-size:11px;font-weight:500;color:#788c5d'>&#9650; 8.2% vs last week</span>" +
+            "</div>" +
+            "<div class='tl-ring' style='position:relative;width:72px;height:72px;flex:none'></div>" +
+            "</div>",
+      styleCss: CARD
+    },
+    parts: [
+      { style: "progress", el: ".tl-ring",
+        options: { d: "M50,10 A40,40 0 1 1 10,50", viewBox: "0 0 100 100", strokeWidth: 6, headRadius: 4, color: "#788c5d", guideOpacity: 0.25 } }
+    ]
+  },
+
+  {
+    name: "FAQ Reveal",
+    category: "FAQ",
+    style: "accordion",
+    note: "A support question: the header stays put while the answer grows and the edge draws down",
+    box: {
+      width: 320,
+      styleCss: CARD,
+      html: "<div style='padding:14px 16px;display:flex;flex-direction:column;gap:10px'>" +
+            "<div style='" + DISPLAY + "font-size:11px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:#b0aea5'>Support</div>" +
+            "<div class='tl-acc' style='position:relative;background:#262420;border:1px solid #33312c;border-radius:8px'>" +
+            "<div style='height:44px;display:flex;align-items:center;padding:0 14px'><span style='" + DISPLAY + "font-size:13px;font-weight:500;color:#faf9f5'>Does it work without a bundler?</span></div>" +
+            "<div style='padding:2px 14px 12px;font-size:12px;line-height:1.55;color:#b0aea5;" + BODY + "'>Yes &mdash; every style is a plain script tag. Load the UMD build and call the loader. That's the whole install.</div>" +
+            "</div></div>"
+    },
+    parts: [
+      { style: "accordion", el: ".tl-acc",
+        options: { durationMs: 420, restMs: 1500, closedHeight: 44, color: "#6a9bcc" } }
+    ]
+  },
+
+  {
+    name: "Feedback Typing",
+    category: "Feedback",
+    style: "typing",
+    note: "A support widget: your message sent, and the agent's reply typing itself",
+    box: {
+      width: 300, height: 170,
+      html: "<div style='padding:16px;display:flex;flex-direction:column;gap:10px;height:100%;box-sizing:border-box'>" +
+            "<div style='display:flex;align-items:center;gap:8px'>" +
+            "<span style='width:22px;height:22px;border-radius:50%;background:#6a9bcc;flex:none'></span>" +
+            "<span style='" + DISPLAY + "font-size:12px;font-weight:500;color:#faf9f5'>Support &middot; Anshul</span>" +
+            "<span style='" + DISPLAY + "margin-left:auto;font-size:10px;color:#8f8d84'>now</span></div>" +
+            "<div style='align-self:flex-end;max-width:80%;background:#33312c;border-radius:12px 12px 4px 12px;padding:8px 12px;font-size:12px;color:#faf9f5;" + BODY + "'>Hey &mdash; does the trail option work on letters too?</div>" +
+            "<div class='tl-typing' style='align-self:flex-start;width:62px;box-sizing:content-box;background:#262420;border:1px solid #33312c;border-radius:12px 12px 12px 4px;padding:10px 14px'></div>" +
+            "</div>",
+      styleCss: CARD
+    },
+    parts: [
+      { style: "typing", el: ".tl-typing",
+        options: { dots: 3, durationMs: 1000, staggerMs: 180, dotRadius: 6, color: "#b0aea5" } }
+    ]
+  },
+
+  {
+    name: "Cookie Consent",
+    category: "Cookie Banner",
+    style: "toast",
+    note: "A consent banner whose remaining time drains along its bottom edge \u2014 decide before it does",
+    box: {
+      width: 320, height: 74,
+      html: "<div style='display:flex;align-items:center;gap:12px;height:100%;padding:12px 16px;box-sizing:border-box'>" +
+            "<svg viewBox='0 0 24 24' width='18' height='18' aria-hidden='true' fill='none' stroke='#d97757' stroke-width='2' stroke-linecap='round' style='flex:none'><path d='M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5'/><circle cx='8.5' cy='10.5' r='0.5' fill='#d97757'/><circle cx='15.5' cy='13.5' r='0.5' fill='#d97757'/><circle cx='11' cy='16' r='0.5' fill='#d97757'/></svg>" +
+            "<span style='flex:1;font-size:12px;line-height:1.4;color:#faf9f5;" + BODY + "'>We use cookies to improve your experience.</span>" +
+            "<span style='" + DISPLAY + "font-size:12px;font-weight:500;color:#8f8d84;flex:none'>Decline</span>" +
+            "<span style='" + DISPLAY + "font-size:12px;font-weight:500;color:#141413;background:#d97757;border-radius:6px;padding:6px 12px;flex:none'>Accept</span>" +
+            "</div>",
+      styleCss: CARD
+    },
+    parts: [
+      { style: "toast",
+        options: { thickness: 3, durationMs: 4200, restMs: 1500, color: "#d97757" } }
+    ]
+  },
+
+  {
+    name: "CTA Fill",
+    category: "CTA",
+    style: "button",
+    note: "A pricing card's action: the fill sweeps while the upgrade 'processes', then drains on success",
+    box: {
+      width: 280, height: 200,
+      html: "<div style='padding:18px 20px;display:flex;flex-direction:column;gap:8px;height:100%;box-sizing:border-box'>" +
+            "<div style='display:flex;align-items:baseline;gap:8px'>" +
+            "<span style='" + DISPLAY + "font-size:15px;font-weight:600;color:#faf9f5'>Pro</span>" +
+            "<span style='" + DISPLAY + "margin-left:auto;font-size:10px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:#d97757'>Popular</span></div>" +
+            "<div style='" + DISPLAY + "font-size:24px;font-weight:600;color:#faf9f5'>$12<span style='font-size:12px;font-weight:400;color:#b0aea5'>/mo</span></div>" +
+            "<div style='" + BODY + "font-size:11.5px;line-height:1.6;color:#b0aea5'>Unlimited paths &middot; React adapter<br>Commercial license &middot; Priority fixes</div>" +
+            "<div class='tl-cta' style='margin-top:auto;position:relative;height:40px;display:flex;align-items:center;justify-content:center;background:#262420;border:1px solid #33312c;border-radius:8px;font-size:13px;font-weight:500;color:#faf9f5;" + DISPLAY + "'>Start free trial</div>" +
+            "</div>",
+      styleCss: CARD
+    },
+    parts: [
+      { style: "button", el: ".tl-cta",
+        options: { variant: "fill", durationMs: 1100, color: "#788c5d" } }
+    ]
+  }
+  );
+})(typeof window !== "undefined" ? window : this);

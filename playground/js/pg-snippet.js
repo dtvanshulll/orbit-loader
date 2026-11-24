@@ -47,8 +47,47 @@
   // to using the library — dropped from the snippet to keep it small.
   var SNIPPET_SKIP = { autoStart: 1, restMs: 1, durationMs: 1, box: 1, name: 1, note: 1, style: 1, content: 1, _viewBox: 1 };
 
+  // Scenes copy as a short recipe: one create/wrap call per animated
+  // part, selectors matching the mockup's own class names.
+  function sceneSnippet(cfg) {
+    var globals = [];
+    for (var i = 0; i < cfg.parts.length; i++) {
+      var g = GLOBALS[cfg.parts[i].style];
+      if (globals.indexOf(g) < 0) globals.push(g);
+    }
+    var lines = ["import { " + globals.join(", ") + " } from 'traceloop';", ""];
+    for (var p = 0; p < cfg.parts.length; p++) {
+      var part = cfg.parts[p];
+      var g = GLOBALS[part.style];
+      var fn = CONTAINER_STYLES[part.style] ? ".create(" : ".wrap(";
+      var sel = part.el ? "document.querySelector('" + part.el + "')" : "element";
+      lines.push(g + fn + sel + ", {");
+      var opts = part.options || {};
+      var argLines = [];
+      for (var k in opts) {
+        if (!Object.prototype.hasOwnProperty.call(opts, k)) continue;
+        if (k === "d" || k === "guideD" || k === "viewBox") {
+          if (k === "d" && typeof opts.d === "string") argLines.push("  d: " + JSON.stringify(opts.d) + ",");
+          if (k === "viewBox") argLines.push("  viewBox: " + JSON.stringify(opts.viewBox) + ",");
+          continue;
+        }
+        var v = opts[k];
+        argLines.push("  " + k + ": " + (typeof v === "number" || typeof v === "boolean" ? v : JSON.stringify(v)) + ",");
+      }
+      if (argLines.length) {
+        var last = argLines[argLines.length - 1];
+        argLines[argLines.length - 1] = last.replace(/,\s*$/, "");
+        for (var li = 0; li < argLines.length; li++) lines.push(argLines[li]);
+      }
+      lines.push("});");
+      if (p < cfg.parts.length - 1) lines.push("");
+    }
+    return lines.join("\n");
+  }
+
   function buildSnippet(card) {
     var cfg = card.cfg;
+    if (cfg.parts) return sceneSnippet(cfg);
     var opts = cfg.options || {};
     var g = GLOBALS[cfg.style];
     var lines = [];

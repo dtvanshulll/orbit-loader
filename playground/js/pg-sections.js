@@ -57,6 +57,14 @@
     return { el: wrap, grid: grid, styles: sec.styles, label: sec.label, countEl: count };
   }
 
+  // The components library: real-world blocks (inspired by shadcnblocks'
+  // category map) built as mockups and animated by the existing styles.
+  // Each category becomes its own titled section after the style groups.
+  var SCENE_SECTIONS = [
+    "Navbar", "Hero", "Login", "Stats", "FAQ", "Feedback", "Cookie Banner", "CTA"
+  ];
+
   PG.SECTIONS = SECTIONS;
+  PG.SCENE_SECTIONS = SCENE_SECTIONS;
   PG.buildSection = buildSection;
 })(typeof window !== "undefined" ? window : this);

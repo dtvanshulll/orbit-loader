@@ -35,9 +35,13 @@
 
     function applyFilter(style) {
       clearSearch();
+      var isCat = style.indexOf("cat:") === 0;
+      var want = isCat ? style.slice(4) : null;
       for (var k = 0; k < cards.length; k++) {
-        cards[k].el.style.display =
-          style === "all" || cards[k].cfg.style === style ? "" : "none";
+        var cfg = cards[k].cfg;
+        var hit = style === "all" ||
+          (isCat ? (cfg.category || "").toLowerCase() === want : cfg.style === style);
+        cards[k].el.style.display = hit ? "" : "none";
       }
       // Mirror the state onto the sidebar entries.
       var items = document.querySelectorAll(".pg-nav-item");
@@ -61,7 +65,7 @@
       var hits = 0;
       for (var k = 0; k < cards.length; k++) {
         var cfg = cards[k].cfg;
-        var hay = (cfg.name + " " + cfg.style + " " + (cfg.note || "")).toLowerCase();
+        var hay = (cfg.name + " " + cfg.style + " " + (cfg.category || "") + " " + (cfg.note || "")).toLowerCase();
         var show = !query || hay.indexOf(query) >= 0;
         cards[k].el.style.display = show ? "" : "none";
         if (show) hits++;

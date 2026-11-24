@@ -39,6 +39,7 @@
     if (box.background) s.push("background:" + box.background);
     if (box.borderRadius) s.push("border-radius:" + box.borderRadius + "px");
     if (box.border) s.push("border:" + box.border);
+    if (box.styleCss) s.push(box.styleCss);
     if (box.boxShadow) s.push("box-shadow:" + box.boxShadow);
     if (box.padding) s.push("padding:" + box.padding);
     if (box.fontSize) s.push("font-size:" + box.fontSize + "px");
@@ -72,6 +73,13 @@
     card.stage.innerHTML = "";
     var boxEl = buildBox(cfg.box || {});
     card.stage.appendChild(boxEl);
+    // Scene configs animate a whole component mockup: several loaders,
+    // each bound to one element inside box.html via part.el.
+    if (cfg.parts) {
+      card.controller = buildScene(cfg, boxEl);
+      card.resolved = null;
+      return;
+    }
     var opts = {};
     for (var k in cfg.options) {
       if (Object.prototype.hasOwnProperty.call(cfg.options, k)) opts[k] = cfg.options[k];
@@ -86,6 +94,48 @@
       card.resolved = resolved;
       card.controller = GLOBALS[cfg.style] && window[GLOBALS[cfg.style]].wrap(boxEl, opts);
     }
+  }
+
+  // Build a scene: one controller per part, wrapped in a composite so
+  // the rest of the playground (destroy on re-render, filters) treats
+  // it exactly like a single-style card.
+  function buildScene(cfg, boxEl) {
+    var parts = cfg.parts || [];
+    var controllers = [];
+    for (var i = 0; i < parts.length; i++) {
+      var part = parts[i];
+      var target = part.el ? boxEl.querySelector(part.el) : boxEl;
+      if (!target) continue;
+      var src = part.options || {};
+      var opts = {};
+      for (var k in src) {
+        if (Object.prototype.hasOwnProperty.call(src, k)) opts[k] = src[k];
+      }
+      var c;
+      if (CONTAINER_STYLES[part.style]) {
+        c = window[GLOBALS[part.style]].create(target, opts);
+      } else {
+        var resolved = resolveD(opts.d, target);
+        opts.d = resolved.d;
+        if (resolved.guideD) opts.guideD = resolved.guideD;
+        if (resolved.viewBox) opts.viewBox = resolved.viewBox;
+        c = window[GLOBALS[part.style]].wrap(target, opts);
+      }
+      controllers.push(c);
+    }
+    return {
+      destroy: function () {
+        for (var i = controllers.length - 1; i >= 0; i--) {
+          try { controllers[i].destroy(); } catch (e) { /* already gone */ }
+        }
+      },
+      isRunning: function () {
+        for (var i = 0; i < controllers.length; i++) {
+          if (controllers[i].isRunning && controllers[i].isRunning()) return true;
+        }
+        return false;
+      }
+    };
   }
 
   PG.resolveD = resolveD;
