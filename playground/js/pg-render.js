@@ -78,13 +78,14 @@
   // every edit — cheap, since each style's create() is trivial.
   function render(card) {
     var cfg = card.cfg;
-    // A measurement-path card in a hidden subtree would draw a 0x0 box;
-    // queue it instead of rendering a broken animation. Scene cards need
-    // the same deferral: their d-based parts measure the path bbox for a
-    // viewBox, and getBBox sees nothing inside display:none.
-    var needsMeasure = (cfg.options && cfg.options.d &&
-        cfg.options.d.shape === "textBox") || !!cfg.parts;
-    if (needsMeasure && !card.stage.offsetWidth) {
+    // A card in a hidden subtree would measure a 0x0 box — every
+    // loader that sizes itself from the DOM at create time (button's
+    // rounded-rect viewBox, textBox shapes, scene paths' getBBox)
+    // draws degenerate or shifted geometry that nothing corrects
+    // later, because no resize event fires when the subtree becomes
+    // visible. Queue ANY hidden card, not just the measurement-path
+    // ones; renderPending() re-renders them once the catalog shows.
+    if (!card.stage.offsetWidth) {
       if (pendingMeasure.indexOf(card) < 0) pendingMeasure.push(card);
       return;
     }
@@ -171,5 +172,11 @@
     var list = pendingMeasure;
     pendingMeasure = [];
     for (var i = 0; i < list.length; i++) render(list[i]);
+    // Belt and suspenders: every loader re-measures on resize, so one
+    // dispatch after the reveal corrects any controller that still
+    // holds stale metrics from a pass this queue didn't catch.
+    if (list.length && global.dispatchEvent) {
+      try { global.dispatchEvent(new global.Event("resize")); } catch (e) {}
+    }
   };
 })(typeof window !== "undefined" ? window : this);
