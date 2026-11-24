@@ -18,6 +18,8 @@
   --pg-secondary: #9a9ba4;
   --pg-muted: #8b8d98;
   --pg-accent: #e8355c;
+  /* Header height is a token because the sidebar hangs below it. */
+  --pg-header-h: 64px;
   /* Motion tokens: one entrance curve, one in-and-out curve, and the
      durations the whole page draws from. */
   --pg-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -33,7 +35,10 @@ body {
   font: 15px/1.5 system-ui, sans-serif;
   text-wrap: pretty;
   margin: 0;
-  padding: 0 40px 56px;
+  /* No body padding: the header is full width and every content zone
+     carries its own gutter. The old 40px right padding here is what made
+     the header stop 40px short of the viewport edge. */
+  padding: 0 0 56px;
 }
 
 /* ---------- header ---------- */
@@ -48,13 +53,14 @@ body {
   padding: 0 32px;
 }
 .pg-header-inner {
-  max-width: 1336px;
-  margin: 0 auto;
+  /* Full width, not a centered column: the brand sits above the rail so
+     the header and sidebar read as one shell, not two stacked apps. */
+  height: var(--pg-header-h);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  padding: 16px 0;
+  padding: 0 16px;
 }
 .pg-brand { display: flex; align-items: center; gap: 16px; min-width: 0; }
 .pg-mark { width: 32px; height: 32px; color: var(--pg-accent); flex: none; }
@@ -468,7 +474,9 @@ body {
 @media (max-width: 760px) {
   body { padding: 0 16px 40px; }
   .pg-header { padding: 0 16px; }
-  .pg-header-inner { flex-direction: column; align-items: flex-start; }
+  /* One row on phones too: hamburger + wordmark left, GitHub right. */
+  .pg-header-inner { gap: 12px; }
+  .pg-credit { display: none; }
   .pg-section-grid { grid-template-columns: 1fr; }
   /* Hero stacks: copy first, instrument under it and smaller. On a phone the
      hero has to leave the first card visible, so it collapses hard. */
@@ -546,13 +554,16 @@ body {
 
 .pg-sidebar {
   position: fixed;
-  top: 0;
   left: 0;
   bottom: 0;
   width: 240px;
-  background: var(--pg-card);
+  /* Same surface as the page: the rail is part of the canvas, delineated
+     by its hairline, not a lighter panel floating on it. Hangs below the
+     header on desktop; overlays everything when it slides in on mobile. */
+  top: var(--pg-header-h);
+  background: var(--pg-bg);
   border-right: 1px solid var(--pg-border);
-  padding: 24px 14px;
+  padding: 20px 14px;
   z-index: 60;
   /* Column: brand and footer are pinned, the list between them scrolls. */
   display: flex;
@@ -568,9 +579,13 @@ body {
     visibility: visible;
     transition: none;
   }
-  body { padding-left: 240px; }
+  /* The header is full width now, so the offset moves to the content
+     zones instead of the body (which would push the header right too). */
+  body { padding-left: 0; }
+  .pg-hero, .pg-cards, .pg-footer { margin-left: 240px; }
 }
 @media (max-width: 999px) {
+  .pg-sidebar { top: 0; }
   body.pg-sidebar-open .pg-sidebar {
     transform: none;
     visibility: visible;
@@ -596,7 +611,14 @@ body {
 }
 .pg-menu-btn:hover { background: #1c1c22; }
 .pg-menu-btn:focus-visible { outline: 2px solid var(--pg-accent); outline-offset: 2px; }
+/* Desktop: the rail is permanent, so the hamburger would be a dead
+   control. This has to come after the base rule above to win. */
+@media (min-width: 1000px) {
+  .pg-menu-btn { display: none; }
+}
 
+/* Brand lives in the header now (one shell, one wordmark); these rules
+   remain only because the mobile drawer could reuse them later. */
 .pg-nav-head {
   font-size: 15px;
   font-weight: 600;
@@ -608,8 +630,7 @@ body {
   color: var(--pg-muted);
   margin: 0 0 16px;
   flex: none;
-}
-/* The scrolling middle: full-bleed inside the sidebar's padding so the
+}/* The scrolling middle: full-bleed inside the sidebar's padding so the
    scrollbar sits on the edge instead of floating inside the nav column. */
 .pg-nav-scroll {
   flex: 1 1 auto;
@@ -669,10 +690,12 @@ body {
   font-size: 13px;
   transition: background 0.12s ease, color 0.12s ease;
 }
-.pg-nav-item:hover { background: var(--pg-raised); color: var(--pg-text); }
+.pg-nav-item:hover { color: var(--pg-text); }
 .pg-nav-item:focus-visible { outline: 2px solid var(--pg-accent); outline-offset: 2px; }
+/* Active filter: accent bar + full-contrast text on the rail itself —
+   no raised pill. The rail is flat chrome; a filled row would read as a
+   floating widget bolted onto it. */
 .pg-nav-item.is-on {
-  background: var(--pg-raised);
   color: var(--pg-text);
   box-shadow: inset 2px 0 0 var(--pg-accent);
 }
