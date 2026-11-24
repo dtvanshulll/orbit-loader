@@ -27,6 +27,7 @@
     function openNav() {
       document.body.classList.add("pg-sidebar-open");
       btn.setAttribute("aria-expanded", "true");
+      btn.setAttribute("aria-label", "Close navigation");
       // Move focus into the panel so keyboard users aren't left behind it.
       var first = sidebar.querySelector(".pg-nav-item");
       if (first) first.focus({ preventScroll: true });
@@ -34,6 +35,7 @@
     function closeNav(returnFocus) {
       document.body.classList.remove("pg-sidebar-open");
       btn.setAttribute("aria-expanded", "false");
+      btn.setAttribute("aria-label", "Open navigation");
       if (returnFocus) btn.focus({ preventScroll: true });
     }
 
