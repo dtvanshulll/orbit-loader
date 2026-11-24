@@ -6,7 +6,7 @@ Loading and UI-transition animations that trace real SVG paths — zero dependen
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg)](package.json)
 
-**TraceLoop** draws a glowing segment that crawls along any `<path>` you give it: circles, squares, letters, words, infinity signs, your logo. Nineteen styles — six looping loaders and eleven one-shot transitions (tab switches, page loads, buttons, toasts, progress, search bars, modals, accordions, drawers, dropdowns, inputs) — all driven by the path itself, so the motion follows your shape instead of being bolted next to it.
+**TraceLoop** draws a glowing segment that crawls along any `<path>` you give it: circles, squares, letters, words, infinity signs, your logo. Nineteen styles — eight looping loaders, five one-shot transitions (tab switches, page loads, buttons, toasts, progress) and six component animations (search bars, modals, accordions, drawers, dropdowns, inputs) — all driven by the path itself, so the motion follows your shape instead of being bolted next to it.
 
 ## Quick start
 
@@ -83,7 +83,7 @@ Most loader libraries give you a spinner: a shape rotated by CSS, blind to your 
 
 **What it doesn't do:** spinners, skeleton screens (the shimmer style is a band, not a layout skeleton), Lottie-grade character animation, or React components — it's DOM in, DOM out; wrap it yourself.
 
-## The eleven styles
+## The nineteen styles
 
 | File | Global | What it does |
 |---|---|---|
@@ -100,6 +100,12 @@ Most loader libraries give you a spinner: a shape rotated by CSS, blind to your 
 | `src/styles/button-loader.js` | `ButtonLoader` | the button's own border is its pending-progress track — one-shot |
 | `src/styles/toast-loader.js` | `ToastLoader` | the toast's lifetime drains along its bottom edge — one-shot |
 | `src/styles/progress-loader.js` | `ProgressLoader` | determinate progress filling along any path |
+| `src/styles/search-loader.js` | `SearchLoader` | a search field that widens while its underline draws out — one-shot |
+| `src/styles/modal-loader.js` | `ModalLoader` | a dialog whose border traces itself on arrival — one-shot |
+| `src/styles/accordion-loader.js` | `AccordionLoader` | a section whose left edge draws as it expands — one-shot |
+| `src/styles/drawer-loader.js` | `DrawerLoader` | a panel that slides in while its leading edge draws — one-shot |
+| `src/styles/dropdown-loader.js` | `DropdownLoader` | a menu that unfolds under its trigger with a drawn edge — one-shot |
+| `src/styles/input-loader.js` | `InputLoader` | a text field that types itself, then focuses — one-shot |
 
 Full option tables for every style: [docs/STYLES.md](docs/STYLES.md).
 
@@ -110,7 +116,8 @@ The `src/shapes/` files (optional) generate `d` strings so you don't have to wri
 
 ## Try it
 
-- **Playground** — all 61 animations with live sliders and copy-paste code: clone the repo, serve the folder, open `playground/index.html`
+- **Playground** — all 85 animations with live sliders and copy-paste code: clone the repo, serve the folder, open `playground/index.html`
+- **Components library** — the same playground, categories view: 19 real-world blocks (navbar, hero, login, stats, FAQ, pricing, footer, data table and more) built as mockups and animated by the styles above — the way you'd actually ship them
 - **UI transitions in context** — `examples/ui-transitions.html`: one mock app where every trigger is wired
 - **Classic demos** — `examples/index.html`
 

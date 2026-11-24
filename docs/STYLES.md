@@ -15,6 +15,14 @@ Shared conventions:
 - Controllers always expose `start()`, `stop()`, `destroy()`,
   `isRunning()`, plus the style-specific members listed below.
 
+The playground's **Components library** shows these same styles doing
+real jobs inside finished blocks — navbar, hero, login, stats, FAQ,
+pricing, footer, data table and more (19 categories, 85 demos). Each
+card's usage panel copies a one-call-per-element recipe; see
+`animations/scenes.js` and `animations/scenes-more.js` for the scene
+configs and `playground/js/pg-render.js` (`buildScene`) for how parts
+bind loaders to elements inside a mockup.
+
 ## OrbitLoader — `src/styles/orbit-loader.js`
 
 The core crawler: a glowing segment traces the path forever.
