@@ -553,8 +553,11 @@ body {
   background: var(--pg-card);
   border-right: 1px solid var(--pg-border);
   padding: 24px 14px;
-  overflow-y: auto;
   z-index: 60;
+  /* Column: brand and footer are pinned, the list between them scrolls. */
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
   transform: translateX(-100%);
   visibility: hidden;
   transition: transform 0.28s var(--pg-ease-out), visibility 0s linear 0.28s;
@@ -598,31 +601,62 @@ body {
   font-size: 15px;
   font-weight: 600;
   margin-bottom: 4px;
+  flex: none;
 }
 .pg-nav-sub {
   font-size: 12px;
   color: var(--pg-muted);
-  margin: 0 0 20px;
+  margin: 0 0 16px;
+  flex: none;
 }
+/* The scrolling middle: full-bleed inside the sidebar's padding so the
+   scrollbar sits on the edge instead of floating inside the nav column. */
+.pg-nav-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  margin: 0 -14px;
+  padding: 0 14px;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #2c2c35 transparent;
+}
+.pg-nav-scroll::-webkit-scrollbar { width: 8px; }
+.pg-nav-scroll::-webkit-scrollbar-track { background: transparent; }
+.pg-nav-scroll::-webkit-scrollbar-thumb {
+  background: #2c2c35;
+  border-radius: 4px;
+}
+.pg-nav-scroll::-webkit-scrollbar-thumb:hover { background: #3a3a44; }
 .pg-nav-group {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
+  gap: 8px;
   font-size: 12px;
   font-weight: 600;
   color: var(--pg-muted);
-  margin: 18px 0 8px;
+  margin: 20px 0 8px;
   transition: color 0.12s ease;
 }
 /* Scrollspy: the heading of the group you're scrolled into lifts to full
    contrast. Items stay quiet — only the active filter gets a surface. */
 .pg-nav-group.is-current { color: var(--pg-text); }
 .pg-nav-group.is-current .pg-nav-count { color: var(--pg-secondary); }
-.pg-nav-group:first-of-type { margin-top: 0; }
-.pg-nav-group::after { content: ""; }
+.pg-nav-group:first-child { margin-top: 0; }
 .pg-nav-count {
+  flex: none;
   font-size: 11px;
   font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  color: var(--pg-muted);
+}
+.pg-nav-foot {
+  flex: none;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--pg-border);
+  font-size: 12px;
   color: var(--pg-muted);
 }
 .pg-nav-list { display: block; }
