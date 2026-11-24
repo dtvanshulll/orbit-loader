@@ -25,8 +25,6 @@
         var visible = 0;
         var kids = sec.grid.children;
         for (var c = 0; c < kids.length; c++) {
-          // the "Add your own" card matches no style — skip it
-          if (kids[c].classList.contains("pg-add")) continue;
           if (kids[c].style.display !== "none") visible++;
         }
         sec.el.style.display = visible ? "" : "none";

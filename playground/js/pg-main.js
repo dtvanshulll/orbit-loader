@@ -18,7 +18,6 @@
   var startMark = PG.startMark;
   var startHero = PG.startHero;
   var wireReveal = PG.wireReveal;
-  var buildAddCard = PG.buildAddCard;
   var SECTIONS = PG.SECTIONS;
   var buildSection = PG.buildSection;
   var cardsEl = PG.cardsEl;
@@ -44,8 +43,6 @@
       if (card.resolved && card.resolved.viewBox) card.cfg._viewBox = card.resolved.viewBox;
       cards.push(card);
     }
-    var addCard = buildAddCard();
-    addGrid.appendChild(addCard);
     // Counts reflect real cards (variants included), not style names.
     for (var c = 0; c < sections.length; c++) {
       sections[c].countEl.textContent = sections[c].grid.querySelectorAll(".pg-card").length;

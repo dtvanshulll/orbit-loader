@@ -100,3 +100,20 @@
   .orbit-loader-accordion-chevron { opacity: 1; }
 }
 
+
+/* The typed value: reads as the text a user entered, sitting where the
+   label was before it floated up. */
+.orbit-loader-input-value {
+  position: absolute;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 13px;
+  color: var(--tl-text, #faf9f5);
+  pointer-events: none;
+  white-space: nowrap;
+}
+.tl-focused .orbit-loader-input-value,
+.tl-success .orbit-loader-input-value { opacity: 1; }

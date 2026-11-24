@@ -4,3 +4,8 @@ react-test.bundle.js
 tl-*.png
 react-test.b*.js
 pt-*.png
+
+# local verification screenshots
+shot-*.png
+tmp-shot-*.png
+.tmp-*.png

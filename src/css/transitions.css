@@ -87,4 +87,8 @@
 }
 
 .orbit-loader-progress-head { opacity: 0; }
+.orbit-loader-progress-tick {
+  fill: currentColor;
+  stroke: none;
+}
 

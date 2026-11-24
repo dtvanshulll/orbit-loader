@@ -250,6 +250,7 @@ instead of jumping to the end state.
 | `durationMs` | `420` | one open or close |
 | `restMs` | `1500` | the demo loop's pause per state |
 | `strokeWidth` | `2` | edge thickness, px |
+| `closedHeight` | `0` | resting height, px — pass the header row’s height so it stays visible while the body collapses |
 | `color` | `null` | edge color; omit for currentColor |
 | `autoStart` | `true` | run the demo loop immediately |
 
@@ -312,6 +313,7 @@ right edge, `error()` hands it to red and shakes the field once,
 | Option | Default | Meaning |
 |---|---|---|
 | `label` | `'Email'` | the floating label text; `''` for none |
+| `value` | `''` | typed value — the demo loop types it in after focus, character by character |
 | `durationMs` | `360` | one focus or blur |
 | `restMs` | `1500` | the demo loop's pause per state |
 | `strokeWidth` | `2` | underline thickness, px |

@@ -105,6 +105,24 @@
     var color = options.color != null ? options.color : null;
     var autoStart = options.autoStart !== false;
 
+    // The 'steps' variant marks each quantization boundary with a small
+    // tick on the track, so "fills in steps" reads as steps — without
+    // them the fill just looks like a slower continuous bar.
+    if (variant === "steps" && pathEl.getTotalLength) {
+      var tickTotal = pathEl.getTotalLength();
+      for (var t = 1; t < steps; t++) {
+        var pt = pathEl.getPointAtLength(tickTotal * t / steps);
+        var tick = document.createElementNS(SVG_NS, "circle");
+        tick.setAttribute("cx", pt.x);
+        tick.setAttribute("cy", pt.y);
+        tick.setAttribute("r", Math.max(2, strokeWidth * 1.4));
+        tick.setAttribute("class", "orbit-loader-progress-tick");
+        if (color != null) tick.style.fill = color;
+        tick.style.opacity = 0.55;
+        pathEl.parentNode.appendChild(tick);
+      }
+    }
+
     // The frontier dot: a small circle riding the fill's leading edge.
     var head = document.createElementNS(SVG_NS, "circle");
     head.setAttribute("r", headRadius);
@@ -254,7 +272,7 @@
             if (!running) return;
             paint(0);
             demoRun();
-          }, 1600);
+          }, 700);
           return;
         }
         setProgress(p);

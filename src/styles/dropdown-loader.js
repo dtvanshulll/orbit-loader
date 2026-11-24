@@ -63,6 +63,16 @@
     trigger.type = "button";
     trigger.className = "orbit-loader-dropdown-trigger";
     trigger.textContent = options.trigger != null ? options.trigger : "Options";
+    // A dropdown trigger without a chevron doesn't read as a dropdown.
+    // Lucide chevron-down, rotating 180° while the panel is open.
+    var chevron = document.createElementNS(SVG_NS, "svg");
+    chevron.setAttribute("class", "orbit-loader-dropdown-chevron");
+    chevron.setAttribute("viewBox", "0 0 24 24");
+    chevron.setAttribute("aria-hidden", "true");
+    var chevPath = document.createElementNS(SVG_NS, "path");
+    chevPath.setAttribute("d", "M6 9 L12 15 L18 9");
+    chevron.appendChild(chevPath);
+    trigger.appendChild(chevron);
     el.appendChild(trigger);
     trigger.addEventListener("click", function () { toggle(); });
 
@@ -144,6 +154,7 @@
     function open() {
       if (isOpen) return;
       isOpen = true;
+      trigger.classList.add("tl-open");
       // Flip decision: measure the panel's natural height against the
       // space below the trigger. A hidden panel has no height, so
       // measure it visibly for one frame first.
@@ -193,11 +204,13 @@
     function close() {
       if (!isOpen) return;
       isOpen = false;
+      trigger.classList.remove("tl-open");
       if (reducedMotion) {
         panel.classList.remove("tl-open");
         return;
       }
       panel.classList.remove("tl-open");
+      trigger.classList.remove("tl-open");
       frame.style.opacity = 0;
     }
 

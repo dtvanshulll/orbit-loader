@@ -126,24 +126,4 @@ body.pg-intro .pg-hero-inner { width: 100%; }
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
-/* ---------- "add your own" card ---------- */
-
-.pg-add {
-  border-style: dashed;
-  justify-content: center;
-  text-align: center;
-  color: var(--pg-secondary);
-  gap: 8px;
-}
-.pg-add h3 { color: var(--pg-text); }
-.pg-add code {
-  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
-  font-size: 12.5px;
-  background: #171614;
-  border: 1px solid var(--pg-border);
-  border-radius: 4px;
-  padding: 1px 5px;
-}
-.pg-add a { color: var(--pg-text); text-decoration: underline; text-underline-offset: 2px; }
-.pg-add a:hover { color: #ffffff; }
 

@@ -109,8 +109,11 @@
       if (variant === "bar") {
         svg.style.bottom = "6px";
         svg.style.left = "10px";
-        svg.style.right = "10px";
-        svg.style.width = "auto";
+        svg.style.right = "auto";
+        // width:auto is invalid on an SVG — it would fall back to the
+        // class rule's width:100% and overflow the toast's right edge by
+        // the inset. Size it explicitly to the inset span instead.
+        svg.style.width = "calc(100% - 20px)";
       } else {
         svg.style.bottom = "0";
       }

@@ -14,6 +14,16 @@ export interface LoaderOptions {
   guideOpacity?: number;
   guideD?: string;
   steps?: number;
+  headRadius?: number;
+  variant?: string;
+  items?: string[];
+  trigger?: string;
+  label?: string;
+  value?: string;
+  closedHeight?: number;
+  thickness?: number;
+  enter?: string;
+  size?: number;
   breathe?: number;
   breatheMs?: number;
   autoStart?: boolean;

@@ -29,6 +29,8 @@
    *
    * options:
    *   label       (default 'Email') the floating label text; '' for none
+   *   value       (default '')    typed value; the demo loop types it
+   *                               in after focus, character by character
    *   durationMs  (default 360)   one focus or blur
    *   restMs      (default 1500)  the demo loop's pause per state
    *   strokeWidth (default 2)     underline thickness, px
@@ -76,6 +78,18 @@
       label.className = "orbit-loader-input-label";
       label.textContent = labelText;
       el.appendChild(label);
+    }
+
+    // The typed value: an optional `value` option. The demo loop types it
+    // character by character after focus, so the demo reads as a real
+    // field being filled in — focus, label floats, text appears, check.
+    var valueText = options.value != null ? String(options.value) : "";
+    var valueEl = null;
+    if (valueText) {
+      valueEl = document.createElement("span");
+      valueEl.className = "orbit-loader-input-value";
+      valueEl.textContent = "";
+      el.appendChild(valueEl);
     }
 
     // Status icon: Lucide `check` for success, drawn at the right edge.
@@ -143,6 +157,7 @@
       state = "idle";
       el.classList.remove("tl-focused", "tl-success", "tl-error");
       status.style.opacity = 0;
+      if (valueEl) valueEl.textContent = "";
       drawTo(0, durationMs);
     }
 
@@ -181,15 +196,31 @@
       anim = a;
     }
 
-    // Demo loop: focus, rest, success, rest, blur.
+    // Demo loop: focus, type the value, success, rest, blur. Without a
+    // `value` option it's the classic focus → success → blur cycle.
     var timer = null;
     var running = false;
     var phase = 0;
+    var typeTimer = null;
+
+    function typeValue() {
+      if (!valueEl) { success(); return; }
+      var i = 0;
+      typeTimer = global.setInterval(function () {
+        i++;
+        valueEl.textContent = valueText.slice(0, i);
+        if (i >= valueText.length) {
+          global.clearInterval(typeTimer);
+          typeTimer = null;
+          success();
+        }
+      }, Math.max(24, durationMs * 0.12));
+    }
 
     function demoStep() {
       phase = (phase + 1) % 4;
       if (phase === 1) focus();
-      else if (phase === 2) success();
+      else if (phase === 2) typeValue();
       else blur();
     }
 
@@ -202,6 +233,7 @@
     function stop() {
       running = false;
       if (timer != null) { global.clearInterval(timer); timer = null; }
+      if (typeTimer != null) { global.clearInterval(typeTimer); typeTimer = null; }
     }
 
     function destroy() {
@@ -209,6 +241,7 @@
       global.removeEventListener("resize", onResize);
       if (anim) anim.cancel();
       if (label && label.parentNode) label.parentNode.removeChild(label);
+      if (valueEl && valueEl.parentNode) valueEl.parentNode.removeChild(valueEl);
       if (status.parentNode) status.parentNode.removeChild(status);
       if (svg.parentNode) svg.parentNode.removeChild(svg);
     }

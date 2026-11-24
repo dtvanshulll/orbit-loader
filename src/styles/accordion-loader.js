@@ -33,6 +33,8 @@
    *   durationMs  (default 420)   one open or close
    *   restMs      (default 1500)  the demo loop's pause per state
    *   strokeWidth (default 2)     edge thickness, px
+   *   closedHeight (default 0)   resting height, px; pass the header
+   *                               row's height so it stays visible
    *   color       (default null)  edge color; omit for currentColor
    *   autoStart   (default true)  run the demo loop immediately
    *
@@ -46,6 +48,10 @@
     var durationMs = options.durationMs != null ? options.durationMs : 420;
     var restMs = options.restMs != null ? options.restMs : 1500;
     var strokeWidth = options.strokeWidth != null ? options.strokeWidth : 2;
+    // How tall the panel sits when closed. 0 keeps the old behavior (a
+    // bare reveal); pass the header's height and the header stays
+    // visible while the body collapses — a real accordion.
+    var closedHeight = options.closedHeight != null ? options.closedHeight : 0;
     var color = options.color != null ? options.color : null;
     var autoStart = options.autoStart !== false;
 
@@ -57,7 +63,7 @@
     // dashoffset, started at the same moment.
     el.style.transition = "height " + durationMs + "ms cubic-bezier(0.65, 0, 0.35, 1)";
     el.style.overflow = "hidden";
-    el.style.height = "0px";
+    el.style.height = closedHeight + "px";
 
     // The edge: a vertical path at the panel's left, rebuilt in real
     // pixels at open time (1 unit = 1px, dash math stays exact).
@@ -148,7 +154,7 @@
       if (!isOpen) return;
       isOpen = false;
       chevron.classList.remove("is-open");
-      el.style.height = "0px";
+      el.style.height = closedHeight + "px";
       drawEdge(0, durationMs);
       global.setTimeout(function () {
         if (!isOpen) el.classList.remove("is-active");

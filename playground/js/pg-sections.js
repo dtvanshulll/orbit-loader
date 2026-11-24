@@ -1,21 +1,10 @@
 /*!
- * pg-sections — section registry, headings, the "add your own" card. Part of the old playground.js, split under the 400-line ceiling;
+ * pg-sections — section registry and headings. Part of the old playground.js, split under the 400-line ceiling;
  * see pg-data.js for the module map.
  */
 (function (global) {
   "use strict";
   var PG = global.PG = global.PG || {};
-  function buildAddCard() {
-    var el = document.createElement("section");
-    el.className = "pg-card pg-add";
-    el.innerHTML =
-      "<h3>Add your own</h3>" +
-      "<p>Copy any block in <code>animations/</code>, change " +
-      "<code>name</code>, <code>style</code> and <code>options</code>, " +
-      "save, refresh — it appears here automatically.</p>";
-    return el;
-  }
-
   // Card sections: every animation belongs to one of three groups,
   // rendered as titled sections so the growing library stays scannable.
   var SECTIONS = [
@@ -70,5 +59,4 @@
 
   PG.SECTIONS = SECTIONS;
   PG.buildSection = buildSection;
-  PG.buildAddCard = buildAddCard;
 })(typeof window !== "undefined" ? window : this);

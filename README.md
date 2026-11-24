@@ -108,7 +108,7 @@ The `src/shapes/` files (optional) generate `d` strings so you don't have to wri
 
 ## Try it
 
-- **Playground** — all 35 animations with live sliders and copy-paste code: clone the repo, serve the folder, open `playground/index.html`
+- **Playground** — all 57 animations with live sliders and copy-paste code: clone the repo, serve the folder, open `playground/index.html`
 - **UI transitions in context** — `examples/ui-transitions.html`: one mock app where every trigger is wired
 - **Classic demos** — `examples/index.html`
 
