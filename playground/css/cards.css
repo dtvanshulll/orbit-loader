@@ -46,6 +46,16 @@
 .pg-copy:active { transform: scale(0.97); }
 .pg-copy:focus-visible { outline: 2px solid var(--pg-accent); outline-offset: 2px; }
 .pg-copy.pg-copied { color: var(--pg-mint, #788c5d); border-color: var(--pg-mint, #788c5d); }
+.pg-copy.pg-copied svg {
+  animation: pg-check-pop 240ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes pg-check-pop {
+  from { transform: scale(0.5); }
+  to { transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pg-copy.pg-copied svg { animation: none; }
+}
 /* Quiet mono meta instead of a colored badge — the style name is
    information, not decoration. */
 .pg-card .pg-style-tag {

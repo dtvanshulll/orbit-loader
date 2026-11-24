@@ -28,6 +28,7 @@
      durations the whole page draws from. */
   --pg-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --pg-ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+  --pg-ease-in: cubic-bezier(0.3, 0, 1, 1);
   --pg-dur-fast: 150ms;
   --pg-dur-base: 220ms;
   --pg-dur-panel: 280ms;

@@ -65,9 +65,10 @@
   border: 1px solid var(--pg-border);
   border-radius: 8px;
   background: var(--pg-raised);
-  transition: border-color 0.15s ease, background 0.15s ease;
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.12s ease;
 }
 .pg-git:hover { border-color: #4a473e; background: #2e2c27; }
+.pg-git:active { transform: scale(0.97); }
 .pg-git:focus-visible { outline: 2px solid var(--pg-accent); outline-offset: 2px; }
 .pg-credit { font-size: 13px; color: var(--pg-secondary); }
 .pg-credit strong { color: var(--pg-text); font-weight: 500; }

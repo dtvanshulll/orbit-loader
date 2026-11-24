@@ -16,11 +16,11 @@ body.pg-intro .pg-hero-inner { width: 100%; }
    on return (display:none restarts the animation); the catalog rises
    once on arrival via a body class pg-nav adds and clears. One
    container-level move each — 113 cards staggering would be noise. */
-body.pg-intro .pg-hero { animation: pg-fade-in var(--pg-dur-panel) var(--pg-ease-out); }
+body.pg-intro .pg-hero { animation: pg-hero-in var(--pg-dur-panel) var(--pg-ease-out); }
 body.pg-arriving .pg-cards { animation: pg-catalog-in var(--pg-dur-panel) var(--pg-ease-out); }
-@keyframes pg-fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+@keyframes pg-hero-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
 }
 @keyframes pg-catalog-in {
   from { opacity: 0; transform: translateY(8px); }
