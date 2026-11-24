@@ -234,6 +234,7 @@ children, in swap order; give the container its final size.
 | `durationMs` | `300` | the arriving panel's slide-and-fade |
 | `restMs` | `2600` | the demo loop's pause on each panel |
 | `distance` | `5` | slide distance, % of the container |
+| `triggers` | `null` | clickable in-panel links that swap on click: `[{ sel: ".signup-link", to: 1 }]`. A click pauses the demo loop for one rest, so the click never fights the cycle |
 | `autoStart` | `true` | run the demo loop immediately |
 ## ProgressLoader — `src/styles/progress-loader.js`
 

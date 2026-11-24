@@ -23,6 +23,7 @@ export interface LoaderOptions {
   exitMs?: number;
   distance?: number;
   delayMs?: number;
+  triggers?: Array<{ sel: string; to: number }>;
   label?: string;
   value?: string;
   closedHeight?: number;

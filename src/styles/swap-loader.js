@@ -23,6 +23,13 @@
  *   restMs      (default 2600)   the demo loop's pause on each panel
  *   distance    (default 5)      slide distance, % of the container
  *   autoStart   (default true)   run the demo loop immediately
+ *   triggers    (default null)   clickable in-panel links that swap on
+ *                                click: [{ sel: '.signup-link', to: 1 }].
+ *                                A click pauses the demo loop, swaps,
+ *                                and restarts the loop after one rest,
+ *                                so the click never fights the cycle
+ *                                — this is what makes an auth card's
+ *                                'Sign up' link actually flip the card.
  *
  * Reduced motion is checked once at creation: if set, swaps are an
  * instant class toggle with no motion.
@@ -65,6 +72,8 @@
 
     var index = -1;
     var timer = null;
+    var resumeTimer = null;
+    var bound = [];
 
     /** Mark `i` as the only visible panel, no motion. */
     function settle(i) {
@@ -130,9 +139,38 @@
     }
     function stop() {
       if (timer != null) { global.clearInterval(timer); timer = null; }
+      if (resumeTimer != null) { global.clearTimeout(resumeTimer); resumeTimer = null; }
+    }
+
+    // Clickable in-panel triggers: a link inside a panel that swaps to
+    // a given index. The demo loop pauses for one rest after a click,
+    // so the user-driven swap isn't immediately overridden.
+    if (options.triggers) {
+      for (var t = 0; t < options.triggers.length; t++) {
+        (function (spec) {
+          var node = el.querySelector(spec.sel);
+          if (!node) return;
+          var fn = function () {
+            stop();
+            swapTo(spec.to);
+            if (autoStart) {
+              resumeTimer = global.setTimeout(function () {
+                resumeTimer = null;
+                start();
+              }, restMs);
+            }
+          };
+          node.addEventListener("click", fn);
+          bound.push([node, fn]);
+        })(options.triggers[t]);
+      }
     }
     function destroy() {
       stop();
+      for (var b = 0; b < bound.length; b++) {
+        bound[b][0].removeEventListener("click", bound[b][1]);
+      }
+      bound = [];
       for (var k = 0; k < panels.length; k++) {
         panels[k].classList.remove("orbit-loader-swap-panel", "is-in", "is-out");
         panels[k].style.zIndex = "";

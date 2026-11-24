@@ -142,14 +142,14 @@
       html: "<div style='padding:16px 18px;display:flex;flex-direction:column;gap:9px;height:100%;box-sizing:border-box'>" +
             "<div class='tl-auth' style='position:relative;flex:1'>" +
             "<div style='display:flex;flex-direction:column;gap:9px;height:100%'>" +
-            "<div style='display:flex;align-items:baseline'><span style='" + DISPLAY + "font-size:13.5px;font-weight:600;color:#faf9f5'>Welcome back</span><span style='" + DISPLAY + "margin-left:auto;font-size:10px;color:#8f8d84'>No account? <span style='color:#d97757;font-weight:600'>Sign up</span></span></div>" +
+            "<div style='display:flex;align-items:baseline'><span style='" + DISPLAY + "font-size:13.5px;font-weight:600;color:#faf9f5'>Welcome back</span><span style='" + DISPLAY + "margin-left:auto;font-size:10px;color:#8f8d84'>No account? <span class='tl-go-signup' style='color:#d97757;font-weight:600;cursor:pointer'>Sign up</span></span></div>" +
             mockField("Email", "hi@traceloop.dev", "#8f8d84") +
             mockField("Password", "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022", "#8f8d84") +
             authBtn("Log in", "#d97757", "#141413") +
             "<div style='" + BODY + "font-size:10px;color:#8f8d84;text-align:center'>Trusted by 40,000 builders</div>" +
             "</div>" +
             "<div style='display:flex;flex-direction:column;gap:9px;height:100%'>" +
-            "<div style='display:flex;align-items:baseline'><span style='" + DISPLAY + "font-size:13.5px;font-weight:600;color:#faf9f5'>Create your account</span><span style='" + DISPLAY + "margin-left:auto;font-size:10px;color:#8f8d84'>Have one? <span style='color:#d97757;font-weight:600'>Log in</span></span></div>" +
+            "<div style='display:flex;align-items:baseline'><span style='" + DISPLAY + "font-size:13.5px;font-weight:600;color:#faf9f5'>Create your account</span><span style='" + DISPLAY + "margin-left:auto;font-size:10px;color:#8f8d84'>Have one? <span class='tl-go-login' style='color:#d97757;font-weight:600;cursor:pointer'>Log in</span></span></div>" +
             mockField("Full name", "Mara Lindqvist", "#8f8d84") +
             mockField("Work email", "mara@acme.co", "#8f8d84") +
             authBtn("Create account", "#d97757", "#141413") +
@@ -160,7 +160,8 @@
     },
     parts: [
       { style: "swap", el: ".tl-auth",
-        options: { axis: "x", exitMs: 170, durationMs: 300, restMs: 2800 } }
+        options: { axis: "x", exitMs: 170, durationMs: 300, restMs: 2800,
+          triggers: [{ sel: ".tl-go-signup", to: 1 }, { sel: ".tl-go-login", to: 0 }] } }
     ]
   },
   {
