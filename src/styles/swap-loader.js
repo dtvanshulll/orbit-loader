@@ -65,7 +65,6 @@
 
     var index = -1;
     var timer = null;
-    var swapping = false;
 
     /** Mark `i` as the only visible panel, no motion. */
     function settle(i) {
@@ -82,16 +81,24 @@
      * One-shot swap to panel `i`. The leaving panel accelerates out
      * while the arriving one decelerates in from the far side — both
      * fade, so the trade reads as a place changing, not two boxes
-     * flying. Interruptible: a swap mid-flight retargets cleanly
-     * because each panel's animation replaces the previous one.
+     * flying. Self-healing: every panel except the two trading places
+     * is forced to its rest state first, so a swap whose finish event
+     * never fired (a throttled background tab) can't leave stale
+     * classes behind, and a swap interrupted by the next one simply
+     * retargets — the newer animation wins per property.
      */
     function swapTo(i) {
       i = ((i % panels.length) + panels.length) % panels.length;
-      if (i === index || swapping) return;
-      var from = panels[index < 0 ? i : index];
+      if (i === index) return;
+      var fromIdx = index < 0 ? i : index;
+      var from = panels[fromIdx];
       var to = panels[i];
-      swapping = true;
-      if (reducedMotion || !from.animate) { settle(i); swapping = false; return; }
+      for (var k = 0; k < panels.length; k++) {
+        if (k === i || k === fromIdx) continue;
+        panels[k].classList.remove("is-in");
+        panels[k].classList.add("is-out");
+      }
+      if (reducedMotion || !from.animate) { settle(i); return; }
       to.style.zIndex = 2;
       from.style.zIndex = 1;
       to.classList.remove("is-out");
@@ -101,16 +108,15 @@
          { opacity: 0, transform: move + "(-" + distance + "%)" }],
         { duration: exitMs, easing: "cubic-bezier(0.3, 0, 1, 1)", fill: "forwards" }
       );
-      var a = to.animate(
+      to.animate(
         [{ opacity: 0, transform: move + "(" + distance + "%)" },
          { opacity: 1, transform: move + "(0)" }],
         { duration: durationMs, easing: "cubic-bezier(0.23, 1, 0.32, 1)", fill: "forwards" }
-      );
-      a.onfinish = function () {
+      ).onfinish = function () {
+        // Best-effort cleanup when the finish event fires; the sanitize
+        // at the next swapTo heals the classes when it doesn't.
         from.classList.remove("is-in");
         from.classList.add("is-out");
-        from.style.transform = "";
-        swapping = false;
       };
       index = i;
     }

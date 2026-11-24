@@ -16,6 +16,7 @@
   var APPLE = "M12 6.528V3a1 1 0 0 1 1-1 M18.237 21A15 15 0 0 0 22 11a6 6 0 0 0-10-4.472A6 6 0 0 0 2 11a15.1 15.1 0 0 0 3.763 10a3 3 0 0 0 3.648.648a5.5 5.5 0 0 1 5.178 0A3 3 0 0 0 18.237 21";
   var DOWNLOAD = "M12 15V3m9 12v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4 M7 10l5 5 5-5";
   var STAR = "M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z";
+  var CHECK_ICON = "<svg viewBox='0 0 24 24' width='22' height='22' aria-hidden='true'><path d='M20 6L9 17l-5-5' fill='none' stroke='#788c5d' stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5'/></svg>";
   var SEND = "<svg viewBox='0 0 24 24' width='15' height='15' aria-hidden='true'><path d='M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z' fill='none' stroke='#141413' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/></svg>";
 
   // Sourced Lucide path renderer (better-icons).
@@ -191,6 +192,73 @@
         options: { variant: "fill", durationMs: 2200, restMs: 1400, color: "#141413" } }
     ]
   },
+  {
+    name: "Wizard Steps",
+    category: "Auth",
+    style: "swap",
+    note: "Three panels cycling: account, workspace, done — the step dots track which one is live",
+    box: {
+      width: 320, height: 226,
+      html: "<div style='padding:16px 18px;display:flex;flex-direction:column;gap:9px;height:100%;box-sizing:border-box'>" +
+            "<div style='display:flex;align-items:center;gap:6px'>" +
+            wizardDot(1) + wizardDot(2) + wizardDot(3) +
+            "<span style='" + DISPLAY + "margin-left:auto;font-size:10px;color:#8f8d84'>Workspace setup</span></div>" +
+            "<div class='tl-wiz' style='position:relative;flex:1'>" +
+            "<div style='display:flex;flex-direction:column;gap:9px;height:100%'>" +
+            "<span style='" + DISPLAY + "font-size:13px;font-weight:600;color:#faf9f5'>Your account</span>" +
+            mockField("Email", "hi@traceloop.dev", "#8f8d84") +
+            authBtn("Continue", "#d97757", "#141413") +
+            "</div>" +
+            "<div style='display:flex;flex-direction:column;gap:9px;height:100%'>" +
+            "<span style='" + DISPLAY + "font-size:13px;font-weight:600;color:#faf9f5'>Your workspace</span>" +
+            mockField("Workspace name", "Acme Studio", "#8f8d84") +
+            authBtn("Continue", "#d97757", "#141413") +
+            "</div>" +
+            "<div style='display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;height:100%'>" +
+            CHECK_ICON +
+            "<span style='" + DISPLAY + "font-size:13px;font-weight:600;color:#faf9f5'>You\u2019re all set</span>" +
+            authBtn("Open dashboard", "#d97757", "#141413") +
+            "</div>" +
+            "</div></div>",
+      styleCss: CARD
+    },
+    parts: [
+      { style: "swap", el: ".tl-wiz",
+        options: { axis: "x", exitMs: 170, durationMs: 300, restMs: 2600 } }
+    ]
+  },
+  {
+    name: "Settings Flip",
+    category: "Auth",
+    style: "swap",
+    note: "Settings and profile trading places in one card — vertical this time, so the trade reads as a page turn",
+    box: {
+      width: 320, height: 226,
+      html: "<div style='padding:14px 18px;display:flex;flex-direction:column;gap:8px;height:100%;box-sizing:border-box'>" +
+            "<div style='display:flex;align-items:center;gap:8px'>" +
+            "<span class='tl-set-tab is-on' style='" + DISPLAY + "font-size:11px;font-weight:600;color:#faf9f5'>Settings</span>" +
+            "<span class='tl-set-tab' style='" + DISPLAY + "font-size:11px;font-weight:500;color:#8f8d84'>Profile</span></div>" +
+            "<div class='tl-set' style='position:relative;flex:1'>" +
+            "<div style='display:flex;flex-direction:column;gap:7px;height:100%'>" +
+            setRow("Email notifications", "On") +
+            setRow("Weekly digest", "Off") +
+            setRow("Two-factor auth", "On") +
+            setRow("Public profile", "Off") +
+            "</div>" +
+            "<div style='display:flex;flex-direction:column;gap:9px;height:100%;align-items:center'>" +
+            "<span style='width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#6a9bcc,#3a5a7a);display:flex;align-items:center;justify-content:center;" + DISPLAY + "font-size:15px;font-weight:600;color:#faf9f5'>ML</span>" +
+            "<span style='" + DISPLAY + "font-size:12.5px;font-weight:600;color:#faf9f5'>Mara Lindqvist</span>" +
+            "<span style='" + BODY + "font-size:11px;color:#8f8d84'>mara@acme.co</span>" +
+            "<div style='width:100%;margin-top:auto'>" + authBtn("Edit profile", "#262420", "#faf9f5") + "</div>" +
+            "</div>" +
+            "</div></div>",
+      styleCss: CARD
+    },
+    parts: [
+      { style: "swap", el: ".tl-set",
+        options: { axis: "y", exitMs: 170, durationMs: 300, restMs: 2800 } }
+    ]
+  },
   );
 
   function otpBox(cls) {
@@ -210,4 +278,18 @@
     return "<div style='height:38px;display:flex;align-items:center;justify-content:center;background:" + bg + ";border-radius:8px;" + DISPLAY + "font-size:12.5px;font-weight:600;color:" + color + "'>" + label + "</div>";
   }
 
+  // Step dot for the wizard header: filled = visited, ringed = ahead.
+  function wizardDot(n) {
+    var on = n === 1;
+    return "<span style='width:8px;height:8px;border-radius:50%;" +
+      (on ? "background:#d97757;" : "border:1.5px solid #3f3d34;") + "'></span>";
+  }
+  function setRow(label, state) {
+    var on = state === "On";
+    return "<div style='display:flex;align-items:center;background:#262420;border:1px solid #33312c;border-radius:8px;padding:9px 12px'>" +
+      "<span style='" + DISPLAY + "font-size:11.5px;font-weight:500;color:#faf9f5'>" + label + "</span>" +
+      "<span style='margin-left:auto;width:26px;height:15px;border-radius:999px;background:" + (on ? "#788c5d" : "#3f3d34") + ";position:relative;flex:none'>" +
+      "<span style='position:absolute;top:2px;" + (on ? "right:2px" : "left:2px") + ";width:11px;height:11px;border-radius:50%;background:#faf9f5'></span></span></div>";
+
+  }
 })(typeof window !== "undefined" ? window : this);
