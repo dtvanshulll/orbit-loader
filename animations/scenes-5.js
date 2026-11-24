@@ -11,7 +11,7 @@
   var CARD = "background:#1c1b19;border:1px solid #33312c;border-radius:10px;box-shadow:" + SHADOW + ";";
   var DISPLAY = "font-family:var(--pg-font-head,Poppins,Arial,sans-serif);";
   var BODY = "font-family:var(--pg-font-body,Lora,Georgia,serif);";
-  var MAIL = "m22 7l-8.991 5.727a2 2 0 0 1-2.009 0L2 7";
+  var MAIL = "<rect width='20' height='16' x='2' y='4' rx='2'/><path d='m22 7l-8.991 5.727a2 2 0 0 1-2.009 0L2 7'/>";
   var SEARCH = "m21 21l-4.34-4.34";
   var FOLDER = "M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z";
   var ZAP = "M15.914 4a1.5 1.5 0 0 0-2.474-1.561l-9 9A1.5 1.5 0 0 0 5.5 14h4.002a.5.5 0 0 1 .471.666L8.086 20a1.5 1.5 0 0 0 2.475 1.56l9-9A1.5 1.5 0 0 0 18.5 10h-3.997a.5.5 0 0 1-.472-.667z";
@@ -41,7 +41,7 @@
     box: {
       width: 320, height: 190,
       html: "<div style='padding:12px 16px;display:flex;flex-direction:column;height:100%;box-sizing:border-box'>" +
-            "<div style='display:flex;align-items:center;gap:7px;padding-bottom:8px'>" + lucide(MAIL, 14, 14, "#8f8d84") +
+            "<div style='display:flex;align-items:center;gap:7px;padding-bottom:8px'>" + "<svg viewBox='0 0 24 24' width='14' height='14' aria-hidden='true' fill='none' stroke='#8f8d84' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'>" + MAIL + "</svg>" +
             "<span style='" + DISPLAY + "font-size:12.5px;font-weight:600;color:#faf9f5'>Inbox</span>" +
             "<span class='tl-unread' style='position:relative;width:20px;height:20px;display:flex;align-items:center;justify-content:center;flex:none'><span style='" + DISPLAY + "font-size:9px;font-weight:600;color:#d97757'>3</span></span>" +
             "<span style='" + DISPLAY + "margin-left:auto;font-size:9.5px;color:#8f8d84'>Today</span></div>" +
@@ -104,8 +104,8 @@
   {
     name: "Notification Toggles",
     category: "Settings",
-    style: "orbit",
-    note: "A preferences list whose active toggle draws its own knob track",
+    style: "pulse",
+    note: "A preferences list where the enabled toggle breathes softly",
     box: {
       width: 320, height: 178,
       html: "<div style='padding:12px 16px;display:flex;flex-direction:column;height:100%;box-sizing:border-box'>" +
@@ -117,8 +117,8 @@
       styleCss: CARD
     },
     parts: [
-      { style: "orbit", el: ".tl-tog-on",
-        options: { d: "M2,0 V16", durationMs: 1200, restMs: 1600, strokeWidth: 3, color: "#788c5d", guideOpacity: 0.3 } }
+      { style: "pulse", el: ".tl-tog-on",
+        options: { rings: 1, durationMs: 2200, strokeWidth: 4, maxOpacity: 0.35, color: "#788c5d" } }
     ]
   },
 

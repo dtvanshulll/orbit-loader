@@ -16,6 +16,9 @@
 
   var SHADOW = "0 2px 8px rgba(0, 0, 0, 0.22)";
   var CARD = "background:#1c1b19;border:1px solid #33312c;border-radius:10px;box-shadow:" + SHADOW + ";";
+  var SEND = "<svg viewBox='0 0 24 24' width='14' height='14' aria-hidden='true'><path d='M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11zm7.318-19.539l-10.94 10.939' fill='none' stroke='#141413' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/></svg>";
+  var COOKIE = "<svg viewBox='0 0 24 24' width='20' height='20' aria-hidden='true'><path d='M11 17h.01m.486-15c.324-.016.558.292.529.615a4 4 0 0 0 4.235 4.368a.713.713 0 0 1 .758.757a4 4 0 0 0 4.366 4.237c.323-.03.63.204.614.527a10 10 0 0 1-2.915 6.566A1 1 0 1 1 4.93 4.918A10 10 0 0 1 11.496 2M12 12h.01M16 16h.01M16 3h.01M21 4h.01M21 8h.01M7 14h.01M9 8h.01' fill='none' stroke='#d97757' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/></svg>";
+  var CHEVD = "<svg viewBox='0 0 24 24' width='15' height='15' aria-hidden='true'><path d='m6 9l6 6l6-6' fill='none' stroke='#8f8d84' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/></svg>";
   var DISPLAY = "font-family:var(--pg-font-head,Poppins,Arial,sans-serif);";
   var BODY = "font-family:var(--pg-font-body,Lora,Georgia,serif);";
   function rankRow(place, name, score, frac, color, n) {
@@ -134,14 +137,17 @@
     style: "accordion",
     note: "A support question: the header stays put while the answer grows and the edge draws down",
     box: {
-      width: 320, height: 308,
+      width: 320, height: 194,
       styleCss: CARD,
-      html: "<div style='padding:14px 16px;display:flex;flex-direction:column;gap:10px'>" +
+      html: "<div style='padding:14px 16px;display:flex;flex-direction:column;gap:10px;height:100%;box-sizing:border-box'>" +
             "<div style='" + DISPLAY + "font-size:11px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:#b0aea5'>Support</div>" +
             "<div class='tl-acc' style='position:relative;background:#262420;border:1px solid #33312c;border-radius:8px'>" +
             "<div style='height:44px;display:flex;align-items:center;padding:0 14px'><span style='" + DISPLAY + "font-size:13px;font-weight:500;color:#faf9f5'>Does it work without a bundler?</span></div>" +
-            "<div style='padding:2px 14px 12px;font-size:12px;line-height:1.55;color:#b0aea5;" + BODY + "'>Yes &mdash; every style is a plain script tag. Load the UMD build and call the loader. That's the whole install.</div>" +
-            "</div></div>"
+            "<div style='padding:2px 14px 12px;font-size:12px;line-height:1.55;color:#b0aea5;" + BODY + "'>Yes &mdash; every style is a plain script tag.</div>" +
+            "</div>" +
+            "<div style='margin-top:auto;display:flex;align-items:center;justify-content:space-between;background:#262420;border:1px solid #33312c;border-radius:8px;height:44px;padding:0 14px'>" +
+            "<span style='" + DISPLAY + "font-size:13px;font-weight:500;color:#faf9f5'>Can I restyle the trail?</span>" + CHEVD + "</div>" +
+            "</div>"
     },
     parts: [
       { style: "accordion", el: ".tl-acc",
@@ -153,22 +159,32 @@
     name: "Feedback Typing",
     category: "Feedback",
     style: "typing",
-    note: "A support widget: your message sent, and the agent's reply typing itself",
+    note: "A support chat: your question sent, the agent online and already typing back",
     box: {
-      width: 300, height: 170,
-      html: "<div style='padding:16px;display:flex;flex-direction:column;gap:10px;height:100%;box-sizing:border-box'>" +
-            "<div style='display:flex;align-items:center;gap:8px'>" +
-            "<span style='width:22px;height:22px;border-radius:50%;background:#6a9bcc;flex:none'></span>" +
-            "<span style='" + DISPLAY + "font-size:12px;font-weight:500;color:#faf9f5'>Support &middot; Anshul</span>" +
+      width: 320, height: 226,
+      html: "<div style='display:flex;flex-direction:column;height:100%;box-sizing:border-box'>" +
+            "<div style='display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid #33312c'>" +
+            "<span style='width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#d97757,#6a9bcc);flex:none'></span>" +
+            "<span style='" + DISPLAY + "font-size:12px;font-weight:600;color:#faf9f5'>Support &middot; Anshul</span>" +
+            "<span class='tl-online' style='position:relative;width:9px;height:9px;border-radius:50%;background:#788c5d;flex:none'></span>" +
             "<span style='" + DISPLAY + "margin-left:auto;font-size:10px;color:#8f8d84'>now</span></div>" +
-            "<div style='align-self:flex-end;max-width:80%;background:#33312c;border-radius:12px 12px 4px 12px;padding:8px 12px;font-size:12px;color:#faf9f5;" + BODY + "'>Hey &mdash; does the trail option work on letters too?</div>" +
-            "<div class='tl-typing' style='align-self:flex-start;width:62px;box-sizing:content-box;background:#262420;border:1px solid #33312c;border-radius:12px 12px 12px 4px;padding:10px 14px'></div>" +
-            "</div>",
+            "<div style='flex:1;padding:12px 16px;display:flex;flex-direction:column;gap:8px'>" +
+            "<div style='align-self:flex-end;max-width:85%;background:#d97757;border-radius:12px 12px 4px 12px;padding:8px 12px;font-size:11.5px;line-height:1.45;color:#141413;" + BODY + "'>Hey &mdash; does the trail option work on letters too?</div>" +
+            "<div style='display:flex;align-items:flex-end;gap:7px'>" +
+            "<span style='width:20px;height:20px;border-radius:50%;background:#3f3d34;flex:none'></span>" +
+            "<div class='tl-typing' style='align-self:flex-start;width:58px;box-sizing:content-box;background:#262420;border:1px solid #33312c;border-radius:12px 12px 12px 4px;padding:10px 14px'></div>" +
+            "</div></div>" +
+            "<div style='display:flex;align-items:center;gap:8px;padding:10px 12px;border-top:1px solid #33312c'>" +
+            "<span style='flex:1;height:32px;display:flex;align-items:center;background:#262420;border:1px solid #33312c;border-radius:999px;padding:0 12px;box-sizing:border-box;font-size:11px;color:#6a655c;" + BODY + "'>Write a message&hellip;</span>" +
+            "<span style='width:30px;height:30px;border-radius:50%;background:#d97757;display:flex;align-items:center;justify-content:center;flex:none'>" + SEND + "</span>" +
+            "</div></div>",
       styleCss: CARD
     },
     parts: [
       { style: "typing", el: ".tl-typing",
-        options: { dots: 3, durationMs: 1000, staggerMs: 180, dotRadius: 6, color: "#b0aea5" } }
+        options: { dots: 3, durationMs: 1000, staggerMs: 180, dotRadius: 5, color: "#d97757" } },
+      { style: "pulse", el: ".tl-online",
+        options: { rings: 1, durationMs: 2000, strokeWidth: 4, maxOpacity: 0.4, color: "#788c5d" } }
     ]
   },
 
@@ -176,20 +192,23 @@
     name: "Cookie Consent",
     category: "Cookie Banner",
     style: "toast",
-    note: "A consent banner whose remaining time drains along its bottom edge \u2014 decide before it does",
+    note: "A consent banner that drops in, counts down to auto-dismiss, then leaves",
     box: {
-      width: 320, height: 74,
-      html: "<div style='display:flex;align-items:center;gap:12px;height:100%;padding:12px 16px;box-sizing:border-box'>" +
-            "<svg viewBox='0 0 24 24' width='18' height='18' aria-hidden='true' fill='none' stroke='#d97757' stroke-width='2' stroke-linecap='round' style='flex:none'><path d='M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5'/><circle cx='8.5' cy='10.5' r='0.5' fill='#d97757'/><circle cx='15.5' cy='13.5' r='0.5' fill='#d97757'/><circle cx='11' cy='16' r='0.5' fill='#d97757'/></svg>" +
-            "<span style='flex:1;font-size:12px;line-height:1.4;color:#faf9f5;" + BODY + "'>We use cookies to improve your experience.</span>" +
-            "<span style='" + DISPLAY + "font-size:12px;font-weight:500;color:#8f8d84;flex:none'>Decline</span>" +
-            "<span style='" + DISPLAY + "font-size:12px;font-weight:500;color:#141413;background:#d97757;border-radius:6px;padding:6px 12px;flex:none'>Accept</span>" +
+      width: 320, height: 100,
+      html: "<div style='display:flex;align-items:center;gap:12px;height:100%;padding:14px 16px;box-sizing:border-box'>" +
+            COOKIE +
+            "<span style='flex:1;min-width:0'>" +
+            "<span style='" + DISPLAY + "display:block;font-size:11.5px;font-weight:600;color:#faf9f5'>We value your privacy</span>" +
+            "<span style='" + BODY + "display:block;font-size:10.5px;line-height:1.45;color:#8f8d84;margin-top:2px'>Cookies help us serve the demo. No tracking.</span></span>" +
+            "<span style='display:flex;gap:6px;flex:none;align-items:center'>" +
+            "<span style='display:flex;height:30px;padding:0 10px;align-items:center;border:1px solid #3f3d34;border-radius:6px;font-size:11px;font-weight:500;color:#b0aea5;" + DISPLAY + "'>Manage</span>" +
+            "<span style='display:flex;height:30px;padding:0 12px;align-items:center;background:#d97757;border-radius:6px;font-size:11px;font-weight:600;color:#141413;" + DISPLAY + "'>Accept</span></span>" +
             "</div>",
       styleCss: CARD
     },
     parts: [
       { style: "toast",
-        options: { thickness: 3, durationMs: 4200, restMs: 1500, color: "#d97757" } }
+        options: { enter: "drop", thickness: 3, durationMs: 4200, restMs: 1600, color: "#d97757" } }
     ]
   },
 
