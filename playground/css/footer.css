@@ -50,7 +50,7 @@
 /* Touch: fingers need room. Cards are dense on purpose for mouse users, so
    the target only grows on coarse pointers rather than bloating every row. */
 @media (pointer: coarse) {
-  .pg-copy, .pg-tune { min-height: 40px; padding: 10px 14px; }
+  .pg-copy, .pg-tune { min-height: 40px; }
   .pg-menu-btn { width: 44px; height: 44px; }
   .pg-nav-item { padding: 12px; }
   .pg-hero-cta { padding: 14px 24px; }

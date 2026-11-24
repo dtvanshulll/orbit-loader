@@ -52,8 +52,10 @@
     codeHead.appendChild(codeLabel);
     var copyCode = document.createElement("button");
     copyCode.className = "pg-copy";
-    copyCode.textContent = "Copy";
-    copyCode.dataset.label = "Copy";
+    copyCode.innerHTML = PG.ICON_COPY;
+    copyCode.setAttribute("aria-label", "Copy code");
+    copyCode.title = "Copy code";
+    copyCode.dataset.label = "Copy code";
     copyCode.addEventListener("click", function () { copy(buildSnippet(card), copyCode); });
     codeHead.appendChild(copyCode);
     code.appendChild(codeHead);

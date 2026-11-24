@@ -110,6 +110,9 @@
   }
   function exitIntro() {
     document.body.classList.remove("pg-intro");
+    // Cards that need a real measurement (textBox) queued while the
+    // catalog was hidden — draw them now that layout exists.
+    if (PG.renderPending) PG.renderPending();
   }
   function isIntro() {
     return document.body.classList.contains("pg-intro");

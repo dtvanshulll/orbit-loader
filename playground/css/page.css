@@ -14,16 +14,19 @@ body.pg-intro .pg-hero-inner { width: 100%; }
 
 /* ---------- search (intro) ---------- */
 
+/* The search lives in the header now — reachable from both the intro
+   and the catalog, which is the whole point of a search bar. */
 .pg-search {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-top: 24px;
-  max-width: 460px;
-  padding: 0 14px;
+  gap: 8px;
+  flex: 0 1 300px;
+  min-width: 0;
+  padding: 0 12px;
+  height: 38px;
   background: var(--pg-card);
   border: 1px solid var(--pg-border);
-  border-radius: 10px;
+  border-radius: 8px;
   transition: border-color var(--pg-dur-fast) ease;
 }
 .pg-search:focus-within { border-color: var(--pg-accent); }
@@ -32,11 +35,11 @@ body.pg-intro .pg-hero-inner { width: 100%; }
 .pg-search input {
   flex: 1 1 auto;
   min-width: 0;
-  padding: 12px 0;
+  padding: 0;
   background: transparent;
   border: 0;
   color: var(--pg-text);
-  font-size: 15px;
+  font-size: 13px;
   outline: none;
 }
 .pg-search input::placeholder { color: var(--pg-muted); }
@@ -51,6 +54,12 @@ body.pg-intro .pg-hero-inner { width: 100%; }
   padding: 1px 6px;
 }
 .pg-search:focus-within .pg-search-kbd { display: none; }
+
+/* The header is one row on phones; the drawer carries navigation there,
+   and a 300px search would crowd it out. */
+@media (max-width: 719px) {
+  .pg-search { display: none; }
+}
 
 /* The line between the search and the results, when a query is live. */
 .pg-results {

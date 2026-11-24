@@ -140,10 +140,12 @@
 
   function copy(text, btn) {
     var done = function () {
-      btn.textContent = "Copied!";
+      btn.innerHTML = PG.ICON_CHECK;
+      btn.setAttribute("aria-label", "Copied");
       btn.classList.add("pg-copied");
       setTimeout(function () {
-        btn.textContent = btn.dataset.label;
+        btn.innerHTML = PG.ICON_COPY;
+        btn.setAttribute("aria-label", btn.dataset.label);
         btn.classList.remove("pg-copied");
       }, 1400);
     };

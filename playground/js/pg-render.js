@@ -7,6 +7,14 @@
   var PG = global.PG = global.PG || {};
   var GLOBALS = PG.GLOBALS;
   var CONTAINER_STYLES = PG.CONTAINER_STYLES;
+
+  // Cards whose path needs a real measurement (textBox) can't be drawn
+  // while they're hidden — the intro keeps the whole catalog display:none
+  // at init, and a hidden element measures 0x0, which collapses the box
+  // to nothing. Those cards queue here and re-render the moment the
+  // catalog becomes visible (exitIntro calls PG.renderPending()).
+  var pendingMeasure = [];
+
   // Turn a `d` recipe into { d, guideD, viewBox }. "textBox" is resolved
   // against the animation's own box element (it measures real layout).
   function resolveD(spec, boxEl) {
@@ -52,6 +60,13 @@
   // every edit — cheap, since each style's create() is trivial.
   function render(card) {
     var cfg = card.cfg;
+    // A measurement-path card in a hidden subtree would draw a 0x0 box;
+    // queue it instead of rendering a broken animation.
+    if (cfg.options && cfg.options.d && cfg.options.d.shape === "textBox" &&
+        !card.stage.offsetWidth) {
+      if (pendingMeasure.indexOf(card) < 0) pendingMeasure.push(card);
+      return;
+    }
     if (card.controller) card.controller.destroy();
     card.stage.innerHTML = "";
     var boxEl = buildBox(cfg.box || {});
@@ -75,4 +90,11 @@
   PG.resolveD = resolveD;
   PG.buildBox = buildBox;
   PG.render = render;
+  // Re-render every card that was queued while hidden. Safe to call any
+  // time — cards still hidden simply re-queue.
+  PG.renderPending = function () {
+    var list = pendingMeasure;
+    pendingMeasure = [];
+    for (var i = 0; i < list.length; i++) render(list[i]);
+  };
 })(typeof window !== "undefined" ? window : this);
