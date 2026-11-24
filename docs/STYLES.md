@@ -15,7 +15,7 @@ Shared conventions:
 - Controllers always expose `start()`, `stop()`, `destroy()`,
   `isRunning()`, plus the style-specific members listed below.
 
-## OrbitLoader — `orbit-loader.js`
+## OrbitLoader — `src/styles/orbit-loader.js`
 
 The core crawler: a glowing segment traces the path forever.
 
@@ -23,7 +23,7 @@ The core crawler: a glowing segment traces the path forever.
 
 | option | default | meaning |
 |---|---|---|
-| `d` | required | the path to trace (a `d` string, or a resolved shape from `shapes.js`) |
+| `d` | required | the path to trace (a `d` string, or a resolved shape from `src/shapes/`) |
 | `viewBox` | `"0 0 100 100"` | MUST match the coordinate space `d` was written in |
 | `segmentFraction` | `0.18` | how much of the lap the glowing segment covers |
 | `durationMs` | `2200` | time for one full lap |

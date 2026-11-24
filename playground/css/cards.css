@@ -1,0 +1,75 @@
+/* ---------- cards ---------- */
+
+.pg-cards {
+  max-width: 1336px;
+  margin: 0 auto 0 0;
+  padding: 0 32px;
+}
+
+.pg-card {
+  /* Keep card tops clear of the sticky header when scrolled to. */
+  scroll-margin-top: 136px;
+  background: var(--pg-card);
+  border: 1px solid var(--pg-border);
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  /* A grid item defaults to min-width:auto, so a long unbroken code line
+     could widen the whole column past the viewport. */
+  min-width: 0;
+  transition: border-color 0.15s ease;
+}
+.pg-card:hover { border-color: #423f38; }
+.pg-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.pg-card h3 {
+  font-family: var(--pg-font-head); margin: 0; font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+.pg-copy {
+  font: 12px/1.4 system-ui, sans-serif;
+  padding: 6px 12px;
+  background: transparent;
+  color: var(--pg-secondary);
+  border: 1px solid var(--pg-border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.pg-copy:hover { color: var(--pg-text); border-color: var(--pg-muted); }
+.pg-copy:active { transform: scale(0.97); }
+.pg-copy:focus-visible { outline: 2px solid var(--pg-accent); outline-offset: 2px; }
+.pg-copy.pg-copied { color: var(--pg-mint, #788c5d); border-color: var(--pg-mint, #788c5d); }
+/* Quiet mono meta instead of a colored badge — the style name is
+   information, not decoration. */
+.pg-card .pg-style-tag {
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 11px;
+  color: var(--pg-muted);
+  margin-left: 8px;
+}
+.pg-note { margin: 4px 0 0; font-family: var(--pg-font-body); font-size: 13px; color: var(--pg-secondary); }
+
+/* Flat instrument screen: the loader is the only thing on it. */
+.pg-stage {
+  background: var(--pg-stage);
+  border: 0;
+  border-radius: 8px;
+  min-height: 128px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  position: relative;
+  overflow: hidden;
+}
+/* One stage height per section: when two cards in a row have demos of
+   different heights, their snippets and Tune rows land at different
+   y-positions and the row stops reading as a row. */
+#sec-ui-transitions .pg-stage { min-height: 150px; }
+#sec-components .pg-stage { min-height: 236px; }
+

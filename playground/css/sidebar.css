@@ -1,0 +1,149 @@
+/* ---------- sidebar (fixed app-shell nav) ---------- */
+
+.pg-sidebar {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 240px;
+  /* Same surface as the page: the rail is part of the canvas, delineated
+     by its hairline, not a lighter panel floating on it. Hangs below the
+     header on desktop; overlays everything when it slides in on mobile. */
+  top: var(--pg-header-h);
+  background: var(--pg-bg);
+  border-right: 1px solid var(--pg-border);
+  padding: 20px 14px;
+  z-index: 60;
+  /* Column: brand and footer are pinned, the list between them scrolls. */
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  transform: translateX(-100%);
+  visibility: hidden;
+  transition: transform 0.28s var(--pg-ease-out), visibility 0s linear 0.28s;
+}
+@media (min-width: 1000px) {
+  .pg-sidebar {
+    transform: none;
+    visibility: visible;
+    transition: none;
+  }
+  /* The header is full width now, so the offset moves to the content
+     zones instead of the body (which would push the header right too). */
+  body { padding-left: 0; }
+  .pg-hero, .pg-cards, .pg-footer { margin-left: 240px; }
+}
+@media (max-width: 999px) {
+  .pg-sidebar { top: 0; }
+  body.pg-sidebar-open .pg-sidebar {
+    transform: none;
+    visibility: visible;
+    transition: transform 0.28s var(--pg-ease-out);
+  }
+}
+
+/* ---------- sidebar items ---------- */
+
+.pg-menu-btn {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--pg-text);
+  border: 1px solid var(--pg-border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.pg-menu-btn:hover { background: #262420; }
+.pg-menu-btn:focus-visible { outline: 2px solid var(--pg-accent); outline-offset: 2px; }
+/* Desktop: the rail is permanent, so the hamburger would be a dead
+   control. This has to come after the base rule above to win. */
+@media (min-width: 1000px) {
+  .pg-menu-btn { display: none; }
+}
+
+/* Brand lives in the header now (one shell, one wordmark); these rules
+   remain only because the mobile drawer could reuse them later. */
+.pg-nav-head {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  flex: none;
+}
+.pg-nav-sub {
+  font-size: 12px;
+  color: var(--pg-muted);
+  margin: 0 0 16px;
+  flex: none;
+}/* The scrolling middle: full-bleed inside the sidebar's padding so the
+   scrollbar sits on the edge instead of floating inside the nav column. */
+.pg-nav-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  margin: 0 -14px;
+  padding: 0 14px;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #3a3831 transparent;
+}
+.pg-nav-scroll::-webkit-scrollbar { width: 8px; }
+.pg-nav-scroll::-webkit-scrollbar-track { background: transparent; }
+.pg-nav-scroll::-webkit-scrollbar-thumb {
+  background: #3a3831;
+  border-radius: 4px;
+}
+.pg-nav-scroll::-webkit-scrollbar-thumb:hover { background: #4a473e; }
+.pg-nav-group {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--pg-muted);
+  margin: 20px 0 8px;
+  transition: color 0.12s ease;
+}
+/* Scrollspy: the heading of the group you're scrolled into lifts to full
+   contrast. Items stay quiet — only the active filter gets a surface. */
+.pg-nav-group.is-current { color: var(--pg-text); }
+.pg-nav-group.is-current .pg-nav-count { color: var(--pg-secondary); }
+.pg-nav-group:first-child { margin-top: 0; }
+.pg-nav-count {
+  flex: none;
+  font-size: 11px;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  color: var(--pg-muted);
+}
+.pg-nav-foot {
+  flex: none;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--pg-border);
+  font-size: 12px;
+  color: var(--pg-muted);
+}
+.pg-nav-list { display: block; }
+.pg-nav-item {
+  display: block;
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: var(--pg-secondary);
+  text-decoration: none;
+  font-size: 13px;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+.pg-nav-item:hover { color: var(--pg-text); }
+.pg-nav-item:focus-visible { outline: 2px solid var(--pg-accent); outline-offset: 2px; }
+/* Active filter: accent bar + full-contrast text on the rail itself —
+   no raised pill. The rail is flat chrome; a filled row would read as a
+   floating widget bolted onto it. */
+.pg-nav-item.is-on {
+  color: var(--pg-text);
+  box-shadow: inset 2px 0 0 var(--pg-accent);
+}

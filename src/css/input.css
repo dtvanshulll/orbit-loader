@@ -1,0 +1,102 @@
+/* input: the underline that draws on focus, the label that floats */
+.orbit-loader-input-line {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  display: block;
+  overflow: visible;
+  pointer-events: none;
+}
+.orbit-loader-input-line-path {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  opacity: 0;
+}
+.is-active .orbit-loader-input-line-path { opacity: 1; }
+.orbit-loader-input-label {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  font-size: 13px;
+  color: var(--tl-muted, #8f8d84);
+  pointer-events: none;
+  transform: translateY(-50%);
+  transition: top 0.25s cubic-bezier(0.2, 0, 0.2, 1), font-size 0.25s ease, color 0.25s ease;
+}
+.tl-focused .orbit-loader-input-label,
+.tl-success .orbit-loader-input-label,
+.tl-error .orbit-loader-input-label {
+  top: 4px;
+  font-size: 12px;
+  color: var(--tl-secondary, #b0aea5);
+}
+.tl-success .orbit-loader-input-label { color: #788c5d; }
+.tl-error .orbit-loader-input-label { color: #d97757; }
+.orbit-loader-input-status {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  transform: translateY(-50%);
+  overflow: visible;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.orbit-loader-input-status path {
+  fill: none;
+  stroke: var(--tl-green, #788c5d);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.orbit-loader-accordion-chevron {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  overflow: visible;
+  transition: transform 0.35s cubic-bezier(0.65, 0, 0.35, 1);
+}
+.orbit-loader-accordion-chevron path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.orbit-loader-accordion-chevron.is-open { transform: rotate(180deg); }
+
+@media (prefers-reduced-motion: reduce) {
+  .orbit-loader-thread.is-active,
+  .orbit-loader-dot.is-active,
+  .orbit-loader-band.is-active,
+  .orbit-loader-shimmer-glow.is-active,
+  .orbit-loader-ring,
+  .orbit-loader-ghost,
+  .orbit-loader-typing-dot,
+  .orbit-loader-tab-seg,
+  .orbit-loader-button-seg,
+  .orbit-loader-search-line,
+  .orbit-loader-modal-frame,
+  .orbit-loader-accordion-edge,
+  .orbit-loader-drawer-edge-line,
+  .orbit-loader-dropdown-frame,
+  .orbit-loader-input-line-path,
+  .orbit-loader-progress-head { opacity: 0; }
+
+  /* the icons are static controls, not animation-driven segments —
+     under reduced motion they stay visible, just never draw */
+  .orbit-loader-search-icon,
+  .orbit-loader-modal-close,
+  .orbit-loader-accordion-chevron { opacity: 1; }
+}
+

@@ -1,0 +1,84 @@
+/* dropdown: the menu that drops while its border draws */
+.orbit-loader-dropdown-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 160px;
+  background: var(--tl-raised, #262420);
+  border-radius: 8px;
+  padding: 6px;
+  opacity: 0;
+  transform: translateY(-6px) scale(0.98);
+  transform-origin: top left;
+  pointer-events: none;
+  transition: opacity 0.22s ease, transform 0.28s cubic-bezier(0.2, 0, 0.2, 1);
+  z-index: 41;
+}
+.orbit-loader-dropdown-panel.tl-open {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.orbit-loader-dropdown-panel.tl-up {
+  top: auto;
+  bottom: calc(100% + 6px);
+  transform-origin: bottom center;
+}
+.orbit-loader-dropdown-trigger {
+  font: 13px/1.4 system-ui, sans-serif;
+  padding: 8px 14px;
+  background: var(--tl-raised, #262420);
+  color: var(--tl-text, #faf9f5);
+  border: 1px solid var(--tl-border, #33312c);
+  border-radius: 8px;
+  cursor: pointer;
+}
+.orbit-loader-dropdown-trigger:hover { background: var(--tl-border, #33312c); }
+.orbit-loader-dropdown-trigger:focus-visible { outline: 2px solid #d97757; outline-offset: 2px; }
+.orbit-loader-dropdown-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--tl-text, #faf9f5);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.orbit-loader-dropdown-row:hover { background: var(--tl-border, #33312c); }
+.orbit-loader-dropdown-row.is-selected { color: var(--tl-text, #faf9f5); }
+.orbit-loader-dropdown-check {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  overflow: visible;
+}
+.orbit-loader-dropdown-check path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+}
+.orbit-loader-dropdown-trace {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+.orbit-loader-dropdown-frame {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  opacity: 0;
+}
+

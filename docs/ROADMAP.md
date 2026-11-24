@@ -8,9 +8,9 @@ rather than building ahead of need.
 
 Per the "adding a new loader style" note in `README.md`, each of these
 would be its own file (`pulse-loader.js`, etc.) with its own `create()`,
-never an `if (style === ...)` branch inside `orbit-loader.js`. The core
+never an `if (style === ...)` branch inside `src/styles/orbit-loader.js`. The core
 stays the single-dash-chasing-a-path effect; anything visually different
-is a different module that can reuse `shapes.js` for its path math.
+is a different module that can reuse `src/shapes/` for its path math.
 
 - **Pulse ring** — a ring that scales/fades in place instead of a segment
   that travels. No dasharray needed at all; a plain CSS
@@ -25,7 +25,7 @@ is a different module that can reuse `shapes.js` for its path math.
 
 ## More shape generators
 
-Add-only, in `shapes.js`, each a pure function returning a `d` string:
+Add-only, in `src/shapes/`, each a pure function returning a `d` string:
 
 - `hexagon(size)`, `pill(width, height)` — more outline presets.
 - `roundedSquareAsymmetric(size, radii)` — independently-radiused corners,

@@ -1,0 +1,90 @@
+/* ---------- transition styles (tab / page / button / toast / progress) ---------- */
+
+/* These six styles are one-shot and triggered by UI actions rather
+   than looping forever. Rails (the faint tracks) stay visible as
+   design elements; moving segments stay hidden until their container
+   is .is-active or an inline style paints them. */
+
+.orbit-loader-tab {
+  display: block;
+  width: 100%;
+  height: 10px;
+  overflow: visible;
+}
+.orbit-loader-tab-labels {
+  display: flex;
+  margin-bottom: 6px;
+}
+.orbit-loader-tab-label {
+  flex: 1;
+  text-align: center;
+  font-size: 12px;
+  cursor: pointer;
+  user-select: none;
+  opacity: 0.75;
+  transition: opacity 0.15s ease;
+}
+.orbit-loader-tab-label:hover { opacity: 1; }
+.orbit-loader-tab-rail {
+  fill: none;
+  stroke: currentColor;
+  opacity: 0.3;
+}
+.orbit-loader-tab-seg {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  opacity: 0;
+}
+.is-active .orbit-loader-tab-seg { opacity: 1; }
+
+.orbit-loader-page {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: block;
+  overflow: visible;
+}
+.orbit-loader-page-bar {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+}
+
+.orbit-loader-button {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+.orbit-loader-button-rail {
+  fill: none;
+  stroke: currentColor;
+  opacity: 0;
+}
+.orbit-loader-button-seg {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  opacity: 0;
+}
+.is-active .orbit-loader-button-seg { opacity: 1; }
+
+.orbit-loader-toast {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: block;
+  overflow: visible;
+}
+.orbit-loader-toast-bar {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+}
+
+.orbit-loader-progress-head { opacity: 0; }
+

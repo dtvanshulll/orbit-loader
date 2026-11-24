@@ -1,0 +1,140 @@
+/* ---------- intro state ---------- */
+
+/* The home page is the intro only: hero and search fill the first screen,
+   the catalog is one deliberate step away (Browse, search, or the sidebar). */
+body.pg-intro .pg-cards,
+body.pg-intro .pg-footer { display: none; }
+body.pg-intro .pg-hero {
+  min-height: calc(100vh - var(--pg-header-h));
+  display: flex;
+  align-items: center;
+  margin-bottom: 0;
+}
+body.pg-intro .pg-hero-inner { width: 100%; }
+
+/* ---------- search (intro) ---------- */
+
+.pg-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 24px;
+  max-width: 460px;
+  padding: 0 14px;
+  background: var(--pg-card);
+  border: 1px solid var(--pg-border);
+  border-radius: 10px;
+  transition: border-color var(--pg-dur-fast) ease;
+}
+.pg-search:focus-within { border-color: var(--pg-accent); }
+.pg-search svg { color: var(--pg-muted); flex: none; }
+.pg-search:focus-within svg { color: var(--pg-accent); }
+.pg-search input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 12px 0;
+  background: transparent;
+  border: 0;
+  color: var(--pg-text);
+  font-size: 15px;
+  outline: none;
+}
+.pg-search input::placeholder { color: var(--pg-muted); }
+.pg-search input::-webkit-search-cancel-button { display: none; }
+.pg-search-kbd {
+  flex: none;
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 11px;
+  color: var(--pg-muted);
+  border: 1px solid var(--pg-border);
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+.pg-search:focus-within .pg-search-kbd { display: none; }
+
+/* The line between the search and the results, when a query is live. */
+.pg-results {
+  margin: 0 0 16px;
+  font-family: var(--pg-font-body);
+  font-size: 14px;
+  color: var(--pg-secondary);
+}
+.pg-results b { color: var(--pg-text); font-weight: 500; }
+
+/* ---------- code block ---------- */
+
+/* The snippet is a labeled panel now: Usage + Copy share one header row
+   directly above the code, so the copy action sits with the thing it
+   copies instead of floating at the top of the card. */
+.pg-code {
+  background: var(--pg-stage);
+  border: 1px solid var(--pg-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.pg-code-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 6px 6px 12px;
+  border-bottom: 1px solid var(--pg-border);
+  background: var(--pg-card);
+}
+.pg-code-label {
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 11px;
+  color: var(--pg-muted);
+}
+.pg-code .pg-snippet {
+  border-top: 0;
+  padding: 12px 14px;
+}
+
+/* ---------- actions ---------- */
+
+.pg-snippet {
+  margin: 0;
+  padding: 12px 0 0;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--pg-border);
+  border-radius: 0;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--pg-muted);
+  overflow-x: auto;
+  white-space: pre;
+}
+.pg-actions button {
+  font: 13px/1.4 system-ui, sans-serif;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+/* ---------- "add your own" card ---------- */
+
+.pg-add {
+  border-style: dashed;
+  justify-content: center;
+  text-align: center;
+  color: var(--pg-secondary);
+  gap: 8px;
+}
+.pg-add h3 { color: var(--pg-text); }
+.pg-add code {
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 12.5px;
+  background: #171614;
+  border: 1px solid var(--pg-border);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+.pg-add a { color: var(--pg-text); text-decoration: underline; text-underline-offset: 2px; }
+.pg-add a:hover { color: #ffffff; }
+

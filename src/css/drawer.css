@@ -1,0 +1,43 @@
+/* drawer: backdrop + the leading edge that draws as the panel slides
+   in. The closed transform is set inline by the JS (it depends on the
+   side); the host class only carries the transition. */
+.orbit-loader-drawer-host {
+  transition: transform 0.42s cubic-bezier(0.65, 0, 0.35, 1);
+  will-change: transform;
+}
+.orbit-loader-drawer-backdrop {
+  background: color-mix(in srgb, var(--tl-stage, #0f0e0d) 72%, transparent);
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 40;
+}
+.orbit-loader-drawer-backdrop.is-active { opacity: 1; }
+.orbit-loader-drawer-edge {
+  position: absolute;
+  display: block;
+  overflow: visible;
+  pointer-events: none;
+}
+.orbit-loader-drawer-edge-line {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  opacity: 0;
+}
+.orbit-loader-drawer-handle {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  margin-left: -18px;
+  overflow: visible;
+  pointer-events: none;
+}
+.orbit-loader-drawer-handle path {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  opacity: 0;
+}
+

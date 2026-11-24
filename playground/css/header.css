@@ -1,0 +1,71 @@
+/* ---------- header ---------- */
+
+.pg-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(14, 14, 18, 0.88);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--pg-border);
+  padding: 0 32px;
+}
+.pg-header-inner {
+  /* Full width, not a centered column: the brand sits above the rail so
+     the header and sidebar read as one shell, not two stacked apps. */
+  height: var(--pg-header-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 0 16px;
+}
+.pg-brand { display: flex; align-items: center; gap: 16px; min-width: 0; }
+.pg-mark { width: 32px; height: 32px; color: var(--pg-accent); flex: none; }
+.pg-brand-text h1 {
+  margin: 0;
+  font-family: var(--pg-font-head);
+  font-size: 18px;
+  font-weight: 600;
+}
+.pg-brand-text h1 span { color: var(--pg-secondary); font-weight: 400; }
+.pg-brand-text p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--pg-secondary);
+  max-width: 62ch;
+}
+.pg-brand-text code {
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 12px;
+  background: var(--pg-raised);
+  border: 1px solid var(--pg-border);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+.pg-brand-text strong { color: var(--pg-text); font-weight: 500; }
+
+.pg-header-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: none;
+}
+.pg-git {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--pg-text);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 16px;
+  border: 1px solid var(--pg-border);
+  border-radius: 8px;
+  background: var(--pg-raised);
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.pg-git:hover { border-color: #4a473e; }
+.pg-git:focus-visible { outline: 2px solid var(--pg-accent); outline-offset: 2px; }
+.pg-credit { font-size: 13px; color: var(--pg-secondary); }
+.pg-credit strong { color: var(--pg-text); font-weight: 500; }
+

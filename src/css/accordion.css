@@ -1,0 +1,14 @@
+/* accordion: the left edge that draws as the panel expands */
+.orbit-loader-accordion {
+  position: absolute;
+  display: block;
+  overflow: visible;
+}
+.orbit-loader-accordion-edge {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  opacity: 0;
+}
+.is-active .orbit-loader-accordion-edge { opacity: 1; }
+

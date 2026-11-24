@@ -1,0 +1,76 @@
+/*
+ * TraceLoop Playground — renders every animation defined in
+ * animations/ as a live, editable card.
+ *
+ * The old single playground.js grew past the 400-line ceiling, so it is
+ * now plain-script modules sharing one window.PG namespace, loaded in
+ * order by index.html:
+ *
+ *   pg-data.js      constant tables (this file)
+ *   pg-render.js    config to live animation
+ *   pg-snippet.js   snippet/config generation + clipboard
+ *   pg-controls.js  generated tuning controls
+ *   pg-card.js      card assembly
+ *   pg-filter.js    style filter, live search, intro/catalog switch
+ *   pg-nav.js       sidebar drawer, section jump, scrollspy
+ *   pg-mark.js      header mark, hero instrument, reveal-on-scroll
+ *   pg-sections.js  section registry + headings
+ *   pg-main.js      init and boot
+ *
+ * No dependencies, no build step — same rules as the library itself.
+ */
+(function (global) {
+  "use strict";
+  var PG = global.PG = global.PG || {};
+  var GLOBALS = { orbit: "OrbitLoader", dot: "DotLoader", shimmer: "ShimmerLoader", ripple: "RippleLoader", typing: "TypingLoader", handshake: "HandshakeLoader", tab: "TabLoader", page: "PageLoader", button: "ButtonLoader", toast: "ToastLoader", progress: "ProgressLoader", search: "SearchLoader", modal: "ModalLoader", accordion: "AccordionLoader", drawer: "DrawerLoader", dropdown: "DropdownLoader", input: "InputLoader" };
+  var SCRIPTS = { orbit: "orbit-loader.js", dot: "dot-loader.js", shimmer: "shimmer-loader.js", ripple: "ripple-loader.js", typing: "typing-loader.js", handshake: "handshake-loader.js", tab: "tab-loader.js", page: "page-loader.js", button: "button-loader.js", toast: "toast-loader.js", progress: "progress-loader.js", search: "search-loader.js", modal: "modal-loader.js", accordion: "accordion-loader.js", drawer: "drawer-loader.js", dropdown: "dropdown-loader.js", input: "input-loader.js" };
+  // Container-based styles: no path to trace, create() takes the box.
+  var CONTAINER_STYLES = { ripple: 1, typing: 1, tab: 1, page: 1, button: 1, toast: 1, search: 1, modal: 1, accordion: 1, drawer: 1, dropdown: 1, input: 1 };
+  // Shapes that return { d, ... } objects instead of a bare d string —
+  // the copied snippet assigns them to a variable first.
+  var OBJECT_SHAPES = { letterOutline: 1, text: 1, textBox: 1 };
+  // Numeric options: [min, max, step] for the sliders.
+  var RANGES = {
+    durationMs: [400, 12000, 50],
+    strokeWidth: [0.5, 12, 0.5],
+    dotRadius: [1, 12, 0.5],
+    dots: [1, 8, 1],
+    bandWidth: [2, 30, 1],
+    bandOpacity: [0.05, 1, 0.05],
+    staggerMs: [0, 600, 10],
+    lift: [0.05, 0.8, 0.05],
+    segmentFraction: [0.02, 0.9, 0.01],
+    offset: [0, 40, 1],
+    guideOpacity: [0, 1, 0.05],
+    rings: [1, 8, 1],
+    startScale: [0.05, 0.8, 0.05],
+    steps: [0, 24, 1],
+    breathe: [0, 1, 0.05],
+    breatheMs: [400, 4000, 100],
+    wobble: [0, 20, 0.5],
+    wobbleCycles: [1, 10, 1],
+    trail: [0, 20, 1],
+    meetAt: [0.2, 0.8, 0.05],
+    overlap: [0, 0.4, 0.02],
+    thickness: [1, 6, 0.5],
+    radius: [0, 20, 1],
+    headRadius: [1, 6, 0.5],
+    stretch: [1, 2.5, 0.1],
+    restMs: [200, 4000, 100],
+    collapsedWidth: [24, 80, 4],
+    expandedWidth: [120, 400, 10],
+    radius: [0, 20, 1]
+  };
+  var LETTER_SHAPES = { letter: 1, letterOutline: 1 };
+
+  // The cards container every module shares; scripts load at the end of
+  // <body>, so the element exists by the time this runs.
+  PG.cardsEl = document.getElementById("cards");
+
+  PG.GLOBALS = GLOBALS;
+  PG.SCRIPTS = SCRIPTS;
+  PG.CONTAINER_STYLES = CONTAINER_STYLES;
+  PG.OBJECT_SHAPES = OBJECT_SHAPES;
+  PG.RANGES = RANGES;
+  PG.LETTER_SHAPES = LETTER_SHAPES;
+})(typeof window !== "undefined" ? window : this);

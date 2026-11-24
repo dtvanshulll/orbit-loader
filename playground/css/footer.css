@@ -1,0 +1,105 @@
+/* ---------- footer ---------- */
+
+.pg-footer {
+  font-family: var(--pg-font-body);
+  max-width: 1336px;
+  margin: 36px auto 0 0;
+  padding: 16px 32px 0;
+  border-top: 1px solid var(--pg-border);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  font-size: 13px;
+  color: var(--pg-secondary);
+}
+.pg-footer a {
+  display: inline-block;
+  padding: 4px 0;
+  color: var(--pg-text);
+  text-decoration: none;
+  font-weight: 500;
+}
+.pg-footer a:hover { text-decoration: underline; text-underline-offset: 2px; }
+.pg-footer strong { color: var(--pg-text); font-weight: 500; }
+
+@media (max-width: 760px) {
+  body { padding: 0 16px 40px; }
+  .pg-header { padding: 0 16px; }
+  /* One row on phones too: hamburger + wordmark left, GitHub right. */
+  .pg-header-inner { gap: 12px; }
+  .pg-credit { display: none; }
+  .pg-section-grid { grid-template-columns: 1fr; }
+  /* Hero stacks: copy first, instrument under it and smaller. On a phone the
+     hero has to leave the first card visible, so it collapses hard. */
+  .pg-hero-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    min-height: 0;
+    padding: 20px 0 0;
+  }
+  .pg-hero-visual { width: 132px; height: 132px; align-self: center; }
+  .pg-hero-orbit { inset: 24px; }
+  .pg-hero-title { font-size: 26px; }
+  .pg-hero-sub { font-size: 14px; margin-top: 12px; }
+  .pg-hero-actions { margin-top: 16px; }
+  .pg-hero { margin-bottom: 24px; }
+}
+
+/* Touch: fingers need room. Cards are dense on purpose for mouse users, so
+   the target only grows on coarse pointers rather than bloating every row. */
+@media (pointer: coarse) {
+  .pg-copy, .pg-tune { min-height: 40px; padding: 10px 14px; }
+  .pg-menu-btn { width: 44px; height: 44px; }
+  .pg-nav-item { padding: 12px; }
+  .pg-hero-cta { padding: 14px 24px; }
+}
+
+/* card sections: numbered rule-line headers so the growing library stays
+   scannable and each group is a real anchor for the sidebar */
+.pg-section { margin-top: 48px; scroll-margin-top: 88px; }
+.pg-section:first-of-type { margin-top: 0; }
+.pg-section-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 16px;
+}
+.pg-section-num {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--pg-muted);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+.pg-section-title {
+  font-family: var(--pg-font-head);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--pg-text);
+  margin: 0;
+  white-space: nowrap;
+}
+.pg-section-count {
+  font-size: 11px;
+  color: var(--pg-muted);
+  font-variant-numeric: tabular-nums;
+  padding: 1px 6px;
+  border: 1px solid var(--pg-border);
+  border-radius: 6px;
+  flex: none;
+}
+.pg-section-rule {
+  flex: 1 1 auto;
+  height: 1px;
+  background: var(--pg-border);
+}
+.pg-section-grid {
+  display: grid;
+  /* min() lets a narrow viewport collapse the track instead of forcing a
+     350px column wider than the phone. */
+  grid-template-columns: repeat(auto-fill, minmax(min(350px, 100%), 1fr));
+  gap: 20px;
+}
+

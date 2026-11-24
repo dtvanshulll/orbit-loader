@@ -1,0 +1,28 @@
+/* PageLoader wipe variants — full-cover panels for curtain/iris/slide/bars */
+.orbit-loader-page-panel {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  pointer-events: none;
+  z-index: 30;
+}
+.orbit-loader-page-panel:first-child { border-radius: inherit; }
+
+/* ButtonLoader fill/ripple variants */
+.orbit-loader-button-fill {
+  position: absolute;
+  inset: 0;
+  background: currentColor;
+  opacity: 0.16;
+  transform: scaleX(0);
+  transform-origin: left center;
+  pointer-events: none;
+  border-radius: inherit;
+}
+.orbit-loader-button-ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: currentColor;
+  pointer-events: none;
+  will-change: transform, opacity;
+}

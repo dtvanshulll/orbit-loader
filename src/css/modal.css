@@ -1,0 +1,61 @@
+/* modal: backdrop + the border trace that draws on arrival. The
+   panel's rise is driven by the tl-open class so panel, backdrop and
+   trace land together. */
+.orbit-loader-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: color-mix(in srgb, var(--tl-stage, #0f0e0d) 72%, transparent);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 40;
+}
+.tl-open ~ .orbit-loader-modal-backdrop { opacity: 1; }
+.orbit-loader-modal-trace {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+.orbit-loader-modal-frame {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  opacity: 0;
+}
+.orbit-loader-modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  overflow: visible;
+  cursor: pointer;
+  pointer-events: auto;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.orbit-loader-modal-close path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.orbit-loader-modal-close:hover { opacity: 0.75; }
+.tl-open .orbit-loader-modal-close { opacity: 1; }
+.orbit-loader-modal-host {
+  opacity: 0;
+  transform: translateY(14px) scale(0.98);
+  transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.2, 0, 0.2, 1);
+  /* durationMs overrides both via inline transition-duration */
+}
+.orbit-loader-modal-host.tl-open {
+  opacity: 1;
+  transform: none;
+}
+

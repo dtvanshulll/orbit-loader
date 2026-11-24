@@ -1,0 +1,11 @@
+/* TypingLoader: the bouncing chat dots. transform-box/origin make the
+   translateY animation bounce each dot in place; opacity stays 0
+   whenever no animation is driving it, so stopped/reduced-motion dots
+   are simply invisible. */
+.orbit-loader-typing-dot {
+  fill: currentColor;
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+}
+

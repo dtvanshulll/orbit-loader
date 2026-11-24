@@ -58,7 +58,7 @@ onDestroy(() => ctrl.destroy());
 ### No bundler? Script tags still work
 
 ```html
-<link rel="stylesheet" href="orbit-loader.css">
+<link rel="stylesheet" href="dist/traceloop.css">
 <div class="orbit-loader-wrap" style="width:72px; height:72px"></div>
 <script src="dist/traceloop.umd.js"></script>  <!-- everything, one file -->
 <script>
@@ -87,26 +87,23 @@ Most loader libraries give you a spinner: a shape rotated by CSS, blind to your 
 
 | File | Global | What it does |
 |---|---|---|
-| `orbit-loader.js` | `OrbitLoader` | the core: a glowing segment crawls any path, forever |
-| `dot-loader.js` | `DotLoader` | a traveling dot — with flutter, breadcrumb trails, relay batons, crossing twins |
-| `shimmer-loader.js` | `ShimmerLoader` | a soft light band sweeps the path like brushed metal |
-| `ripple-loader.js` | `RippleLoader` | rings radiate from the container — container-based, no path |
-| `typing-loader.js` | `TypingLoader` | the chat "typing…" wave — container-based, no path |
-| `handshake-loader.js` | `HandshakeLoader` | two segments converge, flash where they meet, retract |
-| `tab-loader.js` | `TabLoader` | the tab underline crawls to the tab you clicked — one-shot |
-| `page-loader.js` | `PageLoader` | the top progress bar trickles, then sweeps done — one-shot |
-| `button-loader.js` | `ButtonLoader` | the button's own border is its pending-progress track — one-shot |
-| `toast-loader.js` | `ToastLoader` | the toast's lifetime drains along its bottom edge — one-shot |
-| `progress-loader.js` | `ProgressLoader` | determinate progress filling along any path |
+| `src/styles/orbit-loader.js` | `OrbitLoader` | the core: a glowing segment crawls any path, forever |
+| `src/styles/dot-loader.js` | `DotLoader` | a traveling dot — with flutter, breadcrumb trails, relay batons, crossing twins |
+| `src/styles/shimmer-loader.js` | `ShimmerLoader` | a soft light band sweeps the path like brushed metal |
+| `src/styles/ripple-loader.js` | `RippleLoader` | rings radiate from the container — container-based, no path |
+| `src/styles/typing-loader.js` | `TypingLoader` | the chat "typing…" wave — container-based, no path |
+| `src/styles/handshake-loader.js` | `HandshakeLoader` | two segments converge, flash where they meet, retract |
+| `src/styles/tab-loader.js` | `TabLoader` | the tab underline crawls to the tab you clicked — one-shot |
+| `src/styles/page-loader.js` | `PageLoader` | the top progress bar trickles, then sweeps done — one-shot |
+| `src/styles/button-loader.js` | `ButtonLoader` | the button's own border is its pending-progress track — one-shot |
+| `src/styles/toast-loader.js` | `ToastLoader` | the toast's lifetime drains along its bottom edge — one-shot |
+| `src/styles/progress-loader.js` | `ProgressLoader` | determinate progress filling along any path |
 
 Full option tables for every style: [docs/STYLES.md](docs/STYLES.md).
 
 ## Shapes
 
-`shapes.js` (optional) generates `d` strings so you don't have to write path data: `circle`, `roundedSquare`, `roundRect`, `polygon`, `underline`, `infinity`, `letter` (a full authored alphabet, A–Z and 0–9), `letterOutline`, `text`, `textBoxForElement`. Spell words, outline boxes, trace your logo.
-
-```js
-OrbitLoader.wrap(el, { d: OrbitLoaderShapes.text('LOADING'), ... });
+The `src/shapes/` files (optional) generate `d` strings so you don't have to write path data: `circle`, `roundedSquare`, `roundRect`, `polygon`, `underline`, `infinity`, `letter` (a full authored alphabet, A–Z and 0–9), `letterOutline`, `text`, `textBoxForElement`. Spell words, outline boxes, trace your logo.
 ```
 
 ## Try it

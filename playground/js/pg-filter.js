@@ -1,0 +1,163 @@
+/*!
+ * pg-filter — style filter, live search, intro/catalog switching. Part of the old playground.js, split under the 400-line ceiling;
+ * see pg-data.js for the module map.
+ */
+(function (global) {
+  "use strict";
+  var PG = global.PG = global.PG || {};
+
+  // The live search's state, shared by the filter and the intro wiring.
+  var searchState = { query: "" };
+
+  // The page has two states: the intro (hero + search, no catalog) and
+  // the catalog (sections + cards). The home page is the intro only —
+  // the library is one deliberate step away, not crammed under the hero.
+
+  // One filter for the whole page. The sidebar is the only control that
+  // drives it — it *is* the map of the library, so there is no second row
+  // of chips repeating the same seventeen names in the body.
+  function makeFilter(cards, sections) {
+    // Shared tail for every way the catalog can be narrowed: hide empty
+    // sections, refresh their counts, let the spy re-pick.
+    function syncSections() {
+      for (var s = 0; s < sections.length; s++) {
+        var sec = sections[s];
+        var visible = 0;
+        var kids = sec.grid.children;
+        for (var c = 0; c < kids.length; c++) {
+          // the "Add your own" card matches no style — skip it
+          if (kids[c].classList.contains("pg-add")) continue;
+          if (kids[c].style.display !== "none") visible++;
+        }
+        sec.el.style.display = visible ? "" : "none";
+        if (sec.countEl) sec.countEl.textContent = visible;
+      }
+      if (window.__pgSpyPaint) window.__pgSpyPaint();
+    }
+
+    function applyFilter(style) {
+      clearSearch();
+      for (var k = 0; k < cards.length; k++) {
+        cards[k].el.style.display =
+          style === "all" || cards[k].cfg.style === style ? "" : "none";
+      }
+      // Mirror the state onto the sidebar entries.
+      var items = document.querySelectorAll(".pg-nav-item");
+      for (var n = 0; n < items.length; n++) {
+        items[n].classList.toggle("is-on",
+          items[n].getAttribute("data-style") === style);
+      }
+      syncSections();
+    }
+
+    // Free-text search across name, style and note. Runs against the
+    // catalog view; typing switches you out of the intro.
+    function applyQuery(q) {
+      var query = (q || "").trim().toLowerCase();
+      searchState.query = query;
+      // A live search suspends the style filter — the box is the truth.
+      var items = document.querySelectorAll(".pg-nav-item");
+      for (var n = 0; n < items.length; n++) {
+        items[n].classList.toggle("is-on", false);
+      }
+      var hits = 0;
+      for (var k = 0; k < cards.length; k++) {
+        var cfg = cards[k].cfg;
+        var hay = (cfg.name + " " + cfg.style + " " + (cfg.note || "")).toLowerCase();
+        var show = !query || hay.indexOf(query) >= 0;
+        cards[k].el.style.display = show ? "" : "none";
+        if (show) hits++;
+      }
+      var results = document.getElementById("pg-results");
+      if (results) {
+        results.hidden = !query;
+        results.textContent = query
+          ? hits + " result" + (hits === 1 ? "" : "s") + " for \u201C" + q.trim() + "\u201D"
+          : "";
+      }
+      syncSections();
+    }
+
+    function clearSearch() {
+      var input = document.getElementById("pg-search-input");
+      if (input && input.value) input.value = "";
+      searchState.query = "";
+      var results = document.getElementById("pg-results");
+      if (results) results.hidden = true;
+      // Clearing the query also clears what it filtered — the catalog
+      // returns to "all" so the sidebar state and the cards agree.
+      for (var k = 0; k < cards.length; k++) cards[k].el.style.display = "";
+      var items = document.querySelectorAll(".pg-nav-item");
+      for (var n = 0; n < items.length; n++) {
+        items[n].classList.toggle("is-on",
+          items[n].getAttribute("data-style") === "all");
+      }
+      syncSections();
+    }
+
+    return { applyFilter: applyFilter, applyQuery: applyQuery, clearSearch: clearSearch, syncSections: syncSections };
+  }
+
+  // The sidebar: the permanent map of the library and the page's only
+  // filter control. On narrow screens a hamburger slides it in; each entry
+  // Intro <-> catalog. Entering the intro hides the catalog; leaving it
+  // reveals the sections. The brand wordmark is the way back home.
+  function enterIntro() {
+    document.body.classList.add("pg-intro");
+    window.scrollTo(0, 0);
+    var input = document.getElementById("pg-search-input");
+    if (input) input.focus({ preventScroll: true });
+  }
+  function exitIntro() {
+    document.body.classList.remove("pg-intro");
+  }
+  function isIntro() {
+    return document.body.classList.contains("pg-intro");
+  }
+
+  // The intro's search box: real filtering, not a decorative demo. Typing
+  // drops you into the catalog with the query applied; Esc clears it and
+  // goes home; "/" from anywhere jumps into the box.
+  function wireSearch(cards, filter) {
+    var form = document.getElementById("pg-search");
+    var input = document.getElementById("pg-search-input");
+    if (!form || !input) return;
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (!input.value.trim()) { exitIntro(); filter.syncSections(); return; }
+      filter.applyQuery(input.value);
+      exitIntro();
+    });
+    input.addEventListener("input", function () {
+      if (!input.value.trim()) {
+        if (!isIntro()) { filter.clearSearch(); filter.syncSections(); }
+        return;
+      }
+      filter.applyQuery(input.value);
+      exitIntro();
+    });
+    input.addEventListener("keydown", function (e) {
+      if (e.key !== "Escape") return;
+      filter.clearSearch();
+      filter.syncSections();
+      enterIntro();
+    });
+    // "/" focuses the search from anywhere, like every docs site.
+    document.addEventListener("keydown", function (e) {
+      if (e.key !== "/" || isIntro()) return;
+      var t = e.target;
+      if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA")) return;
+      e.preventDefault();
+      enterIntro();
+    });
+  }
+
+  // The brand mark: a coiled loop, not a generic circle — the path-trace
+  // motif at icon scale. The segment crawls the spiral and a single dot
+
+  PG.makeFilter = makeFilter;
+  PG.enterIntro = enterIntro;
+  PG.exitIntro = exitIntro;
+  PG.isIntro = isIntro;
+  PG.wireSearch = wireSearch;
+})(typeof window !== "undefined" ? window : this);

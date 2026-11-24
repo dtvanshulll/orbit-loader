@@ -1,0 +1,8 @@
+/* DotLoader's breadcrumb ghosts: same fill as the dots, but their opacity
+   is driven per-frame from JS, so they stay invisible whenever no rAF
+   loop is running. */
+.orbit-loader-ghost {
+  fill: currentColor;
+  opacity: 0;
+}
+

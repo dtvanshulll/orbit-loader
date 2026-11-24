@@ -1,0 +1,130 @@
+/* ---------- hero ---------- */
+
+/* The hero is the site's one bright moment: a hero-scale instrument —
+   two live loaders on concentric rings — beside a display-size headline.
+   Everything else on the page stays quiet chrome. */
+.pg-hero {
+  max-width: 1336px;
+  margin: 0 auto 32px 0;
+  padding: 0 32px;
+}
+.pg-hero-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 48px;
+  min-height: 260px;
+  padding: 32px 0 8px;
+}
+.pg-hero-copy { max-width: 560px; }
+.pg-hero-title {
+  margin: 0;
+  font-family: var(--pg-font-head);
+  font-size: clamp(32px, 4.2vw, 48px);
+  line-height: 1.08;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.pg-hero-title em {
+  font-style: normal;
+  color: var(--pg-accent);
+}
+.pg-hero-sub {
+  margin: 16px 0 0;
+  font-family: var(--pg-font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--pg-secondary);
+  max-width: 48ch;
+  text-wrap: pretty;
+}
+.pg-hero-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+.pg-hero-cta {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #141413;
+  background: var(--pg-text);
+  padding: 12px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+.pg-hero-cta:hover { background: #ffffff; }
+.pg-hero-cta:active { transform: translateY(1px); }
+.pg-hero-cta:focus-visible { outline: 2px solid var(--pg-accent); outline-offset: 2px; }
+.pg-hero-ghost {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--pg-secondary);
+  padding: 12px 24px;
+  border: 1px solid var(--pg-border);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.pg-hero-ghost:hover { color: var(--pg-text); border-color: #4a473e; }
+.pg-hero-ghost:focus-visible { outline: 2px solid var(--pg-accent); outline-offset: 2px; }
+
+/* The instrument: a large ring crawler with a dot train orbiting inside
+   it — the product demonstrating itself, carrying all the color. */
+.pg-hero-visual {
+  position: relative;
+  width: 260px;
+  height: 260px;
+  flex: none;
+}
+.pg-hero-ring {
+  position: absolute;
+  inset: 0;
+  color: var(--pg-accent);
+}
+.pg-hero-orbit {
+  position: absolute;
+  inset: 46px;
+  color: var(--pg-text);
+}
+
+/* One entrance on load: hero elements fade and rise, staggered. Cards
+   get the same treatment on scroll (see .pg-in in playground.js).
+   Under reduced motion everything renders in its final state. */
+.pg-hero-copy, .pg-hero-visual {
+  opacity: 0;
+  transform: translateY(16px);
+  animation: pg-rise 0.6s ease-out forwards;
+}
+.pg-hero-visual { animation-delay: 0.12s; }
+@keyframes pg-rise {
+  to { opacity: 1; transform: none; }
+}
+/* Cards reveal on scroll. The hidden state only applies under .pg-reveal,
+   which playground.js adds — with no JS, cards are simply visible. */
+.pg-cards.pg-reveal .pg-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+}
+.pg-cards.pg-reveal .pg-card.pg-in {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pg-hero-copy, .pg-hero-visual, .pg-cards.pg-reveal .pg-card {
+    opacity: 1;
+    transform: none;
+    animation: none;
+    transition: border-color 0.15s ease;
+  }
+  /* Nothing slides, rises or presses — state changes land immediately. */
+  .pg-controls.is-open { animation: none; }
+  .pg-sidebar { transition: none; }
+  .pg-copy:active, .pg-tune:active, .pg-hero-cta:active { transform: none; }
+}
+

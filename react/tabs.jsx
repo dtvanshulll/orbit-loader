@@ -17,7 +17,7 @@
  * the vanilla TabLoader, no demo loop.
  */
 import React, { useRef, useState, useEffect } from 'react';
-import { TabLoader } from '../traceloop.js';
+import { TabLoader } from '../src/traceloop.js';
 
 export function Tabs(props) {
   var items = props.items || [];

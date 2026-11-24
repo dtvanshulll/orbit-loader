@@ -20,7 +20,7 @@ import {
   HandshakeLoader, TabLoader, PageLoader, ButtonLoader, ToastLoader,
   ProgressLoader, SearchLoader, ModalLoader, AccordionLoader, DrawerLoader,
   DropdownLoader, InputLoader, shapes
-} from '../traceloop.js';
+} from '../src/traceloop.js';
 
 // Resolve the `d` prop: a raw path string passes through; a
 // { shape, args } object calls the generator. Returns { d, viewBox }.

@@ -1,0 +1,52 @@
+/* Playground chrome only — the loaders themselves are styled by
+   orbit-loader.css.
+
+   Direction: a dark lab bench. Near-black neutral surfaces and
+   hairlines; the loaders in the stages carry all the color. One accent
+   (#d97757) appears only where it means something: the header mark,
+   the primary action's focus, form selection. */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+:root {
+  --pg-bg: #141413;
+  --pg-card: #1c1b19;
+  --pg-raised: #262420;
+  --pg-border: #33312c;
+  --pg-stage: #0f0e0d;
+  --pg-text: #faf9f5;
+  --pg-secondary: #b0aea5;
+  --pg-muted: #8f8d84;
+  --pg-accent: #d97757;
+  /* Brand typography: Poppins carries headings, Lora carries long-form
+     copy; UI chrome and code stay system/mono so controls read as tools. */
+  --pg-font-head: "Poppins", Arial, sans-serif;
+  --pg-font-body: "Lora", Georgia, serif;
+  /* Header height is a token because the sidebar hangs below it. */
+  --pg-header-h: 64px;
+  /* Motion tokens: one entrance curve, one in-and-out curve, and the
+     durations the whole page draws from. */
+  --pg-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --pg-ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+  --pg-dur-fast: 150ms;
+  --pg-dur-base: 220ms;
+  --pg-dur-panel: 280ms;
+}
+
+body {
+  background: var(--pg-bg);
+  color: var(--pg-text);
+  font: 15px/1.5 system-ui, sans-serif;
+  text-wrap: pretty;
+  margin: 0;
+  /* No body padding: the header is full width and every content zone
+     carries its own gutter. The old 40px right padding here is what made
+     the header stop 40px short of the viewport edge. */
+  padding: 0 0 56px;
+}
+/* Buttons and inputs don't inherit the page font by default — without
+   this the CTA renders in the UA default and breaks the type system. */
+button, input, select, textarea {
+  font: inherit;
+}
+

@@ -30,46 +30,47 @@ change.
 
 ## Files
 
-- `orbit-loader.js` — the core style: `create(pathEl, options)` and
+- `src/styles/orbit-loader.js` — the core style: `create(pathEl, options)` and
   `wrap(container, options)`. Depends on nothing else in this repo.
-- `dot-loader.js` — the traveling-dot style (`DotLoader`): a circle
+- `src/styles/dot-loader.js` — the traveling-dot style (`DotLoader`): a circle
   positioned per-frame via `getPointAtLength()` in a rAF loop. A sibling
-  style module — needs only `orbit-loader.css`, never `orbit-loader.js`.
-- `shimmer-loader.js` — the shimmer-band style (`ShimmerLoader`): the
+  style module — needs only the shared CSS in `src/css/`, never another
+  style module's JS.
+- `src/styles/shimmer-loader.js` — the shimmer-band style (`ShimmerLoader`): the
   path drawn as a wide translucent band with a bright shimmer line and
   glow head traveling its center. A sibling style module with the same
   rules.
-- `ripple-loader.js` — the ripple style (`RippleLoader`): concentric
+- `src/styles/ripple-loader.js` — the ripple style (`RippleLoader`): concentric
   rings born at the center, growing to fill the container and fading —
   staggered delays over infinite WAAPI loops, no rAF, no path. The one
   container-based style: `create()` and `wrap()` are the same call and
   take the container, not a path element. A sibling style module with
   the same rules.
-- `typing-loader.js` — the typing-dots style (`TypingLoader`): the chat
+- `src/styles/typing-loader.js` — the typing-dots style (`TypingLoader`): the chat
   "typing…" indicator — a row of dots taking turns rising and falling,
   driven by staggered infinite WAAPI loops (no rAF, no path). The other
   container-based style: `create()` and `wrap()` are the same call and
   take the container, not a path element. A sibling style module with
   the same rules.
-- `handshake-loader.js` — the handshake style (`HandshakeLoader`): two
+- `src/styles/handshake-loader.js` — the handshake style (`HandshakeLoader`): two
   segments crawl from opposite ends of the path, overlap briefly at the
   meeting point (both paths render at reduced opacity, so the overlap
   paints twice and flashes), then retract. Pure WAAPI on interpolated
   dasharray+dashoffset, no rAF.
-- `clock-loader.js` — the clockface style (`ClockLoader`): a hand
+- `src/styles/clock-loader.js` — the clockface style (`ClockLoader`): a hand
   sweeps the path while marker dots light up permanently as it passes;
   when all are lit the face holds, pulses and resets. The one
   state-keeping style: a rAF loop tracks laps and which markers are
   lit.
-- `gravity-loader.js` — the gravity style (`GravityLoader`): the dot's
+- `src/styles/gravity-loader.js` — the gravity style (`GravityLoader`): the dot's
   speed obeys the path's slope — fast on descents, slow on climbs,
   clamped so it never stalls. rAF, per-frame tangent sampling.
-- `tether-loader.js` — the tetherball style (`TetherLoader`): a ball on
+- `src/styles/tether-loader.js` — the tetherball style (`TetherLoader`): a ball on
   a rope swings, flips over the top, winds around the pole (spiral rope,
   spin accelerating as the rope shortens), hangs, unwinds. The third
   container-based style: `create()` and `wrap()` are the same call and
   take the container. rAF state machine.
-- `tab-loader.js`, `page-loader.js`, `button-loader.js`,
+- `src/styles/tab-loader.js`, `page-loader.js`, `button-loader.js`,
   `toast-loader.js`, `progress-loader.js` — the transition styles
   (`TabLoader`, `PageLoader`, `ButtonLoader`, `ToastLoader`,
   `ProgressLoader`): one-shot, triggered animations for real UI
@@ -80,10 +81,10 @@ change.
   path. They don't loop forever; they play once per action (each also
   ships a self-running demo loop for previews). All container-based
   except progress (which takes a path or a `d`).
-- `drawer-loader.js` — the drawer component style (`DrawerLoader`):
+- `src/styles/drawer-loader.js` — the drawer component style (`DrawerLoader`):
   the panel slides in while its leading edge draws; `side` picks
   `'left'` / `'right'` / `'bottom'` (bottom sheet with grab handle).
-- `search-loader.js`, `modal-loader.js`, `accordion-loader.js`,
+- `src/styles/search-loader.js`, `modal-loader.js`, `accordion-loader.js`,
   `dropdown-loader.js`, `input-loader.js` — the component styles
   (`SearchLoader`, `ModalLoader`, `AccordionLoader`, `DropdownLoader`,
   `InputLoader`):
@@ -91,21 +92,24 @@ change.
   widens while its underline draws out, a dialog whose border traces
   itself on arrival, a section whose left edge draws as it expands.
   All container-based; demo loops for previews.
-- `traceloop.js` — the library entry: loads every style for side
+- `src/traceloop.js` — the library entry: loads every style for side
   effects and re-exports the globals as named ESM exports (plus a
   `styles` map). This is what `import { ... } from 'traceloop'` hits.
 - `react/index.js` — the React adapter: one thin component per style,
   same options as props; mounts/destroys/recreates for you.
-- `index.d.ts` — hand-written type hints for the controllers,
+- `src/index.d.ts` — hand-written type hints for the controllers,
   components and shapes.
 - `dist/` — generated by `npm run build` (esbuild): ESM, UMD, React
   bundle and CSS. Never edited by hand; rebuilt before commits that
   touch source.
-- `shapes.js` — optional `d`-string generators (`roundedSquare`,
-  `roundRect`, `circle`, `polygon`, `underline`, `infinity`, `letter`,
-  `letterOutline`, `text`, `textBoxForElement`). No style file imports
-  this file; they only animate whatever path they're given.
-- `orbit-loader.css` — base styles shared by every style module.
+- `src/shapes/` — optional `d`-string generators, four files sharing one
+  namespace (`shapes-core.js` geometry, `shapes-text.js` letter/text/
+  textBoxForElement, `outline-glyphs.js` the authored contour data,
+  `shapes-outline.js` letterOutline + the stroke-offset math). No style
+  file imports these; they only animate whatever path they're given.
+- `src/css/` — every style's injected-DOM styles, one small file per
+  style plus `base.css` (tokens, typography, crawler base); the build
+  concatenates them into `dist/traceloop.css` in a fixed order.
 - `package.json` — metadata, files whitelist, `exports` map and the
   esbuild build scripts. No runtime dependencies; dev dependencies
   (esbuild, react) only produce `dist/`.
@@ -113,27 +117,29 @@ change.
   letter, alphabet, text-box, polygon, dot-train and infinity shapes (serve it over HTTP,
   not `file://`, since the loaders attach to `window` and some browsers
   restrict module/script behavior on local files).
-- `playground/` — the test site (`index.html` + `playground.js` +
-  `playground.css`): renders every animation in `animations/` as a live,
+- `playground/` — the test site (`index.html` + `js/` modules + `css/`
+  partials): renders every animation in `animations/` as a live,
   editable card with generated controls, letter/word text boxes, and
   "Copy code" / "Copy config" buttons. Dev tool, not a distributable.
-- `animations/animations.js` — the ONE config file that drives the
-  playground: a list of named blocks (`name`, `style`, `box`,
-  `options`), each holding whatever customization that style supports.
-  Add an animation by adding a block; nothing else to register.
+- `animations/` — the config files that drive the playground, one per
+  playground section (`looping.js`, `transitions.js`, `components.js`):
+  lists of named blocks (`name`, `style`, `box`, `options`), each holding
+  whatever customization that style supports. Add an animation by adding
+  a block to the matching file; nothing else to register.
 
 ## Coding rules
 
 1. Vanilla JS (ES5-compatible syntax, `window`-global IIFE pattern, no
    `import`/`export`) and plain CSS — in the library source files. The
    source stays `<script>`-tag friendly; the bundler-friendly ESM entry
-   (`traceloop.js`) and the React adapter are the only exception, and
+   (`src/traceloop.js`) and the React adapter are the only exception, and
    `dist/` is generated. Don't introduce `const`/`let`/arrow
    functions/classes just because they're available; match the existing
    style so the whole file reads consistently.
-2. `orbit-loader.js` must never require `shapes.js` to run, and
-   `shapes.js` must never touch the DOM or call into `orbit-loader.js` —
-   see `docs/ARCHITECTURE.md`'s "Why shapes are a separate file" section.
+2. `src/styles/orbit-loader.js` must never require the shape files to
+   run, and `src/shapes/` must never touch the DOM or call into the
+   style modules — see `docs/ARCHITECTURE.md`'s "Why shapes are a
+   separate file" section.
    A new loader style (pulse ring, trailing dot, etc.) is a new sibling
    file with its own `create()`, never a branch inside the existing one.
 3. Every new public function gets a doc comment explaining *why*, not
@@ -145,15 +151,17 @@ change.
 5. New ideas that aren't needed by a concrete use case yet go into
    `docs/ROADMAP.md`, not into the code as a stub, speculative option, or
    commented-out branch.
-6. Repo structure stays flat and script-tag friendly: everything a
-   consumer loads (the loader styles, `shapes.js`, `orbit-loader.css`)
-   lives at the repo root, so a copy of the repo works directly via
-   `<script src>` with no bundler, import graph, or directory knowledge.
-   A new loader style is a new root-level sibling file sharing only
-   `orbit-loader.css` — never a subdirectory or a required other file.
-   `package.json` stays metadata-only (name/version/files/license, no
-   scripts, no dependencies) until `docs/ROADMAP.md`'s packaging section
-   is explicitly acted on.
+6. Source lives in `src/`, structured by role — `src/styles/` (one
+   file per style), `src/shapes/`, `src/css/` (one file per style plus
+   base), `src/traceloop.js` (entry). Consumers still get a flat,
+   script-tag-friendly surface: that is what `dist/` is for, and the
+   npm package ships `src/` + `dist/` only.
+7. **One file, 400 lines maximum.** A file approaching the ceiling is a
+   signal to split by responsibility (see how `playground.js` became
+   `playground/js/pg-*.js` and `shapes.js` became `src/shapes/*`),
+   not to compress comments or code. Data tables that only exist to be
+   read by machinery may be their own file. Check with
+   `wc -l` before committing; never grow a file past the ceiling.
 
 ## Commits
 
@@ -165,21 +173,25 @@ like some other projects use here) — this repo doesn't follow StoryClip's
 
 Where things go — new work must land in the right layer:
 
-- `*.js` (root) — library source, one file per style, vanilla ES5
+- `src/styles/*.js` — library source, one file per style, vanilla ES5
   IIFEs, `window`-global. A new **animation style** is a new sibling
   file here with its own `create()`; never a branch inside an existing
   one.
-- `shapes.js` — pure `d`-string generators. No DOM, no style imports.
-- `orbit-loader.css` — every style's injected-DOM styles, one shared
-  file, sections commented per style.
+- `src/shapes/` — pure `d`-string generators. No DOM (one measured-rect
+  exception), no style imports; files share only through the public
+  `OrbitLoaderShapes` api object.
+- `src/css/` — every style's injected-DOM styles, one file per style
+  plus `base.css`; concatenated in fixed order by `scripts/build-css.js`.
+- `src/traceloop.js` — the ESM entry; `src/index.d.ts` — the type hints.
 - `react/` — the React adapter source (`react/index.js`). Thin: refs +
   effects over the vanilla controllers; no animation logic here.
 - `dist/` — GENERATED by `npm run build` (esbuild). Never edited, and
   rebuilt before any commit that touched source.
-- `animations/` — playground animation configs (dev tool, not
-  distributable).
+- `animations/` — playground animation configs, one file per playground
+  section (dev tool, not distributable).
 - `playground/`, `examples/` — dev/demo surfaces; they follow
-  DESIGN.md tokens.
+  DESIGN.md tokens. The playground is `index.html` + `js/pg-*.js`
+  modules + `css/` partials, plain scripts sharing `window.PG`.
 - `docs/` — ARCHITECTURE (how/why), ROADMAP (not-yet), STYLES.md
   (consumer API reference, verified against source doc comments).
 - Root docs: `README.md` (consumer landing), `PRD.md` (what/why),

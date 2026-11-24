@@ -1,0 +1,15 @@
+/* DotLoader: the path it follows is deliberately invisible (the moving
+   dot IS the effect), and the dot itself fades in/out like the thread
+   does. A consumer calling DotLoader.create() on their own visible path
+   keeps that path's own styling — this only styles wrap()-injected ones. */
+.orbit-loader-track {
+  fill: none;
+  stroke: none;
+}
+.orbit-loader-dot {
+  fill: currentColor;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.orbit-loader-dot.is-active { opacity: 1; }
+

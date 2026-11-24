@@ -41,7 +41,7 @@ pathEl.animate(
 );
 ```
 
-This is the whole animation. `create()` in `orbit-loader.js` is mostly
+This is the whole animation. `create()` in `src/styles/orbit-loader.js` is mostly
 bookkeeping around this one call: computing `total`/`segment`, respecting
 reduced-motion, and returning start/stop/destroy handles.
 
@@ -63,14 +63,14 @@ one place that knows how to drive the animation.
 
 ## Why shapes are a separate file
 
-`shapes.js` only produces `d` strings (plain string concatenation — no
-DOM, no browser APIs). `orbit-loader.js` never imports or calls into it.
+`src/shapes/` only produces `d` strings (plain string concatenation — no
+DOM, no browser APIs). `src/styles/orbit-loader.js` never imports or calls into it.
 This split means:
 
 - The core library has zero knowledge of what shapes exist. Adding a new
-  one (hexagon, pill, star) never touches `orbit-loader.js`.
+  one (hexagon, pill, star) never touches `src/styles/orbit-loader.js`.
 - A project that already has its own path strings (e.g. StoryClip's own
-  icon outline) can skip `shapes.js` entirely and pass `d` directly.
+  icon outline) can skip `src/shapes/` entirely and pass `d` directly.
 - Shape math (rounded-rect corner arcs, circle as two 180° arcs because a
   single SVG arc command can't sweep 360°, glyph skeletons sampled into
   polylines so they can be offset letter-by-letter, and stroke-outline
@@ -88,7 +88,7 @@ This split means:
 ## Why loader styles are sibling files, not options
 
 `dot-loader.js` and `shimmer-loader.js` each duplicate a little of what
-`orbit-loader.js` does (the `wrap()` markup-building, the reduced-motion
+`src/styles/orbit-loader.js` does (the `wrap()` markup-building, the reduced-motion
 check) on purpose. They are different *visual styles* with genuinely
 different mechanics — the dot can't use dasharray at all and needs a
 per-frame `getPointAtLength()` rAF loop; the shimmer layers band and glow
@@ -96,7 +96,7 @@ c clones around the same dashoffset chase — so an option flag in the core
 would be a branch, and a shared "effects helper" would be an abstraction
 with one user. A sibling file per style keeps each one readable on its
 own, lets a consumer load only the styles it uses, and means none of them
-depends on `orbit-loader.js` (only the shared `orbit-loader.css` for base
+depends on `src/styles/orbit-loader.js` (only the shared `src/css/` for base
 styling). See "Adding a new loader style" in `README.md` for the rule
 going forward.
 
@@ -143,7 +143,7 @@ Two deliberate consequences:
   keeps animating until it's naturally stopped/destroyed, rather than
   snapping to a stop mid-lap.
 - If reduced motion is on, `start()` is a no-op and the path never gets
-  its `activeClass` — `orbit-loader.css`'s `.orbit-loader-thread` default
+  its `activeClass` — `src/css/`'s `.orbit-loader-thread` default
   (`opacity: 0`) means the path is simply invisible, not present-but-
   frozen-mid-animation. There's no second "static fallback" render to
   maintain in parallel; the loader either orbits or isn't there.

@@ -12,24 +12,27 @@
  * single global, `TraceLoop`, for script-tag users who want one file
  * instead of many.
  */
-import './orbit-loader.js';
-import './dot-loader.js';
-import './shimmer-loader.js';
-import './ripple-loader.js';
-import './typing-loader.js';
-import './handshake-loader.js';
-import './tab-loader.js';
-import './page-loader.js';
-import './button-loader.js';
-import './toast-loader.js';
-import './progress-loader.js';
-import './search-loader.js';
-import './modal-loader.js';
-import './accordion-loader.js';
-import './drawer-loader.js';
-import './dropdown-loader.js';
-import './input-loader.js';
-import './shapes.js';
+import './styles/orbit-loader.js';
+import './styles/dot-loader.js';
+import './styles/shimmer-loader.js';
+import './styles/ripple-loader.js';
+import './styles/typing-loader.js';
+import './styles/handshake-loader.js';
+import './styles/tab-loader.js';
+import './styles/page-loader.js';
+import './styles/button-loader.js';
+import './styles/toast-loader.js';
+import './styles/progress-loader.js';
+import './styles/search-loader.js';
+import './styles/modal-loader.js';
+import './styles/accordion-loader.js';
+import './styles/drawer-loader.js';
+import './styles/dropdown-loader.js';
+import './styles/input-loader.js';
+import './shapes/shapes-core.js';
+import './shapes/shapes-text.js';
+import './shapes/shapes-outline.js';
+import './shapes/outline-glyphs.js';
 
 export const OrbitLoader = window.OrbitLoader;
 export const DotLoader = window.DotLoader;

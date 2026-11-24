@@ -6,7 +6,7 @@
   "module": "dist/traceloop.esm.js",
   "unpkg": "dist/traceloop.umd.js",
   "jsdelivr": "dist/traceloop.umd.js",
-  "types": "index.d.ts",
+  "types": "src/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/traceloop.esm.js",
@@ -18,40 +18,22 @@
       "default": "./dist/react.js"
     },
     "./css": "./dist/traceloop.css",
-    "./orbit-loader.css": "./orbit-loader.css",
     "./package.json": "./package.json"
   },
   "files": [
-    "index.d.ts",
+    "src/",
     "dist/",
-    "traceloop.js",
-    "orbit-loader.js",
-    "dot-loader.js",
-    "shimmer-loader.js",
-    "ripple-loader.js",
-    "typing-loader.js",
-    "handshake-loader.js",
-    "tab-loader.js",
-    "page-loader.js",
-    "button-loader.js",
-    "toast-loader.js",
-    "progress-loader.js",
-    "search-loader.js",
-    "modal-loader.js",
-    "accordion-loader.js",
-    "drawer-loader.js",
-    "dropdown-loader.js",
-    "input-loader.js",
-    "shapes.js",
-    "orbit-loader.css",
-    "react/"
+    "react/",
+    "scripts/",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "npm run build:esm && npm run build:umd && npm run build:react && npm run build:css",
-    "build:esm": "esbuild traceloop.js --bundle --minify --format=esm --outfile=dist/traceloop.esm.js --legal-comments=none",
-    "build:umd": "esbuild traceloop.js --bundle --minify --format=iife --global-name=TraceLoop --outfile=dist/traceloop.umd.js --legal-comments=none",
+    "build:esm": "esbuild src/traceloop.js --bundle --minify --format=esm --outfile=dist/traceloop.esm.js --legal-comments=none",
+    "build:umd": "esbuild src/traceloop.js --bundle --minify --format=iife --global-name=TraceLoop --outfile=dist/traceloop.umd.js --legal-comments=none",
     "build:react": "esbuild react/index.js --bundle --minify --format=esm --external:react --outfile=dist/react.js --legal-comments=none",
-    "build:css": "node -e \"require('fs').copyFileSync('orbit-loader.css','dist/traceloop.css')\""
+    "build:css": "node scripts/build-css.js"
   },
   "keywords": [
     "loading",
