@@ -173,7 +173,7 @@
             "<div style='align-self:flex-end;max-width:85%;background:#d97757;border-radius:12px 12px 4px 12px;padding:8px 12px;font-size:11.5px;line-height:1.45;color:#141413;" + BODY + "'>Hey &mdash; does the trail option work on letters too?</div>" +
             "<div style='display:flex;align-items:flex-end;gap:7px'>" +
             "<span style='width:20px;height:20px;border-radius:50%;background:#3f3d34;flex:none'></span>" +
-            "<div class='tl-typing' style='align-self:flex-start;width:58px;box-sizing:content-box;background:#262420;border:1px solid #33312c;border-radius:12px 12px 12px 4px;padding:10px 14px'></div>" +
+            "<div class='tl-typing' style='position:relative;align-self:flex-start;width:60px;height:15px;box-sizing:content-box;background:#262420;border:1px solid #33312c;border-radius:12px 12px 12px 4px;padding:10px 14px'></div>" +
             "</div></div>" +
             "<div style='display:flex;align-items:center;gap:8px;padding:10px 12px;border-top:1px solid #33312c'>" +
             "<span style='flex:1;height:32px;display:flex;align-items:center;background:#262420;border:1px solid #33312c;border-radius:999px;padding:0 12px;box-sizing:border-box;font-size:11px;color:#6a655c;" + BODY + "'>Write a message&hellip;</span>" +
