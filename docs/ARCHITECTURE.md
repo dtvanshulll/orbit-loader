@@ -1,4 +1,4 @@
-# OrbitLoader — architecture
+# TraceLoop — architecture
 
 How the library actually works, for anyone modifying it (including future
 you). The public API is in `README.md`; this file is the "why" behind it.
@@ -72,8 +72,66 @@ This split means:
 - A project that already has its own path strings (e.g. StoryClip's own
   icon outline) can skip `shapes.js` entirely and pass `d` directly.
 - Shape math (rounded-rect corner arcs, circle as two 180° arcs because a
-  single SVG arc command can't sweep 360°) stays in one small, easily
-  tested file instead of being tangled into the animation logic.
+  single SVG arc command can't sweep 360°, glyph skeletons sampled into
+  polylines so they can be offset letter-by-letter, and stroke-outline
+  offsetting with miter/bevel joins for letterOutline) stays in one
+  small, easily tested file instead of being tangled into the animation
+  logic. Letters that need a truly clean crawl get hand-authored
+  silhouettes instead (OUTLINE_GLYPHS: a closed outer contour the crawler
+  travels, plus counter contours for the inside spaces, each starting
+  bottom-left and running clockwise). The full set — A–Z and 0–9 — is
+  authored, because a generated offset can't produce a clean union
+  outline where strokes meet; single-stroke glyphs (C, G, S, U, J, 2,
+  3, 5, 6, 9) are derived from their skeletons by one shared helper
+  (`skeletonOutline`) instead of being hand-pointed twice.
+
+## Why loader styles are sibling files, not options
+
+`dot-loader.js` and `shimmer-loader.js` each duplicate a little of what
+`orbit-loader.js` does (the `wrap()` markup-building, the reduced-motion
+check) on purpose. They are different *visual styles* with genuinely
+different mechanics — the dot can't use dasharray at all and needs a
+per-frame `getPointAtLength()` rAF loop; the shimmer layers band and glow
+c clones around the same dashoffset chase — so an option flag in the core
+would be a branch, and a shared "effects helper" would be an abstraction
+with one user. A sibling file per style keeps each one readable on its
+own, lets a consumer load only the styles it uses, and means none of them
+depends on `orbit-loader.js` (only the shared `orbit-loader.css` for base
+styling). See "Adding a new loader style" in `README.md` for the rule
+going forward.
+
+`ripple-loader.js` is the extreme case of the same principle: it has no
+path at all — rings radiate from the container's center — so it doesn't
+even take a path element. `create()` and `wrap()` are the same call,
+both take the container, and the whole effect is staggered infinite
+WAAPI loops on `transform`/`opacity` (no rAF, no dasharray). Forcing
+that into the core as an option would have meant a second code path for
+"styles that aren't paths" hiding inside a path library.
+
+`tether-loader.js` joins it as the third container-based style (a ball
+on a rope around a center pole — rAF state machine, no path).
+`clock-loader.js` sits at the other end of the spectrum: it traces a
+path like the core but keeps STATE (which lap markers are lit), which
+is why it's a sibling file with its own rAF loop rather than an option
+on the core's stateless linear tween. `handshake-loader.js` stays
+WAAPI-only but needs TWO interpolating segments (dasharray AND
+ dashoffset together, one pinned to each end of the path) — again a
+different choreography, not a tweak of the core's single-segment tween.
+
+The transition styles (tab/page/button/toast/progress) are a
+third category entirely: ONE-SHOT and triggered. Loop styles exist to
+run forever; these exist to play once per UI action — a tab click, a
+navigation, a submit, a toast's lifetime, a download
+percentage. That difference is architectural, not cosmetic: their
+APIs expose play()/begin()/done()/setProgress() instead of a loop, and
+each ships a self-running demo loop only so previews (like the
+playground) can show them without wiring real interactions.
+
+`typing-loader.js` is the second case of the same shape: the chat
+"typing…" dots don't trace a path either, so it is also container-based
+(`create()` === `wrap()`, takes the container) and rides staggered
+infinite WAAPI loops. Two container-based siblings now prove the
+sibling-file rule scales past the path styles without touching the core.
 
 ## Reduced motion
 
@@ -92,16 +150,16 @@ Two deliberate consequences:
 
 ## Deliberately out of scope for v1
 
-- **Text measurement.** `shapes.underline()` takes a `width` you already
-  know, rather than the library measuring a text node's rendered width
-  via `getBBox()`/`getBoundingClientRect()`. Auto-measuring is tempting
-  but couples the library to layout timing (fonts loaded? reflow
-  happened?) that's much safer left to the caller, who already knows
-  when their own text is ready.
-- **Color/theming beyond `currentColor`.** The thread's stroke color is
-  simply `currentColor`, so it inherits whatever `color` the container
-  already has — no custom CSS properties to document or keep in sync with
-  a design system that doesn't exist yet.
+- **Text measurement beyond the opt-in helpers.** `textBoxForElement()`
+  reads a rect from an element you hand it, at call time, because a
+  caller asked for it — but the core `underline()`/`letter()`/`text()`
+  stay measurement-free, and nothing auto-measures behind your back.
+  Layout timing (fonts loaded? reflow happened?) stays the caller's
+  decision.
+- **Color/theming beyond the `color` option.** Both styles default to
+  `currentColor` and a plain `color` override exists because a consumer
+  asked for one; anything richer (CSS custom properties, gradients,
+  design-system integration) stays out of scope until asked for.
 - **Multiple simultaneous segments on one path.** One dash, one gap. A
   "chasing dots" look (several short segments) would need a different
   dasharray pattern and isn't the same visual effect OrbitLoader is

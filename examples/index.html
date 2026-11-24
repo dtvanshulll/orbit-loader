@@ -3,15 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>OrbitLoader examples</title>
+<title>TraceLoop examples</title>
 <link rel="stylesheet" href="../orbit-loader.css">
 <style>
-  body { background: #0f0f12; color: #eee; font: 15px/1.5 system-ui, sans-serif; padding: 48px; display: flex; gap: 64px; flex-wrap: wrap; }
+  body { background: #fff; color: #222; font: 15px/1.5 system-ui, sans-serif; padding: 48px; display: flex; gap: 64px; flex-wrap: wrap; }
   figure { margin: 0; text-align: center; color: #e8355c; }
-  figcaption { margin-top: 16px; color: #aaa; font-size: 13px; }
+  figcaption { margin-top: 16px; color: #666; font-size: 13px; }
   .logo-box { width: 84px; height: 84px; border-radius: 24px; background: #1a1a1e; display: flex; align-items: center; justify-content: center; font-size: 28px; }
   .circle-box { width: 72px; height: 72px; }
-  .text-box { font-size: 20px; font-weight: 600; color: #eee; padding-bottom: 8px; }
+  .infinity-box { width: 120px; height: 60px; background: #000; border: 1px solid #2a2a30; border-radius: 16px; }
+  .letter-box { width: 36px; height: 60px; }
+  .alphabet-box { background: #f4f4f6; border-radius: 6px; }
+
+  .ripple-box { width: 72px; height: 72px; color: #e8355c; }
+  .typing-box { width: 110px; height: 44px; color: #e8355c; }
+  .alphabet-box { background: #f4f4f6; border-radius: 6px; }
+  .text-box { font-size: 20px; font-weight: 600; color: #222; }
+  .underline-strip { width: 100%; height: 10px; margin-top: 2px; }
+  .boxed-text { font-size: 20px; font-weight: 600; color: #222; padding: 10px 14px; }
+  .letter-outline-box { }
 </style>
 </head>
 <body>
@@ -23,15 +33,69 @@
 
 <figure>
   <div class="orbit-loader-wrap circle-box" id="circle-demo"></div>
-  <figcaption>circle(72)</figcaption>
+  <figcaption>circle(72) &middot; offset 6 &middot; strokeWidth 3</figcaption>
 </figure>
 
 <figure>
-  <div class="orbit-loader-wrap text-box" id="text-demo">Loading</div>
-  <figcaption>underline(80, 4) under text</figcaption>
+  <div class="text-box">Loading<div class="orbit-loader-wrap underline-strip" id="text-demo"></div></div>
+  <figcaption>underline(80, 3) under text</figcaption>
+</figure>
+
+<figure>
+  <div class="orbit-loader-wrap letter-box" id="letter-demo"></div>
+  <figcaption>letter("S", 60) — along the stroke</figcaption>
+</figure>
+
+<figure>
+  <div class="orbit-loader-wrap letter-outline-box" id="letter-outline-demo"></div>
+  <figcaption>letterOutline("A", 60) — outer surface only</figcaption>
+</figure>
+
+<figure>
+  <div class="orbit-loader-wrap alphabet-box" id="alphabet-demo"></div>
+  <figcaption>text("A&ndash;Z") &middot; the line crawls letter by letter, in order</figcaption>
+</figure>
+
+<figure>
+  <div class="orbit-loader-wrap boxed-text" id="boxed-demo">Loading&hellip;</div>
+  <figcaption>textBoxForElement(el, 8, 10) &middot; offset 8</figcaption>
+</figure>
+
+<figure>
+  <div class="orbit-loader-wrap infinity-box" id="infinity-demo"></div>
+  <figcaption>ShimmerLoader &middot; infinity(120)</figcaption>
+</figure>
+
+<figure>
+  <div class="orbit-loader-wrap circle-box" id="dot-demo"></div>
+  <figcaption>DotLoader &middot; circle(72) &middot; color</figcaption>
+</figure>
+
+<figure>
+  <div class="orbit-loader-wrap ripple-box" id="ripple-demo"></div>
+  <figcaption>RippleLoader &middot; rings(3) &middot; grow and fade</figcaption>
+</figure>
+
+<figure>
+  <div class="orbit-loader-wrap circle-box" id="triangle-demo"></div>
+  <figcaption>OrbitLoader &middot; polygon(3, 72) &middot; sharp triangle</figcaption>
+</figure>
+
+<figure>
+  <div class="orbit-loader-wrap circle-box" id="train-demo"></div>
+  <figcaption>DotLoader &middot; polygon(6, 72, 6) &middot; dots(3) &middot; a train of dots</figcaption>
+</figure>
+
+<figure>
+  <div class="orbit-loader-wrap typing-box" id="typing-demo"></div>
+  <figcaption>TypingLoader &middot; the chat indicator</figcaption>
 </figure>
 
 <script src="../orbit-loader.js"></script>
+<script src="../dot-loader.js"></script>
+<script src="../shimmer-loader.js"></script>
+<script src="../ripple-loader.js"></script>
+<script src="../typing-loader.js"></script>
 <script src="../shapes.js"></script>
 <script>
   OrbitLoader.wrap(document.getElementById("logo-demo"), {
@@ -43,13 +107,109 @@
     d: OrbitLoader.shapes.circle(72),
     viewBox: "0 0 72 72",
     durationMs: 1600,
+    offset: 6,
+    strokeWidth: 3,
+    guideOpacity: 0.35,
   });
 
   OrbitLoader.wrap(document.getElementById("text-demo"), {
-    d: OrbitLoader.shapes.underline(80, 4),
-    viewBox: "0 0 80 12",
+    d: OrbitLoader.shapes.underline(80, 3),
+    viewBox: "0 0 80 10",
     segmentFraction: 0.4,
     direction: "reverse",
+    guideOpacity: 0.3,
+  });
+
+  OrbitLoader.wrap(document.getElementById("letter-demo"), {
+    d: OrbitLoader.shapes.letter("S", 60),
+    viewBox: "0 0 36 60",
+    durationMs: 1800,
+    segmentFraction: 0.3,
+    guideOpacity: 0.35,
+  });
+
+  var aOutline = OrbitLoaderShapes.letterOutline("A", 60);
+  var outlineEl = document.getElementById("letter-outline-demo");
+  outlineEl.style.width = aOutline.width + "px";
+  outlineEl.style.height = aOutline.height + "px";
+  OrbitLoader.wrap(outlineEl, {
+    d: aOutline.d,
+    guideD: aOutline.guideD,
+    viewBox: aOutline.viewBox,
+    durationMs: 2600,
+    segmentFraction: 0.45,
+    guideOpacity: 0.35,
+  });
+
+  var alpha = OrbitLoaderShapes.text("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 20, 6);
+  var alphaEl = document.getElementById("alphabet-demo");
+  alphaEl.style.width = alpha.width + "px";
+  alphaEl.style.height = alpha.height + "px";
+  OrbitLoader.wrap(alphaEl, {
+    d: alpha.d,
+    viewBox: alpha.viewBox,
+    durationMs: 12000,
+    segmentFraction: 0.06,
+    guideOpacity: 0.3,
+  });
+
+  var box = OrbitLoaderShapes.textBoxForElement(document.getElementById("boxed-demo"), 8, 10);
+  OrbitLoader.wrap(document.getElementById("boxed-demo"), {
+    d: box.d,
+    viewBox: box.viewBox,
+    offset: 8,
+    durationMs: 2600,
+    guideOpacity: 0.35,
+  });
+
+  DotLoader.wrap(document.getElementById("dot-demo"), {
+    d: OrbitLoaderShapes.circle(72),
+    viewBox: "0 0 72 72",
+    durationMs: 1600,
+    color: "#ffd54a",
+    dotRadius: 4,
+    guideOpacity: 0.35,
+  });
+
+  ShimmerLoader.wrap(document.getElementById("infinity-demo"), {
+    d: OrbitLoaderShapes.infinity(120),
+    viewBox: "0 0 120 60",
+    durationMs: 2400,
+    bandWidth: 10,
+    bandOpacity: 0.5,
+    color: "#d8dce4",
+  });
+
+  RippleLoader.create(document.getElementById("ripple-demo"), {
+    rings: 3,
+    durationMs: 1800,
+    strokeWidth: 3,
+  });
+
+  OrbitLoader.wrap(document.getElementById("triangle-demo"), {
+    d: OrbitLoaderShapes.polygon(3, 72),
+    viewBox: "0 0 72 72",
+    durationMs: 1800,
+    strokeWidth: 3,
+    color: "#e8355c",
+    guideOpacity: 0.35,
+  });
+
+  DotLoader.wrap(document.getElementById("train-demo"), {
+    d: OrbitLoaderShapes.polygon(6, 72, 6),
+    viewBox: "0 0 72 72",
+    durationMs: 2200,
+    dots: 3,
+    dotRadius: 3.5,
+    color: "#5b8cff",
+    guideOpacity: 0.35,
+  });
+
+  TypingLoader.create(document.getElementById("typing-demo"), {
+    dots: 3,
+    durationMs: 1000,
+    staggerMs: 180,
+    color: "#e8355c",
   });
 </script>
 </body>

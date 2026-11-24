@@ -1,0 +1,20 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../dist/traceloop.css">
+<style>body{background:#0e0e12;color:#eceef2;font-family:system-ui;padding:40px;display:flex;gap:32px;flex-wrap:wrap}</style>
+</head><body>
+<div id="a" style="width:72px;height:72px;color:#e8355c"></div>
+<div id="b" style="width:96px;height:48px;color:#5b8cff"></div>
+<div id="c" style="width:220px;height:60px;color:#ffd54a"></div>
+<div id="d" style="width:72px;height:72px;color:#34d399"></div>
+<script type="module">
+  import { OrbitLoader, shapes, TabLoader } from '../dist/traceloop.esm.js';
+  OrbitLoader.wrap(document.getElementById('a'), { d: shapes.circle(72), viewBox: '0 0 72 72' });
+  OrbitLoader.wrap(document.getElementById('b'), { d: shapes.infinity(96), viewBox: '0 0 96 48', segmentFraction: 0.3 });
+  var tab = TabLoader.create(document.getElementById('c'), { labels: ['One','Two','Three'], color: '#ffd54a', autoStart: false });
+  tab.play(0, 0.5);
+  // shapes export check
+  var ok = typeof shapes.text === 'function';
+  document.title = ok ? 'DIST OK' : 'DIST FAIL';
+</script>
+</body></html>

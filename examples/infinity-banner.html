@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TraceLoop — infinity welcome banner</title>
+<style>
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #14101f;
+    font-family: "Segoe UI", system-ui, sans-serif;
+  }
+  /* Faint scattered specks, like the reference banner's starfield. */
+  .banner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    padding: 48px 56px;
+    border-left: 1px solid rgba(180, 160, 220, 0.25);
+    border-bottom: 1px solid rgba(180, 160, 220, 0.12);
+    background:
+      radial-gradient(1px 1px at 20% 30%, rgba(200,180,240,.5) 50%, transparent 51%),
+      radial-gradient(1px 1px at 70% 20%, rgba(200,180,240,.4) 50%, transparent 51%),
+      radial-gradient(1.5px 1.5px at 85% 60%, rgba(200,180,240,.35) 50%, transparent 51%),
+      radial-gradient(1px 1px at 40% 75%, rgba(200,180,240,.3) 50%, transparent 51%),
+      radial-gradient(1px 1px at 10% 80%, rgba(200,180,240,.35) 50%, transparent 51%),
+      #171122;
+    overflow: hidden;
+  }
+  .orbit-loader-wrap { color: #cfc0f5; }
+  .copy h1 { margin: 0 0 6px; font-size: 34px; font-weight: 600; color: #f2eefc; letter-spacing: 0.2px; }
+  .copy p { margin: 0; font-size: 16px; color: #9a8fb8; }
+</style>
+<link rel="stylesheet" href="../orbit-loader.css">
+</head>
+<body>
+
+<div class="banner">
+  <div class="orbit-loader-wrap" id="infinity-demo" style="width:140px;height:64px"></div>
+  <div class="copy">
+    <h1>Welcome to ML AI</h1>
+    <p>One loop, from idea to shipped.</p>
+  </div>
+</div>
+
+<script src="../shimmer-loader.js"></script>
+<script src="../shapes.js"></script>
+<script>
+  // The reference look: a dim lavender band (the infinity's "body") with
+  // a bright lavender-white shimmer and soft glow traveling the loop.
+  // bandOpacity keeps the band subtle; the shimmer line runs at full
+  // brightness with a 3x glow head, which is the traveling light.
+  ShimmerLoader.wrap(document.getElementById("infinity-demo"), {
+    d: OrbitLoaderShapes.infinity(140, 64),
+    viewBox: "0 0 140 64",
+    durationMs: 2800,
+    bandWidth: 9,
+    bandOpacity: 0.3,
+    color: "#cfc0f5"
+  });
+</script>
+</body>
+</html>

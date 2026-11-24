@@ -1,0 +1,87 @@
+{
+  "name": "traceloop",
+  "version": "0.1.0",
+  "description": "TraceLoop — loading and UI-transition animations that trace real SVG paths: crawling segments, traveling dots, shimmer bands, ripples, typing waves, plus one-shot tab/page/button/toast/progress transitions. Import and go. No runtime dependencies.",
+  "main": "dist/traceloop.umd.js",
+  "module": "dist/traceloop.esm.js",
+  "unpkg": "dist/traceloop.umd.js",
+  "jsdelivr": "dist/traceloop.umd.js",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/traceloop.esm.js",
+      "require": "./dist/traceloop.umd.js",
+      "default": "./dist/traceloop.esm.js"
+    },
+    "./react": {
+      "import": "./dist/react.js",
+      "default": "./dist/react.js"
+    },
+    "./css": "./dist/traceloop.css",
+    "./orbit-loader.css": "./orbit-loader.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.d.ts",
+    "dist/",
+    "traceloop.js",
+    "orbit-loader.js",
+    "dot-loader.js",
+    "shimmer-loader.js",
+    "ripple-loader.js",
+    "typing-loader.js",
+    "handshake-loader.js",
+    "tab-loader.js",
+    "page-loader.js",
+    "button-loader.js",
+    "toast-loader.js",
+    "progress-loader.js",
+    "search-loader.js",
+    "modal-loader.js",
+    "accordion-loader.js",
+    "drawer-loader.js",
+    "dropdown-loader.js",
+    "input-loader.js",
+    "shapes.js",
+    "orbit-loader.css",
+    "react/"
+  ],
+  "scripts": {
+    "build": "npm run build:esm && npm run build:umd && npm run build:react && npm run build:css",
+    "build:esm": "esbuild traceloop.js --bundle --minify --format=esm --outfile=dist/traceloop.esm.js --legal-comments=none",
+    "build:umd": "esbuild traceloop.js --bundle --minify --format=iife --global-name=TraceLoop --outfile=dist/traceloop.umd.js --legal-comments=none",
+    "build:react": "esbuild react/index.js --bundle --minify --format=esm --external:react --outfile=dist/react.js --legal-comments=none",
+    "build:css": "node -e \"require('fs').copyFileSync('orbit-loader.css','dist/traceloop.css')\""
+  },
+  "keywords": [
+    "loading",
+    "loader",
+    "spinner",
+    "svg",
+    "path",
+    "animation",
+    "transition",
+    "progress",
+    "react",
+    "stroke-dashoffset",
+    "no-dependencies"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dtvanshulll/traceloop.git"
+  },
+  "peerDependencies": {
+    "react": ">=17"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  }
+}

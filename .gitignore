@@ -1,2 +1,6 @@
-.DS_Store
-Thumbs.db
+node_modules/
+dist/
+react-test.bundle.js
+tl-*.png
+react-test.b*.js
+pt-*.png

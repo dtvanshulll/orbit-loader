@@ -1,100 +1,130 @@
-# OrbitLoader
+# TraceLoop
 
-A glowing stroke-segment that chases around an SVG path, forever, as a
-loading indicator. Wrap a logo's outline, a circle, a hand-drawn underline
-beneath some text — any path works, because the library only ever animates
-a moving dash-segment along whatever `d` it's given. It never cuts across
-a corner or curve: the segment bends through the path exactly as the path
-itself does, because it's drawn *on* the real path, not a separate shape
-rotated to approximate it.
+Loading and UI-transition animations that trace real SVG paths — zero dependencies.
 
-No dependencies, no build step. Two small files, loaded via `<script>`.
+[![npm](https://img.shields.io/npm/v/traceloop.svg)](https://www.npmjs.com/package/traceloop)
+[![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg)](package.json)
 
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for how and why it's
-built this way, and [docs/ROADMAP.md](docs/ROADMAP.md) for what's planned
-next (more loader styles, more shapes, optional npm packaging).
+**TraceLoop** draws a glowing segment that crawls along any `<path>` you give it: circles, squares, letters, words, infinity signs, your logo. Seventeen styles — six looping loaders and eleven one-shot transitions (tab switches, page loads, buttons, toasts, progress, search bars, modals, accordions, drawers, dropdowns, inputs) — all driven by the path itself, so the motion follows your shape instead of being bolted next to it.
 
 ## Quick start
 
+```bash
+npm install traceloop
+```
+
+```js
+import { OrbitLoader, shapes } from 'traceloop';
+import 'traceloop/css';
+
+OrbitLoader.wrap(document.querySelector('.box'), {
+  d: shapes.circle(72),
+  viewBox: '0 0 72 72',
+  color: '#e8355c'
+});
+```
+
+That's the whole integration — import the style, pass a color. The
+`css` import is the only stylesheet you ever need.
+
+### React
+
+```jsx
+import { Orbit, Tab, shapes } from 'traceloop/react';
+
+<Orbit d={{ shape: 'circle', args: [72] }} width={72} height={72} color="#e8355c" />
+<Tab labels={['One', 'Two', 'Three']} color="#5b8cff" />
+```
+
+Same options as the vanilla library, as props. Mount/unmount and
+recreation are handled for you; SSR-safe.
+
+### Vue, Svelte, Angular and everything else
+
+The ESM build is framework-agnostic — create in the mount hook,
+destroy in the unmount hook:
+
+```js
+// Vue
+onMounted(() => { ctrl = OrbitLoader.wrap(el, opts) });
+onUnmounted(() => ctrl.destroy());
+
+// Svelte
+onMount(() => { ctrl = OrbitLoader.wrap(el, opts) });
+onDestroy(() => ctrl.destroy());
+```
+
+### No bundler? Script tags still work
+
 ```html
 <link rel="stylesheet" href="orbit-loader.css">
-<div class="orbit-loader-wrap" style="width:84px;height:84px;border-radius:24px;background:#111">
-  <!-- your logo/icon/content here -->
-</div>
-
-<script src="orbit-loader.js"></script>
-<script src="shapes.js"></script>
+<div class="orbit-loader-wrap" style="width:72px; height:72px"></div>
+<script src="dist/traceloop.umd.js"></script>  <!-- everything, one file -->
 <script>
-  OrbitLoader.wrap(document.querySelector(".orbit-loader-wrap"), {
-    d: OrbitLoader.shapes.roundedSquare(84, 24),
-    viewBox: "0 0 84 84",
+  OrbitLoader.wrap(document.querySelector('.orbit-loader-wrap'), {
+    d: OrbitLoaderShapes.circle(72),
+    viewBox: '0 0 72 72',
+    color: '#e8355c'
   });
 </script>
 ```
 
-See `examples/index.html` for a live demo of a logo box, a circle, and
-text with an underline thread.
+(Or load the individual source files the old way — they still ship.)
 
-## API
+## Why TraceLoop
 
-### `OrbitLoader.wrap(container, options)`
+Most loader libraries give you a spinner: a shape rotated by CSS, blind to your design. TraceLoop's motion substrate is the SVG path itself — `getTotalLength()` and `stroke-dasharray` — so:
 
-Builds the `<svg><path></svg>` for you and appends it to `container`
-(an element, or a selector string). `container` should already be
-`.orbit-loader-wrap` (or carry the same `position: relative`,
-`display: inline-block` styling) so the injected, absolutely-positioned
-SVG lines up over it.
+- **The shape is the animation.** Hand it a letter, a word, a polygon, your product logo — the crawler traces that silhouette. Nothing else traces text along its actual outline.
+- **Transitions are path primitives too.** The tab underline crawls to the tab you clicked; the progress bar fills along a curve; the button's own border is its pending track. UI kits morph widths with CSS; these ride paths.
+- **Zero dependencies, zero build.** Plain ES5 and one CSS file. Works from a `<script>` tag in any page, any framework, none at all.
+- **Reduced motion is not an afterthought** — every style checks `prefers-reduced-motion` once at creation and renders nothing that moves.
 
-Returns a controller: `{ start(), stop(), destroy(), isRunning(), path, svg }`.
+**What it doesn't do:** spinners, skeleton screens (the shimmer style is a band, not a layout skeleton), Lottie-grade character animation, or React components — it's DOM in, DOM out; wrap it yourself.
 
-**`options.d`** (required) — the path's `d` attribute. Supply your own, or
-use one of the `shapes.js` generators (below).
+## The eleven styles
 
-**`options.viewBox`** (default `"0 0 100 100"`) — must match the
-coordinate space `d` was built in (e.g. `"0 0 84 84"` for
-`shapes.roundedSquare(84, ...)`), or the thread will be stretched/offset
-relative to the shape it's meant to trace.
-
-Plus every option `create()` takes (below).
-
-### `OrbitLoader.create(pathEl, options)`
-
-The lower-level call, for when you already have a `<path>` element (e.g.
-hand-written SVG markup rather than injected via `wrap`).
-
-| option | default | meaning |
+| File | Global | What it does |
 |---|---|---|
-| `segmentFraction` | `0.18` | how much of the lap the glowing segment covers, as a fraction of the path's total length |
-| `durationMs` | `2200` | time for one full lap |
-| `direction` | `"forward"` | `"forward"` or `"reverse"` |
-| `activeClass` | `"is-active"` | class added to the path while running, so CSS can fade it in |
-| `autoStart` | `true` | start animating immediately |
+| `orbit-loader.js` | `OrbitLoader` | the core: a glowing segment crawls any path, forever |
+| `dot-loader.js` | `DotLoader` | a traveling dot — with flutter, breadcrumb trails, relay batons, crossing twins |
+| `shimmer-loader.js` | `ShimmerLoader` | a soft light band sweeps the path like brushed metal |
+| `ripple-loader.js` | `RippleLoader` | rings radiate from the container — container-based, no path |
+| `typing-loader.js` | `TypingLoader` | the chat "typing…" wave — container-based, no path |
+| `handshake-loader.js` | `HandshakeLoader` | two segments converge, flash where they meet, retract |
+| `tab-loader.js` | `TabLoader` | the tab underline crawls to the tab you clicked — one-shot |
+| `page-loader.js` | `PageLoader` | the top progress bar trickles, then sweeps done — one-shot |
+| `button-loader.js` | `ButtonLoader` | the button's own border is its pending-progress track — one-shot |
+| `toast-loader.js` | `ToastLoader` | the toast's lifetime drains along its bottom edge — one-shot |
+| `progress-loader.js` | `ProgressLoader` | determinate progress filling along any path |
 
-`prefers-reduced-motion: reduce` is checked once at creation — if set, the
-loader never starts (the path simply has no motion; see
-`orbit-loader.css`'s reduced-motion rule, which also keeps it invisible).
+Full option tables for every style: [docs/STYLES.md](docs/STYLES.md).
 
-### `OrbitLoader.shapes` (from `shapes.js`, optional)
+## Shapes
 
-Ready-made `d`-string generators for the easy cases — the core library
-never depends on this file, so skip it and hand-write your own path if
-none of these fit.
+`shapes.js` (optional) generates `d` strings so you don't have to write path data: `circle`, `roundedSquare`, `roundRect`, `polygon`, `underline`, `infinity`, `letter` (a full authored alphabet, A–Z and 0–9), `letterOutline`, `text`, `textBoxForElement`. Spell words, outline boxes, trace your logo.
 
-- `roundedSquare(size, radius)` — a square with rounded corners
-- `circle(size)` — a circle of the given diameter
-- `underline(width, gap)` — a straight line `gap` px below a text baseline
+```js
+OrbitLoader.wrap(el, { d: OrbitLoaderShapes.text('LOADING'), ... });
+```
 
-Add a new shape by adding a new function to this file; `orbit-loader.js`
-never needs to change for it.
+## Try it
 
-## Adding a new loader style
+- **Playground** — all 35 animations with live sliders and copy-paste code: clone the repo, serve the folder, open `playground/index.html`
+- **UI transitions in context** — `examples/ui-transitions.html`: one mock app where every trigger is wired
+- **Classic demos** — `examples/index.html`
 
-OrbitLoader's one style today is a stroke segment chasing a static path.
-A different style (e.g. a pulsing ring, a trailing dot instead of a
-segment) belongs as a sibling module (say, `pulse-loader.js`) with its own
-`create()`, not as a branch inside this one — keeps each style's code
-readable on its own, and this core free to stay small.
+## Status
+
+v0.1.0, experimental, maintained by one person. The API is stable within a style but new styles land regularly; pin or vendor the files. [ROADMAP](docs/ROADMAP.md) lists what isn't built yet.
+
+## Accessibility
+
+Every style checks `prefers-reduced-motion: reduce` once at creation: if set, nothing animates and nothing blinks — the guides render as static shapes. Loaders are `aria-hidden`; announce progress in your app's own markup.
 
 ## License
 
-MIT — see `LICENSE`.
+[MIT](LICENSE) — free for any use, attribution appreciated but not required.
+
+Built by Anshul
