@@ -16,7 +16,7 @@
  * with every toggle after that.
  *
  * Usage:
- *   var acc = AccordionLoader.create(panelEl, { color: '#34d399' });
+ *   var acc = AccordionLoader.create(panelEl, { color: '#788c5d' });
  *   header.addEventListener('click', function () { acc.toggle(); });
  */
 (function (global) {

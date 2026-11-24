@@ -6,37 +6,41 @@ change doesn't drift. Values are tokens; use the token, not the value.
 
 ## Colors
 
-Near-black neutrals carry the chrome; the loaders carry the color.
-One accent per context, never a wash of it.
+Warm dark neutrals carry the chrome; the loaders carry the color.
+One accent per context, never a wash of it. The palette is the
+Anthropic brand set: dark `#141413`, light `#faf9f5`, mid gray
+`#b0aea5`, light gray `#e8e6dc`, and the accent trio orange → blue →
+green.
 
-### Surfaces (dark lab bench)
+### Surfaces (warm dark bench)
 
 | token | value | use |
 |---|---|---|
-| `--tl-bg` | `#0e0e12` | page background |
-| `--tl-card` | `#15151a` | cards, panels |
-| `--tl-raised` | `#1c1c22` | raised elements: inputs, toasts, mock components |
-| `--tl-border` | `#26262d` | hairline borders, dividers |
-| `--tl-stage` | `#0a0a0d` | demo stages — the darkest step, where loaders perform |
+| `--tl-bg` | `#141413` | page background — the brand dark itself |
+| `--tl-card` | `#1c1b19` | cards, panels |
+| `--tl-raised` | `#262420` | raised elements: inputs, toasts, mock components |
+| `--tl-border` | `#33312c` | hairline borders, dividers |
+| `--tl-stage` | `#0f0e0d` | demo stages — the darkest step, where loaders perform |
 
 ### Text
 
 | token | value | use |
 |---|---|---|
-| `--tl-text` | `#eceef2` | primary text |
-| `--tl-secondary` | `#9a9ba4` | secondary text, descriptions |
-| `--tl-muted` | `#6d6e77` | metadata, captions, quiet labels |
+| `--tl-text` | `#faf9f5` | primary text |
+| `--tl-secondary` | `#b0aea5` | secondary text, descriptions |
+| `--tl-muted` | `#8f8d84` | metadata, captions, quiet labels (≥4.5:1 on `--tl-bg`) |
 
 ### Accents (each tied to a job, not decoration)
 
+The three brand accents cycle: orange leads, blue supports, green
+means alive/success. Never invent a fourth hue.
+
 | token | value | assigned to |
 |---|---|---|
-| `--tl-accent` | `#e8355c` | the brand crawler; primary interactive accents |
-| `--tl-blue` | `#5b8cff` | progress, navigation, anything moving toward completion |
-| `--tl-gold` | `#ffd54a` | time: countdowns, trails, highlights |
-| `--tl-mint` | `#34d399` | success, "alive" states |
-| `--tl-silver` | `#d8dce4` | neutral loaders, monochrome demos |
-| `--tl-lavender` | `#cfc0f5` | reserved for the infinity banner identity |
+| `--tl-accent` | `#d97757` | the brand crawler; primary interactive accents; error/attention states |
+| `--tl-blue` | `#6a9bcc` | progress, navigation, anything moving toward completion |
+| `--tl-green` | `#788c5d` | success, "alive" states, time/countdown highlights |
+| `--tl-light` | `#e8e6dc` | neutral loaders, monochrome demos, icons on dark tiles |
 
 ### Rules
 
@@ -50,12 +54,15 @@ One accent per context, never a wash of it.
 
 ## Typography
 
-System stack, no webfonts — the library must not pull fonts.
+Brand faces with system fallbacks — the library never *loads* fonts,
+it only names them: consumers who have Poppins/Lora (or load them)
+get the brand; everyone else gets Arial/Georgia and nothing breaks.
 
 | token | value |
 |---|---|
-| `--tl-font` | `system-ui, -apple-system, "Segoe UI", sans-serif` |
-| `--tl-mono` | `ui-monospace, "Cascadia Mono", Consolas, monospace` |
+| `--tl-font-display` | `"Poppins", Arial, sans-serif` — headings, component titles |
+| `--tl-font-body` | `"Lora", Georgia, serif` — component-owned copy: labels, placeholders, menu rows |
+| `--tl-mono` | `ui-monospace, "Cascadia Mono", Consolas, monospace` — code, tags, technical labels |
 
 Scale (4px grid, 1.5 line-height for body):
 

@@ -19,7 +19,7 @@
  *
  * Usage:
  *   var btn = ButtonLoader.create(document.querySelector('button'), {
- *     color: '#e8355c'
+ *     color: '#d97757'
  *   });
  *   form.onsubmit = function () { btn.begin(); ... };
  */

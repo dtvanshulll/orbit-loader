@@ -19,7 +19,7 @@
  *
  * Usage:
  *   RippleLoader.create(document.querySelector('.loader-box'), {
- *     rings: 3, color: '#e8355c'
+ *     rings: 3, color: '#d97757'
  *   });
  *   ripple.stop();
  */

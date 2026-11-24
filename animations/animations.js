@@ -34,7 +34,7 @@ window.ORBIT_ANIMATIONS = [
     style: "orbit",
     note: "The original: a glowing segment chasing the edge of an app-icon tile",
     // A stroke icon, not an emoji: the same Lucide geometry every style animates.
-    box: { width: 84, height: 84, background: "#1a1a1e", borderRadius: 24, html: '<svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="#d8dce4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12.296 3.464l3.02 3.956M20.2 6L3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1.1-.3 2.2.3 2.5 1.3zM3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zm3.18-5.724l3.1 3.899"/></svg>' },
+    box: { width: 84, height: 84, background: "#201f1c", borderRadius: 24, html: '<svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="#e8e6dc" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12.296 3.464l3.02 3.956M20.2 6L3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1.1-.3 2.2.3 2.5 1.3zM3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zm3.18-5.724l3.1 3.899"/></svg>' },
     options: {
       d: { shape: "roundedSquare", args: [84, 24] },
       viewBox: "0 0 84 84",
@@ -53,7 +53,7 @@ window.ORBIT_ANIMATIONS = [
       durationMs: 1600,
       offset: 6,
       strokeWidth: 3.5,
-      color: "#e8355c",
+      color: "#d97757",
       guideOpacity: 0.35
     }
   },
@@ -70,7 +70,7 @@ window.ORBIT_ANIMATIONS = [
       segmentFraction: 0.4,
       direction: "reverse",
       strokeWidth: 3,
-      color: "#ffd54a",
+      color: "#788c5d",
       guideOpacity: 0.3
     }
   },
@@ -105,12 +105,12 @@ window.ORBIT_ANIMATIONS = [
     name: "Alphabet Run",
     style: "orbit",
     note: "The line crawls A to Z in order \u2014 type any word or sequence",
-    box: { width: 462, height: 20, background: "#14141a", border: "1px solid #2a2a30", borderRadius: 6 },
+    box: { width: 462, height: 20, background: "#1c1b19", border: "1px solid #3a3831", borderRadius: 6 },
     options: {
       d: { shape: "text", args: ["ABCDEFGHIJKLMNOPQRSTUVWXYZ", 20, 6] },
       durationMs: 9000,
       segmentFraction: 0.12,
-      color: "#d8dce4",
+      color: "#e8e6dc",
       guideOpacity: 0.3
     }
   },
@@ -119,14 +119,14 @@ window.ORBIT_ANIMATIONS = [
     name: "Silver Infinity",
     style: "shimmer",
     note: "Light sweeping through an infinity band on black",
-    box: { width: 120, height: 60, background: "#000", border: "1px solid #3a3a44", borderRadius: 16 },
+    box: { width: 120, height: 60, background: "#000", border: "1px solid #4a473e", borderRadius: 16 },
     options: {
       d: { shape: "infinity", args: [120] },
       viewBox: "0 0 120 60",
       durationMs: 2400,
       bandWidth: 10,
       bandOpacity: 0.5,
-      color: "#d8dce4"
+      color: "#e8e6dc"
     }
   },
 
@@ -139,7 +139,7 @@ window.ORBIT_ANIMATIONS = [
       d: { shape: "circle", args: [72] },
       viewBox: "0 0 72 72",
       durationMs: 1600,
-      color: "#ffd54a",
+      color: "#788c5d",
       dotRadius: 4,
       guideOpacity: 0.35
     }
@@ -168,7 +168,7 @@ window.ORBIT_ANIMATIONS = [
       viewBox: "0 0 72 72",
       durationMs: 1800,
       strokeWidth: 3,
-      color: "#e8355c",
+      color: "#d97757",
       guideOpacity: 0.35
     }
   },
@@ -182,7 +182,7 @@ window.ORBIT_ANIMATIONS = [
       dots: 3,
       durationMs: 1000,
       staggerMs: 180,
-      color: "#e8355c"
+      color: "#d97757"
     }
   },
 
@@ -195,7 +195,7 @@ window.ORBIT_ANIMATIONS = [
       rings: 3,
       durationMs: 1800,
       strokeWidth: 4,
-      color: "#e8355c"
+      color: "#d97757"
     }
   },
 
@@ -208,7 +208,7 @@ window.ORBIT_ANIMATIONS = [
       rings: 6,
       durationMs: 2400,
       strokeWidth: 3,
-      color: "#5b8cff"
+      color: "#6a9bcc"
     }
   },
 
@@ -222,7 +222,7 @@ window.ORBIT_ANIMATIONS = [
       viewBox: "0 0 72 72",
       durationMs: 2000,
       strokeWidth: 3,
-      color: "#e8355c",
+      color: "#d97757",
       guideOpacity: 0.35
     }
   },
@@ -237,7 +237,7 @@ window.ORBIT_ANIMATIONS = [
       viewBox: "0 0 72 72",
       durationMs: 1800,
       strokeWidth: 3,
-      color: "#5b8cff",
+      color: "#6a9bcc",
       guideOpacity: 0.35
     }
   },
@@ -269,7 +269,7 @@ window.ORBIT_ANIMATIONS = [
       durationMs: 2600,
       dots: 3,
       dotRadius: 3,
-      color: "#5b8cff",
+      color: "#6a9bcc",
       guideOpacity: 0.35
     }
   },
@@ -286,7 +286,7 @@ window.ORBIT_ANIMATIONS = [
       direction: "reverse",
       dots: 4,
       dotRadius: 3.5,
-      color: "#ffd54a",
+      color: "#788c5d",
       guideOpacity: 0.3
     }
   },
@@ -303,7 +303,7 @@ window.ORBIT_ANIMATIONS = [
       bandWidth: 8,
       bandOpacity: 0.2,
       strokeWidth: 2.5,
-      color: "#5b8cff"
+      color: "#6a9bcc"
     }
   },
 
@@ -318,7 +318,7 @@ window.ORBIT_ANIMATIONS = [
       durationMs: 2400,
       bandWidth: 8,
       bandOpacity: 0.25,
-      color: "#d8dce4"
+      color: "#e8e6dc"
     }
   },
 
@@ -332,7 +332,7 @@ window.ORBIT_ANIMATIONS = [
       durationMs: 3200,
       startScale: 0.2,
       strokeWidth: 4,
-      color: "#34d399"
+      color: "#788c5d"
     }
   },
 
@@ -345,7 +345,7 @@ window.ORBIT_ANIMATIONS = [
       d: { shape: "text", args: ["ORBIT", 30, 4] },
       durationMs: 4000,
       segmentFraction: 0.35,
-      color: "#d8dce4",
+      color: "#e8e6dc",
       guideOpacity: 0.35
     }
   },
@@ -359,7 +359,7 @@ window.ORBIT_ANIMATIONS = [
       dots: 5,
       durationMs: 900,
       staggerMs: 140,
-      color: "#e8355c"
+      color: "#d97757"
     }
   },
 
@@ -391,7 +391,7 @@ window.ORBIT_ANIMATIONS = [
       breathe: 0.6,
       breatheMs: 1600,
       strokeWidth: 2.5,
-      color: "#e8355c",
+      color: "#d97757",
       guideOpacity: 0.35
     }
   },
@@ -408,7 +408,7 @@ window.ORBIT_ANIMATIONS = [
       wobble: 6,
       wobbleCycles: 3,
       dotRadius: 3,
-      color: "#5b8cff",
+      color: "#6a9bcc",
       guideOpacity: 0.35
     }
   },
@@ -424,7 +424,7 @@ window.ORBIT_ANIMATIONS = [
       durationMs: 2600,
       trail: 10,
       dotRadius: 3.5,
-      color: "#ffd54a",
+      color: "#788c5d",
       guideOpacity: 0.3
     }
   },
@@ -441,7 +441,7 @@ window.ORBIT_ANIMATIONS = [
       dots: 6,
       relay: true,
       dotRadius: 3.5,
-      color: "#e8355c",
+      color: "#d97757",
       guideOpacity: 0.35
     }
   },
@@ -457,7 +457,7 @@ window.ORBIT_ANIMATIONS = [
       durationMs: 2600,
       crossing: true,
       dotRadius: 3,
-      color: "#d8dce4",
+      color: "#e8e6dc",
       guideOpacity: 0.35
     }
   },
@@ -471,7 +471,7 @@ window.ORBIT_ANIMATIONS = [
       d: { shape: "roundedSquare", args: [72, 12] },
       viewBox: "0 0 72 72",
       durationMs: 2400,
-      color: "#e8355c",
+      color: "#d97757",
       guideOpacity: 0.35
     }
   },
@@ -480,12 +480,12 @@ window.ORBIT_ANIMATIONS = [
     name: "Tab Crawl",
     style: "tab",
     note: "The tab underline crawls to the tab you clicked, stretchy and alive",
-    box: { width: 220, height: 48, color: "#eceef2", padding: "12px 8px" },
+    box: { width: 220, height: 48, color: "#faf9f5", padding: "12px 8px" },
     options: {
       labels: ["Home", "Files", "Shared", "Settings"],
       durationMs: 700,
       restMs: 1500,
-      color: "#e8355c"
+      color: "#d97757"
     }
   },
 
@@ -493,12 +493,12 @@ window.ORBIT_ANIMATIONS = [
     name: "Page Traverse",
     style: "page",
     note: "The top progress bar trickles while a page loads, then sweeps done and fades",
-    box: { width: 220, height: 110, background: "#1c1c22", borderRadius: 8 },
+    box: { width: 220, height: 110, background: "#262420", borderRadius: 8 },
     options: {
       thickness: 3,
       durationMs: 2600,
       restMs: 1400,
-      color: "#5b8cff"
+      color: "#6a9bcc"
     }
   },
 
@@ -509,16 +509,16 @@ window.ORBIT_ANIMATIONS = [
     box: {
       width: 150,
       height: 44,
-      background: "#26262d",
+      background: "#33312c",
       borderRadius: 8,
       content: "Save changes",
       fontSize: 14,
-      color: "#eceef2"
+      color: "#faf9f5"
     },
     options: {
       radius: 8,
       durationMs: 1100,
-      color: "#e8355c"
+      color: "#d97757"
     }
   },
 
@@ -529,18 +529,18 @@ window.ORBIT_ANIMATIONS = [
     box: {
       width: 220,
       height: 52,
-      background: "#1c1c22",
+      background: "#262420",
       borderRadius: 8,
       content: "File uploaded",
       fontSize: 13,
-      color: "#eceef2",
+      color: "#faf9f5",
       padding: "14px 16px"
     },
     options: {
       thickness: 3,
       durationMs: 3200,
       restMs: 1200,
-      color: "#ffd54a"
+      color: "#788c5d"
     }
   },
 
@@ -554,7 +554,7 @@ window.ORBIT_ANIMATIONS = [
       viewBox: "0 0 96 96",
       strokeWidth: 2.5,
       headRadius: 3,
-      color: "#5b8cff",
+      color: "#6a9bcc",
       guideOpacity: 0.3
     }
   },
@@ -563,13 +563,13 @@ window.ORBIT_ANIMATIONS = [
     name: "Search Bar",
     style: "search",
     note: "The field widens while its underline draws out from the left: open and close in one motion",
-    box: { width: 260, height: 56, background: "#1c1c22", borderRadius: 8, color: "#eceef2" },
+    box: { width: 260, height: 56, background: "#262420", borderRadius: 8, color: "#faf9f5" },
     options: {
       collapsedWidth: 44,
       expandedWidth: 260,
       durationMs: 450,
       restMs: 1400,
-      color: "#5b8cff"
+      color: "#6a9bcc"
     }
   },
 
@@ -577,12 +577,12 @@ window.ORBIT_ANIMATIONS = [
     name: "Modal Arrival",
     style: "modal",
     note: "The backdrop fades, the panel rises, and its border draws itself on arrival",
-    box: { width: 220, height: 130, background: "#1c1c22", borderRadius: 12, padding: "16px" },
+    box: { width: 220, height: 130, background: "#262420", borderRadius: 12, padding: "16px" },
     options: {
       radius: 12,
       durationMs: 480,
       restMs: 1600,
-      color: "#e8355c",
+      color: "#d97757",
       backdropPosition: "absolute"
     }
   },
@@ -591,11 +591,11 @@ window.ORBIT_ANIMATIONS = [
     name: "Accordion Reveal",
     style: "accordion",
     note: "The section grows while its left edge draws downward, so the eye follows the reveal",
-    box: { width: 200, height: 120, background: "#1c1c22", borderRadius: 8 },
+    box: { width: 200, height: 120, background: "#262420", borderRadius: 8 },
     options: {
       durationMs: 420,
       restMs: 1500,
-      color: "#34d399"
+      color: "#788c5d"
     }
   },
 
@@ -603,12 +603,12 @@ window.ORBIT_ANIMATIONS = [
     name: "Drawer From Left",
     style: "drawer",
     note: "The panel slides in while its leading edge draws downward, and the eye rides the reveal",
-    box: { position: "absolute", top: 16, bottom: 16, left: 16, width: 110, background: "#1c1c22", borderRadius: "0 8px 8px 0", color: "#5b8cff" },
+    box: { position: "absolute", top: 16, bottom: 16, left: 16, width: 110, background: "#262420", borderRadius: "0 8px 8px 0", color: "#6a9bcc" },
     options: {
       side: "left",
       durationMs: 420,
       restMs: 1600,
-      color: "#5b8cff",
+      color: "#6a9bcc",
       backdropPosition: "absolute"
     }
   },
@@ -617,12 +617,12 @@ window.ORBIT_ANIMATIONS = [
     name: "Drawer From Right",
     style: "drawer",
     note: "Same reveal, mirrored: settings panels and carts usually live on this side",
-    box: { position: "absolute", top: 16, bottom: 16, right: 16, width: 110, background: "#1c1c22", borderRadius: "8px 0 0 8px", color: "#5b8cff" },
+    box: { position: "absolute", top: 16, bottom: 16, right: 16, width: 110, background: "#262420", borderRadius: "8px 0 0 8px", color: "#6a9bcc" },
     options: {
       side: "right",
       durationMs: 420,
       restMs: 1600,
-      color: "#5b8cff",
+      color: "#6a9bcc",
       backdropPosition: "absolute"
     }
   },
@@ -631,12 +631,12 @@ window.ORBIT_ANIMATIONS = [
     name: "Bottom Sheet",
     style: "drawer",
     note: "The sheet rises while its top edge draws across, finishing with a grab handle",
-    box: { position: "absolute", left: 16, right: 16, bottom: 16, height: 64, background: "#1c1c22", borderRadius: "12px 12px 0 0", color: "#ffd54a" },
+    box: { position: "absolute", left: 16, right: 16, bottom: 16, height: 64, background: "#262420", borderRadius: "12px 12px 0 0", color: "#788c5d" },
     options: {
       side: "bottom",
       durationMs: 440,
       restMs: 1600,
-      color: "#ffd54a",
+      color: "#788c5d",
       backdropPosition: "absolute"
     }
   },
@@ -645,13 +645,13 @@ window.ORBIT_ANIMATIONS = [
     name: "Dropdown Menu",
     style: "dropdown",
     note: "The menu drops while its border draws, items stagger in, and a check draws on the chosen row",
-    box: { width: 200, height: 196, background: "#1c1c22", borderRadius: 8, padding: "16px", color: "#5b8cff" },
+    box: { width: 200, height: 196, background: "#262420", borderRadius: 8, padding: "16px", color: "#6a9bcc" },
     options: {
       items: ["Small", "Medium", "Large"],
       trigger: "Size",
       durationMs: 320,
       restMs: 1400,
-      color: "#5b8cff"
+      color: "#6a9bcc"
     }
   },
 
@@ -659,12 +659,12 @@ window.ORBIT_ANIMATIONS = [
     name: "Input Focus",
     style: "input",
     note: "The underline draws as the label floats up; success hands the line to mint and draws a check",
-    box: { width: 220, height: 56, background: "#1c1c22", borderRadius: 8, padding: "14px 12px 12px", color: "#5b8cff" },
+    box: { width: 220, height: 56, background: "#262420", borderRadius: 8, padding: "14px 12px 12px", color: "#6a9bcc" },
     options: {
       label: "Email",
       durationMs: 360,
       restMs: 1500,
-      color: "#5b8cff"
+      color: "#6a9bcc"
     }
     }
 ,
@@ -673,12 +673,12 @@ window.ORBIT_ANIMATIONS = [
     name: "Page Curtain",
     style: "page",
     note: "Two panels close from the corners like theater curtains, then part to reveal the page",
-    box: { width: 220, height: 110, background: "#1c1c22", borderRadius: 8 },
+    box: { width: 220, height: 110, background: "#262420", borderRadius: 8 },
     options: {
       variant: "curtain",
       durationMs: 2600,
       restMs: 1400,
-      color: "#5b8cff"
+      color: "#6a9bcc"
     }
   },
 
@@ -686,12 +686,12 @@ window.ORBIT_ANIMATIONS = [
     name: "Page Iris",
     style: "page",
     note: "A circle wipes open from the center of the page and closes back to nothing",
-    box: { width: 220, height: 110, background: "#1c1c22", borderRadius: 8 },
+    box: { width: 220, height: 110, background: "#262420", borderRadius: 8 },
     options: {
       variant: "iris",
       durationMs: 2600,
       restMs: 1400,
-      color: "#e8355c"
+      color: "#d97757"
     }
   },
 
@@ -699,12 +699,12 @@ window.ORBIT_ANIMATIONS = [
     name: "Page Slide",
     style: "page",
     note: "One panel sweeps fully across the page and off the far edge",
-    box: { width: 220, height: 110, background: "#1c1c22", borderRadius: 8 },
+    box: { width: 220, height: 110, background: "#262420", borderRadius: 8 },
     options: {
       variant: "slide",
       durationMs: 2600,
       restMs: 1400,
-      color: "#ffd54a"
+      color: "#788c5d"
     }
   },
 
@@ -712,12 +712,12 @@ window.ORBIT_ANIMATIONS = [
     name: "Page Bars",
     style: "page",
     note: "Five vertical bars stagger down in sequence, then stagger away",
-    box: { width: 220, height: 110, background: "#1c1c22", borderRadius: 8 },
+    box: { width: 220, height: 110, background: "#262420", borderRadius: 8 },
     options: {
       variant: "bars",
       durationMs: 2600,
       restMs: 1400,
-      color: "#cfc0f5"
+      color: "#6a9bcc"
     }
   },
 
@@ -725,11 +725,11 @@ window.ORBIT_ANIMATIONS = [
     name: "Button Fill",
     style: "button",
     note: "A color fill sweeps across while the action runs, then drains away on success",
-    box: { width: 150, height: 44, background: "#26262d", borderRadius: 8, content: "Save changes", fontSize: 14, color: "#eceef2" },
+    box: { width: 150, height: 44, background: "#33312c", borderRadius: 8, content: "Save changes", fontSize: 14, color: "#faf9f5" },
     options: {
       variant: "fill",
       durationMs: 1100,
-      color: "#ffd54a"
+      color: "#788c5d"
     }
   },
 
@@ -737,11 +737,11 @@ window.ORBIT_ANIMATIONS = [
     name: "Button Ripple",
     style: "button",
     note: "A circle ripples out from the press point. Click the button to feel it.",
-    box: { width: 150, height: 44, background: "#26262d", borderRadius: 8, content: "Press me", fontSize: 14, color: "#eceef2" },
+    box: { width: 150, height: 44, background: "#33312c", borderRadius: 8, content: "Press me", fontSize: 14, color: "#faf9f5" },
     options: {
       variant: "ripple",
       durationMs: 1100,
-      color: "#e8355c"
+      color: "#d97757"
     }
   },
 
@@ -749,13 +749,13 @@ window.ORBIT_ANIMATIONS = [
     name: "Toast Bar",
     style: "toast",
     note: "An inset countdown bar with a faint track drops in and drains. Hovering pauses it.",
-    box: { width: 220, height: 52, background: "#1c1c22", borderRadius: 8, content: "File uploaded", fontSize: 13, color: "#eceef2", padding: "14px 16px" },
+    box: { width: 220, height: 52, background: "#262420", borderRadius: 8, content: "File uploaded", fontSize: 13, color: "#faf9f5", padding: "14px 16px" },
     options: {
       variant: "bar",
       enter: "drop",
       durationMs: 3200,
       restMs: 1200,
-      color: "#34d399"
+      color: "#788c5d"
     }
   },
 
@@ -763,13 +763,13 @@ window.ORBIT_ANIMATIONS = [
     name: "Toast Ring",
     style: "toast",
     note: "A ring in the corner drains clockwise while the toast pops in",
-    box: { width: 220, height: 52, background: "#1c1c22", borderRadius: 8, content: "Scheduled for 9:00", fontSize: 13, color: "#eceef2", padding: "14px 16px" },
+    box: { width: 220, height: 52, background: "#262420", borderRadius: 8, content: "Scheduled for 9:00", fontSize: 13, color: "#faf9f5", padding: "14px 16px" },
     options: {
       variant: "ring",
       enter: "pop",
       durationMs: 3200,
       restMs: 1200,
-      color: "#5b8cff"
+      color: "#6a9bcc"
     }
   },
 
@@ -783,7 +783,7 @@ window.ORBIT_ANIMATIONS = [
       size: 64,
       strokeWidth: 3,
       headRadius: 3.5,
-      color: "#e8355c"
+      color: "#d97757"
     }
   },
 
@@ -798,7 +798,7 @@ window.ORBIT_ANIMATIONS = [
       d: "M0,3 L220,3",
       viewBox: "0 0 220 6",
       strokeWidth: 4,
-      color: "#34d399"
+      color: "#788c5d"
     }
   },
 
@@ -812,7 +812,7 @@ window.ORBIT_ANIMATIONS = [
       d: "M0,3 L220,3",
       viewBox: "0 0 220 6",
       strokeWidth: 4,
-      color: "#5b8cff"
+      color: "#6a9bcc"
     }
   }
 ];

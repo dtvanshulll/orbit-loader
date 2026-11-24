@@ -7,17 +7,17 @@
 <link rel="stylesheet" href="../orbit-loader.css">
 <style>
   body { background: #fff; color: #222; font: 15px/1.5 system-ui, sans-serif; padding: 48px; display: flex; gap: 64px; flex-wrap: wrap; }
-  figure { margin: 0; text-align: center; color: #e8355c; }
+  figure { margin: 0; text-align: center; color: #d97757; }
   figcaption { margin-top: 16px; color: #666; font-size: 13px; }
-  .logo-box { width: 84px; height: 84px; border-radius: 24px; background: #1a1a1e; display: flex; align-items: center; justify-content: center; font-size: 28px; }
+  .logo-box { width: 84px; height: 84px; border-radius: 24px; background: #201f1c; display: flex; align-items: center; justify-content: center; font-size: 28px; }
   .circle-box { width: 72px; height: 72px; }
-  .infinity-box { width: 120px; height: 60px; background: #000; border: 1px solid #2a2a30; border-radius: 16px; }
+  .infinity-box { width: 120px; height: 60px; background: #000; border: 1px solid #3a3831; border-radius: 16px; }
   .letter-box { width: 36px; height: 60px; }
-  .alphabet-box { background: #f4f4f6; border-radius: 6px; }
+  .alphabet-box { background: #e8e6dc; border-radius: 6px; }
 
-  .ripple-box { width: 72px; height: 72px; color: #e8355c; }
-  .typing-box { width: 110px; height: 44px; color: #e8355c; }
-  .alphabet-box { background: #f4f4f6; border-radius: 6px; }
+  .ripple-box { width: 72px; height: 72px; color: #d97757; }
+  .typing-box { width: 110px; height: 44px; color: #d97757; }
+  .alphabet-box { background: #e8e6dc; border-radius: 6px; }
   .text-box { font-size: 20px; font-weight: 600; color: #222; }
   .underline-strip { width: 100%; height: 10px; margin-top: 2px; }
   .boxed-text { font-size: 20px; font-weight: 600; color: #222; padding: 10px 14px; }
@@ -27,7 +27,7 @@
 <body>
 
 <figure>
-  <div class="orbit-loader-wrap logo-box" id="logo-demo">&#127916;</div>
+  <div class="orbit-loader-wrap logo-box" id="logo-demo"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="#e8e6dc" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12.296 3.464l3.02 3.956M20.2 6L3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1.1-.3 2.2.3 2.5 1.3zM3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zm3.18-5.724l3.1 3.899"/></svg></div>
   <figcaption>roundedSquare(84, 24)</figcaption>
 </figure>
 
@@ -166,7 +166,7 @@
     d: OrbitLoaderShapes.circle(72),
     viewBox: "0 0 72 72",
     durationMs: 1600,
-    color: "#ffd54a",
+    color: "#788c5d",
     dotRadius: 4,
     guideOpacity: 0.35,
   });
@@ -177,7 +177,7 @@
     durationMs: 2400,
     bandWidth: 10,
     bandOpacity: 0.5,
-    color: "#d8dce4",
+    color: "#e8e6dc",
   });
 
   RippleLoader.create(document.getElementById("ripple-demo"), {
@@ -191,7 +191,7 @@
     viewBox: "0 0 72 72",
     durationMs: 1800,
     strokeWidth: 3,
-    color: "#e8355c",
+    color: "#d97757",
     guideOpacity: 0.35,
   });
 
@@ -201,7 +201,7 @@
     durationMs: 2200,
     dots: 3,
     dotRadius: 3.5,
-    color: "#5b8cff",
+    color: "#6a9bcc",
     guideOpacity: 0.35,
   });
 
@@ -209,7 +209,7 @@
     dots: 3,
     durationMs: 1000,
     staggerMs: 180,
-    color: "#e8355c",
+    color: "#d97757",
   });
 </script>
 </body>

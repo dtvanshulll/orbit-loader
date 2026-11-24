@@ -3,21 +3,25 @@
 
    Direction: a dark lab bench. Near-black neutral surfaces and
    hairlines; the loaders in the stages carry all the color. One accent
-   (#e8355c) appears only where it means something: the header mark,
+   (#d97757) appears only where it means something: the header mark,
    the primary action's focus, form selection. */
 
 *, *::before, *::after { box-sizing: border-box; }
 
 :root {
-  --pg-bg: #0e0e12;
-  --pg-card: #15151a;
-  --pg-raised: #1c1c22;
-  --pg-border: #26262d;
-  --pg-stage: #0a0a0d;
-  --pg-text: #eceef2;
-  --pg-secondary: #9a9ba4;
-  --pg-muted: #8b8d98;
-  --pg-accent: #e8355c;
+  --pg-bg: #141413;
+  --pg-card: #1c1b19;
+  --pg-raised: #262420;
+  --pg-border: #33312c;
+  --pg-stage: #0f0e0d;
+  --pg-text: #faf9f5;
+  --pg-secondary: #b0aea5;
+  --pg-muted: #8f8d84;
+  --pg-accent: #d97757;
+  /* Brand typography: Poppins carries headings, Lora carries long-form
+     copy; UI chrome and code stay system/mono so controls read as tools. */
+  --pg-font-head: "Poppins", Arial, sans-serif;
+  --pg-font-body: "Lora", Georgia, serif;
   /* Header height is a token because the sidebar hangs below it. */
   --pg-header-h: 64px;
   /* Motion tokens: one entrance curve, one in-and-out curve, and the
@@ -39,6 +43,11 @@ body {
      carries its own gutter. The old 40px right padding here is what made
      the header stop 40px short of the viewport edge. */
   padding: 0 0 56px;
+}
+/* Buttons and inputs don't inherit the page font by default — without
+   this the CTA renders in the UA default and breaks the type system. */
+button, input, select, textarea {
+  font: inherit;
 }
 
 /* ---------- header ---------- */
@@ -66,6 +75,7 @@ body {
 .pg-mark { width: 32px; height: 32px; color: var(--pg-accent); flex: none; }
 .pg-brand-text h1 {
   margin: 0;
+  font-family: var(--pg-font-head);
   font-size: 18px;
   font-weight: 600;
 }
@@ -106,7 +116,7 @@ body {
   background: var(--pg-raised);
   transition: border-color 0.15s ease, background 0.15s ease;
 }
-.pg-git:hover { border-color: #3a3a44; }
+.pg-git:hover { border-color: #4a473e; }
 .pg-git:focus-visible { outline: 2px solid var(--pg-accent); outline-offset: 2px; }
 .pg-credit { font-size: 13px; color: var(--pg-secondary); }
 .pg-credit strong { color: var(--pg-text); font-weight: 500; }
@@ -132,6 +142,7 @@ body {
 .pg-hero-copy { max-width: 560px; }
 .pg-hero-title {
   margin: 0;
+  font-family: var(--pg-font-head);
   font-size: clamp(32px, 4.2vw, 48px);
   line-height: 1.08;
   font-weight: 600;
@@ -144,6 +155,7 @@ body {
 }
 .pg-hero-sub {
   margin: 16px 0 0;
+  font-family: var(--pg-font-body);
   font-size: 16px;
   line-height: 1.6;
   color: var(--pg-secondary);
@@ -159,7 +171,7 @@ body {
   display: inline-block;
   font-size: 14px;
   font-weight: 500;
-  color: #17171c;
+  color: #141413;
   background: var(--pg-text);
   padding: 12px 24px;
   border-radius: 8px;
@@ -180,7 +192,7 @@ body {
   text-decoration: none;
   transition: color 0.15s ease, border-color 0.15s ease;
 }
-.pg-hero-ghost:hover { color: var(--pg-text); border-color: #3a3a44; }
+.pg-hero-ghost:hover { color: var(--pg-text); border-color: #4a473e; }
 .pg-hero-ghost:focus-visible { outline: 2px solid var(--pg-accent); outline-offset: 2px; }
 
 /* The instrument: a large ring crawler with a dot train orbiting inside
@@ -262,14 +274,15 @@ body {
   min-width: 0;
   transition: border-color 0.15s ease;
 }
-.pg-card:hover { border-color: #32323a; }
+.pg-card:hover { border-color: #423f38; }
 .pg-card-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
 }
-.pg-card h3 { margin: 0; font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+.pg-card h3 {
+  font-family: var(--pg-font-head); margin: 0; font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
 .pg-copy {
   font: 12px/1.4 system-ui, sans-serif;
   padding: 6px 12px;
@@ -283,7 +296,7 @@ body {
 .pg-copy:hover { color: var(--pg-text); border-color: var(--pg-muted); }
 .pg-copy:active { transform: scale(0.97); }
 .pg-copy:focus-visible { outline: 2px solid var(--pg-accent); outline-offset: 2px; }
-.pg-copy.pg-copied { color: var(--pg-mint, #34d399); border-color: var(--pg-mint, #34d399); }
+.pg-copy.pg-copied { color: var(--pg-mint, #788c5d); border-color: var(--pg-mint, #788c5d); }
 /* Quiet mono meta instead of a colored badge — the style name is
    information, not decoration. */
 .pg-card .pg-style-tag {
@@ -292,7 +305,7 @@ body {
   color: var(--pg-muted);
   margin-left: 8px;
 }
-.pg-note { margin: 4px 0 0; font-size: 13px; color: var(--pg-secondary); }
+.pg-note { margin: 4px 0 0; font-family: var(--pg-font-body); font-size: 13px; color: var(--pg-secondary); }
 
 /* Flat instrument screen: the loader is the only thing on it. */
 .pg-stage {
@@ -359,7 +372,7 @@ body {
   padding: 6px 8px;
   border: 1px solid var(--pg-border);
   border-radius: 8px;
-  background: #0e0e13;
+  background: #171614;
   color: var(--pg-text);
   width: 100%;
   box-sizing: border-box;
@@ -439,7 +452,7 @@ body {
 .pg-add code {
   font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
   font-size: 12.5px;
-  background: #0e0e13;
+  background: #171614;
   border: 1px solid var(--pg-border);
   border-radius: 4px;
   padding: 1px 5px;
@@ -450,6 +463,7 @@ body {
 /* ---------- footer ---------- */
 
 .pg-footer {
+  font-family: var(--pg-font-body);
   max-width: 1336px;
   margin: 36px auto 0 0;
   padding: 16px 32px 0;
@@ -522,6 +536,7 @@ body {
   letter-spacing: 0.04em;
 }
 .pg-section-title {
+  font-family: var(--pg-font-head);
   font-size: 13px;
   font-weight: 600;
   color: var(--pg-text);
@@ -609,7 +624,7 @@ body {
   cursor: pointer;
   transition: background 0.15s ease;
 }
-.pg-menu-btn:hover { background: #1c1c22; }
+.pg-menu-btn:hover { background: #262420; }
 .pg-menu-btn:focus-visible { outline: 2px solid var(--pg-accent); outline-offset: 2px; }
 /* Desktop: the rail is permanent, so the hamburger would be a dead
    control. This has to come after the base rule above to win. */
@@ -640,15 +655,15 @@ body {
   padding: 0 14px;
   overscroll-behavior: contain;
   scrollbar-width: thin;
-  scrollbar-color: #2c2c35 transparent;
+  scrollbar-color: #3a3831 transparent;
 }
 .pg-nav-scroll::-webkit-scrollbar { width: 8px; }
 .pg-nav-scroll::-webkit-scrollbar-track { background: transparent; }
 .pg-nav-scroll::-webkit-scrollbar-thumb {
-  background: #2c2c35;
+  background: #3a3831;
   border-radius: 4px;
 }
-.pg-nav-scroll::-webkit-scrollbar-thumb:hover { background: #3a3a44; }
+.pg-nav-scroll::-webkit-scrollbar-thumb:hover { background: #4a473e; }
 .pg-nav-group {
   display: flex;
   align-items: baseline;

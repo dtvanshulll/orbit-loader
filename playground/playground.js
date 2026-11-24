@@ -350,7 +350,7 @@
       if (key === "color") {
         var picker = document.createElement("input");
         picker.type = "color";
-        picker.value = /^#[0-9a-f]{6}$/i.test(value) ? value : "#e8355c";
+        picker.value = /^#[0-9a-f]{6}$/i.test(value) ? value : "#d97757";
         var hex = document.createElement("input");
         hex.type = "text";
         hex.value = value != null ? value : "";
@@ -678,16 +678,30 @@
   }
 
   // The little orbiting logo in the header — the library demoing itself.
+  // The brand mark: a coiled loop, not a generic circle — the path-trace
+  // motif at icon scale. The segment crawls the spiral and a single dot
+  // rides its head, so the mark IS the product: a path being traced.
+  var MARK_LOOP = "M 25 26 C 13 28 5 22 6 14 C 7 8 13 5 18 7 C 23 9 24 15 20 18 C 16 21 10 19 11 14 C 12 10 17 10 18 13";
   function startMark() {
     var mark = document.getElementById("pg-mark");
     if (!mark || !window.OrbitLoader || !OrbitLoader.shapes) return;
     OrbitLoader.wrap(mark, {
-      d: OrbitLoader.shapes.circle(34),
-      viewBox: "0 0 34 34",
-      durationMs: 1500,
+      d: MARK_LOOP,
+      viewBox: "0 0 32 32",
+      durationMs: 1800,
       strokeWidth: 3,
-      guideOpacity: 0.35
+      guideOpacity: 0.3
     });
+    // One dot on the same path and clock: the pen tip drawing the loop.
+    if (window.DotLoader) {
+      DotLoader.wrap(mark, {
+        d: MARK_LOOP,
+        viewBox: "0 0 32 32",
+        durationMs: 1800,
+        dots: 1,
+        dotRadius: 2.2
+      });
+    }
   }
 
   // The hero instrument: a large ring crawler with a dot train orbiting

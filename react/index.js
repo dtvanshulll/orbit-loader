@@ -12,7 +12,7 @@
  *
  * Usage:
  *   import { OrbitLoader, TabLoader } from 'traceloop/react';
- *   <OrbitLoader d={{ shape: 'circle', args: [72] }} color="#e8355c" />
+ *   <OrbitLoader d={{ shape: 'circle', args: [72] }} color="#d97757" />
  */
 import React from 'react';
 import {

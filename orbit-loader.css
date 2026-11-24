@@ -1,22 +1,32 @@
 /* TraceLoop design tokens — override any of these on :root to
    re-theme every component and animation at once. */
 :root {
-  --tl-bg: #0e0e12;
-  --tl-card: #15151a;
-  --tl-raised: #1c1c22;
-  --tl-border: #26262d;
-  --tl-stage: #0a0a0d;
-  --tl-text: #eceef2;
-  --tl-secondary: #9a9ba4;
-  --tl-muted: #8b8d98;
-  --tl-accent: #e8355c;
-  --tl-blue: #5b8cff;
-  --tl-gold: #ffd54a;
-  --tl-mint: #34d399;
-  --tl-silver: #d8dce4;
-  --tl-lavender: #cfc0f5;
+  --tl-bg: #141413;
+  --tl-card: #1c1b19;
+  --tl-raised: #262420;
+  --tl-border: #33312c;
+  --tl-stage: #0f0e0d;
+  --tl-text: #faf9f5;
+  --tl-secondary: #b0aea5;
+  --tl-muted: #8f8d84;
+  --tl-accent: #d97757;
+  --tl-blue: #6a9bcc;
+  --tl-green: #788c5d;
+  --tl-light: #e8e6dc;
+  --tl-font-display: "Poppins", Arial, sans-serif;
+  --tl-font-body: "Lora", Georgia, serif;
   --tl-ease-out: cubic-bezier(0.2, 0, 0.2, 1);
   --tl-ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* Brand typography for the text the components themselves render
+   (labels, placeholders, menu rows). Consumer-owned copy — a toast's
+   message, a button's label — keeps the page's own font. */
+.orbit-loader-input-label,
+.orbit-loader-search-placeholder,
+.orbit-loader-dropdown-trigger,
+.orbit-loader-dropdown-panel {
+  font-family: var(--tl-font-body, "Lora", Georgia, serif);
 }
 
 /*!
@@ -259,7 +269,7 @@
   top: 50%;
   transform: translateY(-50%);
   font-size: 13px;
-  color: var(--tl-muted, #8b8d98);
+  color: var(--tl-muted, #8f8d84);
   pointer-events: none;
   white-space: nowrap;
   opacity: 0;
@@ -273,7 +283,7 @@
 .orbit-loader-modal-backdrop {
   position: fixed;
   inset: 0;
-  background: color-mix(in srgb, var(--tl-stage, #0a0a0d) 72%, transparent);
+  background: color-mix(in srgb, var(--tl-stage, #0f0e0d) 72%, transparent);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
@@ -336,7 +346,7 @@
   will-change: transform;
 }
 .orbit-loader-drawer-backdrop {
-  background: color-mix(in srgb, var(--tl-stage, #0a0a0d) 72%, transparent);
+  background: color-mix(in srgb, var(--tl-stage, #0f0e0d) 72%, transparent);
   inset: 0;
   opacity: 0;
   pointer-events: none;
@@ -391,7 +401,7 @@
   top: calc(100% + 6px);
   left: 0;
   min-width: 160px;
-  background: var(--tl-raised, #1c1c22);
+  background: var(--tl-raised, #262420);
   border-radius: 8px;
   padding: 6px;
   opacity: 0;
@@ -414,14 +424,14 @@
 .orbit-loader-dropdown-trigger {
   font: 13px/1.4 system-ui, sans-serif;
   padding: 8px 14px;
-  background: var(--tl-raised, #1c1c22);
-  color: var(--tl-text, #eceef2);
-  border: 1px solid var(--tl-border, #26262d);
+  background: var(--tl-raised, #262420);
+  color: var(--tl-text, #faf9f5);
+  border: 1px solid var(--tl-border, #33312c);
   border-radius: 8px;
   cursor: pointer;
 }
-.orbit-loader-dropdown-trigger:hover { background: var(--tl-border, #26262d); }
-.orbit-loader-dropdown-trigger:focus-visible { outline: 2px solid #e8355c; outline-offset: 2px; }
+.orbit-loader-dropdown-trigger:hover { background: var(--tl-border, #33312c); }
+.orbit-loader-dropdown-trigger:focus-visible { outline: 2px solid #d97757; outline-offset: 2px; }
 .orbit-loader-dropdown-row {
   display: flex;
   align-items: center;
@@ -430,12 +440,12 @@
   padding: 8px 10px;
   border-radius: 6px;
   font-size: 13px;
-  color: var(--tl-text, #eceef2);
+  color: var(--tl-text, #faf9f5);
   cursor: pointer;
   white-space: nowrap;
 }
-.orbit-loader-dropdown-row:hover { background: var(--tl-border, #26262d); }
-.orbit-loader-dropdown-row.is-selected { color: var(--tl-text, #eceef2); }
+.orbit-loader-dropdown-row:hover { background: var(--tl-border, #33312c); }
+.orbit-loader-dropdown-row.is-selected { color: var(--tl-text, #faf9f5); }
 .orbit-loader-dropdown-check {
   width: 14px;
   height: 14px;
@@ -490,7 +500,7 @@
   left: 12px;
   top: 50%;
   font-size: 13px;
-  color: var(--tl-muted, #8b8d98);
+  color: var(--tl-muted, #8f8d84);
   pointer-events: none;
   transform: translateY(-50%);
   transition: top 0.25s cubic-bezier(0.2, 0, 0.2, 1), font-size 0.25s ease, color 0.25s ease;
@@ -500,10 +510,10 @@
 .tl-error .orbit-loader-input-label {
   top: 4px;
   font-size: 12px;
-  color: var(--tl-secondary, #9a9ba4);
+  color: var(--tl-secondary, #b0aea5);
 }
-.tl-success .orbit-loader-input-label { color: #34d399; }
-.tl-error .orbit-loader-input-label { color: #e8355c; }
+.tl-success .orbit-loader-input-label { color: #788c5d; }
+.tl-error .orbit-loader-input-label { color: #d97757; }
 .orbit-loader-input-status {
   position: absolute;
   right: 10px;
@@ -518,7 +528,7 @@
 }
 .orbit-loader-input-status path {
   fill: none;
-  stroke: var(--tl-mint, #34d399);
+  stroke: var(--tl-green, #788c5d);
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;

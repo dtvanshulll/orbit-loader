@@ -112,7 +112,7 @@ export function Tabs(props) {
       className: className != null ? className : 'tl-tabs',
       // The underline strokes use currentColor — the styled default is
       // the brand accent; consumers re-theme via --tl-accent.
-      style: { color: 'var(--tl-accent, #e8355c)' }
+      style: { color: 'var(--tl-accent, #d97757)' }
     },
     React.createElement(
       'div',
@@ -146,8 +146,8 @@ export function Tabs(props) {
               borderRadius: '6px 6px 0 0',
               cursor: 'pointer',
               color: selected
-                ? 'var(--tl-text, #eceef2)'
-                : 'var(--tl-secondary, #9a9ba4)',
+                ? 'var(--tl-text, #faf9f5)'
+                : 'var(--tl-secondary, #b0aea5)',
               transition: 'color 0.15s ease'
             }
           },
@@ -170,7 +170,7 @@ export function Tabs(props) {
           id: id + '-panel-' + i,
           'aria-labelledby': id + '-tab-' + i,
           hidden: i !== active ? 'hidden' : undefined,
-          style: { padding: '14px 2px', color: 'var(--tl-secondary, #9a9ba4)', fontSize: '14px' }
+          style: { padding: '14px 2px', color: 'var(--tl-secondary, #b0aea5)', fontSize: '14px' }
         },
         child
       );

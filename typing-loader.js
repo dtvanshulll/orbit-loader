@@ -13,7 +13,7 @@
  *
  * Usage:
  *   TypingLoader.create(document.querySelector('.chat-bubble'), {
- *     color: '#e8355c'
+ *     color: '#d97757'
  *   });
  *   typing.stop();
  */

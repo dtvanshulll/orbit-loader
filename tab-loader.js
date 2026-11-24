@@ -17,7 +17,7 @@
  *
  * Usage:
  *   var tab = TabLoader.create(document.querySelector('.tabs'), {
- *     tabs: 4, color: '#e8355c'
+ *     tabs: 4, color: '#d97757'
  *   });
  *   tab.play(0, 0.5);        // crawl the underline to the middle tab
  */

@@ -18,7 +18,7 @@
  * start() runs the demo loop (open, rest, close, rest).
  *
  * Usage:
- *   var drawer = DrawerLoader.create(panelEl, { side: 'right', color: '#5b8cff' });
+ *   var drawer = DrawerLoader.create(panelEl, { side: 'right', color: '#6a9bcc' });
  *   menuBtn.addEventListener('click', function () { drawer.toggle(); });
  */
 (function (global) {

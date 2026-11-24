@@ -20,7 +20,7 @@
  * finishes, so the dialog assembles from the frame inward.
  *
  * Usage:
- *   var modal = ModalLoader.create(dialogEl, { color: '#e8355c' });
+ *   var modal = ModalLoader.create(dialogEl, { color: '#d97757' });
  *   openBtn.addEventListener('click', function () { modal.open(); });
  */
 (function (global) {

@@ -21,7 +21,7 @@ import 'traceloop/css';
 OrbitLoader.wrap(document.querySelector('.box'), {
   d: shapes.circle(72),
   viewBox: '0 0 72 72',
-  color: '#e8355c'
+  color: '#d97757'
 });
 ```
 
@@ -33,8 +33,8 @@ That's the whole integration — import the style, pass a color. The
 ```jsx
 import { Orbit, Tab, shapes } from 'traceloop/react';
 
-<Orbit d={{ shape: 'circle', args: [72] }} width={72} height={72} color="#e8355c" />
-<Tab labels={['One', 'Two', 'Three']} color="#5b8cff" />
+<Orbit d={{ shape: 'circle', args: [72] }} width={72} height={72} color="#d97757" />
+<Tab labels={['One', 'Two', 'Three']} color="#6a9bcc" />
 ```
 
 Same options as the vanilla library, as props. Mount/unmount and
@@ -65,7 +65,7 @@ onDestroy(() => ctrl.destroy());
   OrbitLoader.wrap(document.querySelector('.orbit-loader-wrap'), {
     d: OrbitLoaderShapes.circle(72),
     viewBox: '0 0 72 72',
-    color: '#e8355c'
+    color: '#d97757'
   });
 </script>
 ```

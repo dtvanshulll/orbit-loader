@@ -15,7 +15,7 @@
  *   page.done();    // sweep to 100%, fade out, reset for next time
  *
  * Usage:
- *   var page = PageLoader.create(document.body, { color: '#e8355c' });
+ *   var page = PageLoader.create(document.body, { color: '#d97757' });
  *   page.start();
  *   // ... when your data arrives:
  *   page.done();

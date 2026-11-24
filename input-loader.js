@@ -14,7 +14,7 @@
  * start() runs the demo loop (focus, rest, success, rest, blur).
  *
  * Usage:
- *   var input = InputLoader.create(fieldEl, { color: '#5b8cff' });
+ *   var input = InputLoader.create(fieldEl, { color: '#6a9bcc' });
  *   fieldEl.addEventListener('focus', function () { input.focus(); });
  */
 (function (global) {
@@ -151,7 +151,7 @@
       state = "success";
       el.classList.add("tl-success");
       el.classList.add("is-active");
-      drawTo(1, durationMs * 0.6, "#34d399");
+      drawTo(1, durationMs * 0.6, "#788c5d");
       if (reducedMotion) { status.style.opacity = 1; return; }
       var len = check.getTotalLength ? check.getTotalLength() : 22;
       check.style.strokeDasharray = len + " " + len;
@@ -170,7 +170,7 @@
       state = "error";
       el.classList.add("tl-error");
       el.classList.add("is-active");
-      drawTo(1, durationMs * 0.6, "#e8355c");
+      drawTo(1, durationMs * 0.6, "#d97757");
       if (reducedMotion) return;
       var a = el.animate(
         [{ transform: "translateX(0)" }, { transform: "translateX(-5px)" },

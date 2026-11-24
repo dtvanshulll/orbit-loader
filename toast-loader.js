@@ -17,7 +17,7 @@
  * Call start() to run the built-in demo loop (count down, rest, repeat).
  *
  * Usage:
- *   var toast = ToastLoader.create(toastEl, { color: '#ffd54a' });
+ *   var toast = ToastLoader.create(toastEl, { color: '#788c5d' });
  *   toast.begin(5000);
  */
 (function (global) {

@@ -18,7 +18,7 @@
  * crawl as the underline — ring first, then the handle.
  *
  * Usage:
- *   var search = SearchLoader.create(fieldEl, { color: '#5b8cff' });
+ *   var search = SearchLoader.create(fieldEl, { color: '#6a9bcc' });
  *   searchBtn.addEventListener('click', function () { search.open(); });
  */
 (function (global) {

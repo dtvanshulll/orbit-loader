@@ -20,7 +20,7 @@
  *   var dd = DropdownLoader.create(containerEl, {
  *     items: ['Small', 'Medium', 'Large'],
  *     trigger: 'Size',
- *     color: '#5b8cff'
+ *     color: '#6a9bcc'
  *   });
  */
 (function (global) {
