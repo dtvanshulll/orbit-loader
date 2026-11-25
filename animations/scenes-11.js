@@ -253,6 +253,81 @@
     ]
   }
 
+  ,
+  {
+    name: "Milestone Counter",
+    category: "Chart Card",
+    style: "countup",
+    note: "The count lands and bounces — the Penner bounce easing lets the number settle like a dropped ball",
+    box: {
+      width: 320, height: 130,
+      html: "<div style='padding:14px 16px;display:flex;flex-direction:column;gap:6px;height:100%;box-sizing:border-box'>" +
+            "<span style='" + DISPLAY + "font-size:10.5px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:#8f8d84'>Stars on GitHub</span>" +
+            "<div style='display:flex;align-items:center;gap:10px'>" +
+            "<div class='tl-mile-num' style='" + DISPLAY + "font-size:28px;font-weight:600;color:#faf9f5;font-variant-numeric:tabular-nums'>0</div>" +
+            "<div class='mile-dot' style='position:relative;width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex:none'><span style='width:7px;height:7px;border-radius:50%;background:#d97757'></span></div>" +
+            "</div>" +
+            "<span style='" + DISPLAY + "font-size:10.5px;color:#8f8d84'>crossed 10k this morning</span>" +
+            "</div>",
+      styleCss: CARD
+    },
+    parts: [
+      { style: "countup", el: ".tl-mile-num",
+        options: { value: 10000, durationMs: 2400, easing: "easeOutBounce", separator: ",", restMs: 2600 } },
+      { style: "pulse", el: ".mile-dot",
+        options: { rings: 1, dot: false, durationMs: 1800, strokeWidth: 3, maxOpacity: 0.45, color: "#d97757" } }
+    ]
+  },
+  {
+    name: "Rough Chart",
+    category: "Chart Card",
+    style: "progress",
+    note: "Hand-drawn bars: each wobbly stroke fills up its own amount, staggered left to right",
+    box: {
+      width: 320, height: 170,
+      html: "<div style='padding:14px 18px;display:flex;flex-direction:column;gap:8px;height:100%;box-sizing:border-box'>" +
+            "<span style='" + DISPLAY + "font-size:12.5px;font-weight:600;color:#faf9f5'>Weekly traces</span>" +
+            "<div style='display:flex;align-items:flex-end;gap:18px;flex:1;padding:0 6px'>" +
+            "<div style='flex:1;display:flex;flex-direction:column;align-items:center;gap:5px'><div class='rc-b1' style='position:relative;width:100%;height:64px'></div><span style='" + DISPLAY + "font-size:9.5px;color:#8f8d84'>Mon</span></div>" +
+            "<div style='flex:1;display:flex;flex-direction:column;align-items:center;gap:5px'><div class='rc-b2' style='position:relative;width:100%;height:64px'></div><span style='" + DISPLAY + "font-size:9.5px;color:#8f8d84'>Tue</span></div>" +
+            "<div style='flex:1;display:flex;flex-direction:column;align-items:center;gap:5px'><div class='rc-b3' style='position:relative;width:100%;height:64px'></div><span style='" + DISPLAY + "font-size:9.5px;color:#8f8d84'>Wed</span></div>" +
+            "<div style='flex:1;display:flex;flex-direction:column;align-items:center;gap:5px'><div class='rc-b4' style='position:relative;width:100%;height:64px'></div><span style='" + DISPLAY + "font-size:9.5px;color:#8f8d84'>Thu</span></div>" +
+            "</div></div>",
+      styleCss: CARD
+    },
+    parts: [
+      { style: "progress", el: ".rc-b1",
+        options: { d: "M20,60 C17,44 23,28 20,6", viewBox: "0 0 40 64", strokeWidth: 12, headRadius: 5, color: "#6a9bcc", guideOpacity: 0.15, to: 0.45 } },
+      { style: "progress", el: ".rc-b2",
+        options: { d: "M20,60 C23,42 18,24 21,6", viewBox: "0 0 40 64", strokeWidth: 12, headRadius: 5, color: "#6a9bcc", guideOpacity: 0.15, to: 0.7, delayMs: 300 } },
+      { style: "progress", el: ".rc-b3",
+        options: { d: "M20,60 C18,46 22,26 19,6", viewBox: "0 0 40 64", strokeWidth: 12, headRadius: 5, color: "#6a9bcc", guideOpacity: 0.15, to: 0.55, delayMs: 600 } },
+      { style: "progress", el: ".rc-b4",
+        options: { d: "M20,60 C22,40 17,22 20,6", viewBox: "0 0 40 64", strokeWidth: 12, headRadius: 5, color: "#d97757", guideOpacity: 0.15, to: 0.9, delayMs: 900 } }
+    ]
+  },
+  {
+    name: "Save Spinner",
+    category: "Form",
+    style: "orbit",
+    note: "A Ladda-style save: the spinner rings inside the button while its border traces the wait",
+    box: {
+      width: 320, height: 110,
+      html: "<div style='display:flex;align-items:center;justify-content:center;height:100%;padding:0 20px;box-sizing:border-box'>" +
+            "<button class='tl-save-btn' style='position:relative;display:flex;align-items:center;justify-content:center;gap:9px;width:200px;height:42px;background:#d97757;border:0;border-radius:8px;" + DISPLAY + "font-size:12.5px;font-weight:600;color:#141413;cursor:pointer;overflow:hidden'>" +
+            "<span class='tl-save-spin' style='position:relative;width:16px;height:16px;flex:none'></span>" +
+            "<span>Saving…</span></button>" +
+            "</div>",
+      styleCss: CARD
+    },
+    parts: [
+      { style: "orbit", el: ".tl-save-spin",
+        options: { d: "M12,3 a9,9 0 1,1 -0.01,0", viewBox: "0 0 24 24", segmentFraction: 0.28, durationMs: 1100, strokeWidth: 2.5, color: "#141413" } },
+      { style: "button", el: ".tl-save-btn",
+        options: { variant: "trace", durationMs: 2400, restMs: 1600, strokeWidth: 2, color: "#141413" } }
+    ]
+  }
+
   );
 
   function checkRow(label, done, mode) {

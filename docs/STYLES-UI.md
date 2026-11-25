@@ -251,7 +251,7 @@ no CSS file. Reduced motion: the final value is set once, no count.
 | `from` | `0` | the value the count starts at |
 | `value` | `100` | the value it lands on — not `to`, which the playground's scene renderer reserves for static fills |
 | `durationMs` | `2000` | how long the count takes |
-| `easing` | `'easeOutExpo'` | `linear`, `easeOutCubic`, `easeOutExpo` (fast start, long decelerating tail) or `easeOutBack` (overshoots past the target and settles — playful, for small numbers) |
+| `easing` | `'easeOutExpo'` | `linear`, `easeOutCubic`, `easeOutExpo` (fast start, long decelerating tail), `easeOutBack` (overshoots past the target and settles — playful, for small numbers), `easeOutBounce` (lands and bounces, like a dropped ball) or `easeOutElastic` (rings past the target and oscillates into place) |
 | `decimals` | `0` | digits after the decimal point |
 | `separator` | `','` | thousands separator; `null` for none |
 | `prefix` / `suffix` | `''` | e.g. `"$"` / `"%"` |

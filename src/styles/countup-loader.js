@@ -45,7 +45,8 @@
                                   and would never start the count
    *   durationMs  (default 2000)  how long the count takes
    *   easing      (default "easeOutExpo") "linear" | "easeOutCubic" |
-   *               "easeOutExpo" | "easeOutBack". Back overshoots past
+   *               "easeOutExpo" | "easeOutBack" | "easeOutBounce" |
+   *               "easeOutElastic". Back overshoots past
    *               the target and settles — playful, use for small
    *               numbers; expo decelerates into the final digits
    *   decimals    (default 0)     digits after the decimal point
@@ -77,6 +78,18 @@
       linear: function (t) { return t; },
       easeOutCubic: function (t) { return 1 - Math.pow(1 - t, 3); },
       easeOutExpo: function (t) { return t === 1 ? 1 : 1 - Math.pow(2, -10 * t); },
+      // The Penner bounce and elastic, as canonicalized in
+      // tween.js and shifty: the count lands, bounces, settles.
+      easeOutBounce: function (t) {
+        if (t < 1 / 2.75) return 7.5625 * t * t;
+        if (t < 2 / 2.75) return 7.5625 * (t -= 1.5 / 2.75) * t + 0.75;
+        if (t < 2.5 / 2.75) return 7.5625 * (t -= 2.25 / 2.75) * t + 0.9375;
+        return 7.5625 * (t -= 2.625 / 2.75) * t + 0.984375;
+      },
+      easeOutElastic: function (t) {
+        if (t === 0 || t === 1) return t;
+        return Math.pow(2, -10 * t) * Math.sin((t - 0.1) * 5 * Math.PI) + 1;
+      },
       easeOutBack: function (t) {
         var c1 = 1.70158, c3 = c1 + 1;
         return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
@@ -107,7 +120,9 @@
       // easeOutBack intentionally overshoots mid-flight — that is its
       // charm — so only clamp against runaway, not against crossing.
       var value = from + (to - from) * ease(progress);
-      if (easingName !== "easeOutBack") {
+      // Only the monotonic three need the runaway clamp; back,
+      // bounce and elastic overshoot or fall back on purpose.
+      if (easingName === "linear" || easingName === "easeOutCubic" || easingName === "easeOutExpo") {
         value = Math.min(value, Math.max(from, to));
         value = Math.max(value, Math.min(from, to));
       }
