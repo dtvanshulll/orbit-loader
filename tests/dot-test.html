@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<!--
+  TraceLoop — DotLoader test harness (looping-loaders category).
+  Covers: input guards, static-container fixup, rAF positioning, ghost
+  trail lifecycle (the frozen-trail bug), restart semantics, relay and
+  crossing modes and their precedence, wobble, destroy restoration,
+  reduced motion.
+  Open in a browser; verdict lands in the page body and document.title.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<title>DOT TESTS: RUNNING</title>
+<link rel="stylesheet" href="../dist/traceloop.css">
+<style>
+  body { font: 13px/1.5 monospace; background: #141413; color: #faf9f5; padding: 20px; }
+  .pass { color: #788c5d; } .fail { color: #d97757; }
+  .stage { width: 100px; height: 100px; background: #262420; border: 1px solid #33312c; margin: 10px 0; }
+</style>
+</head>
+<body>
+<div id="results">running…</div>
+<div class="stage" id="s-main"></div>
+<div class="stage" id="s-static" style="position: static"><span>static host</span></div>
+<div class="stage" id="s-trail"></div>
+<div class="stage" id="s-relay"></div>
+<div class="stage" id="s-crossing"></div>
+<div class="stage" id="s-both"></div>
+<div class="stage" id="s-wobble"></div>
+<div class="stage" id="s-color"></div>
+<div class="stage" id="s-destroy"></div>
+<div class="stage" id="s-reduced"></div>
+
+<script src="../src/styles/dot-loader.js"></script>
+<script src="../src/shapes/shapes-core.js"></script>
+<script>
+"use strict";
+var results = [];
+function check(n, ok, d) { results.push({ n: n, ok: !!ok, d: d || "" }); }
+function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+function D(size) { return OrbitLoaderShapes.circle(size); }
+function VB(size) { return "0 0 " + size + " " + size; }
+function near(a, b, tol) { return Math.abs(a - b) <= (tol || 2); }
+
+async function run() {
+  /* 1 — input guards */
+  var threw = "";
+  try { DotLoader.create(document.createElement("div"), {}); } catch (e) { threw = e.message; }
+  check("create: non-path throws with clear message", threw.indexOf("SVG <path>") >= 0, threw);
+  threw = "";
+  try { DotLoader.wrap("#nope", { d: D(72) }); } catch (e) { threw = e.message; }
+  check("wrap: missing container throws", threw.indexOf("container not found") >= 0, threw);
+  threw = "";
+  try { DotLoader.wrap("#s-main", {}); } catch (e) { threw = e.message; }
+  check("wrap: missing d throws", threw.indexOf("options.d") >= 0, threw);
+
+  /* 2 — running: the dot is positioned ON the path by rAF */
+  var o1 = DotLoader.wrap("#s-main", { d: D(72), viewBox: VB(72), durationMs: 2200 });
+  await wait(250);
+  var c = o1.dot;
+  var cx = parseFloat(c.getAttribute("cx")), cy = parseFloat(c.getAttribute("cy"));
+  // circle(72) in a 72-box: the path's start sits at (36, 0) — top center.
+  // After 250ms the dot has moved; assert it is INSIDE the viewBox and
+  // roughly on the circle (distance from center = radius 36).
+  check("running: dot positioned inside viewBox",
+    cx >= 0 && cx <= 72 && cy >= 0 && cy <= 72, cx + "," + cy);
+  var dist = Math.sqrt((cx - 36) * (cx - 36) + (cy - 36) * (cy - 36));
+  check("running: dot rides the path (dist ≈ r)", near(dist, 36, 3), dist.toFixed(1));
+  check("running: isRunning true", o1.isRunning());
+  check("running: activeClass added", c.classList.contains("is-active"));
+
+  /* 3 — stop(): frozen-trail bug fixed — ghosts go invisible */
+  var o2 = DotLoader.wrap("#s-trail", { d: D(72), viewBox: VB(72), trail: 4, durationMs: 2000 });
+  await wait(400); // let the trail build up history
+  var ghostVisible = o2.ghosts.some(function (g) { return g.style.opacity !== "" && g.style.opacity !== "0"; });
+  check("trail: ghosts visible while running", ghostVisible);
+  o2.stop();
+  var ghostLit = o2.ghosts.some(function (g) { return g.style.opacity !== "" && parseFloat(g.style.opacity) > 0; });
+  check("stop: ghost trail cleared (not frozen visible)", !ghostLit,
+    JSON.stringify(o2.ghosts.map(function (g) { return g.style.opacity; })));
+  check("stop: isRunning false", !o2.isRunning());
+
+  /* 4 — restart semantics: stop/start begins a fresh lap */
+  var posBefore = parseFloat(o2.dot.getAttribute("cx"));
+  o2.start();
+  check("restart: trail history cleared (checked before the first frame)",
+    o2.ghosts.every(function (g) { return g.style.opacity === ""; }));
+  await wait(60); // one or two frames past restart
+  var cxRestart = parseFloat(o2.dot.getAttribute("cx"));
+  // Fresh lap from the path start (36,0): after ~60ms of a 2000ms lap the
+  // dot has travelled ~3% of 226 ≈ 7 units — near the start, not wherever
+  // it was stopped.
+  check("restart: dot back near the path start", near(cxRestart, 36, 12), cxRestart.toFixed(1));
+  o2.stop(); o2.destroy();
+
+  /* 5 — static container fixup */
+  var host = document.getElementById("s-static");
+  var o3 = DotLoader.wrap(host, { d: D(72), viewBox: VB(72), autoStart: false });
+  check("static host: forced to relative", getComputedStyle(host).position === "relative");
+  o3.destroy();
+  check("static host: position restored on destroy",
+    host.style.position === "" && getComputedStyle(host).position === "static");
+
+  /* 6 — relay: exactly one dot lit */
+  var o4 = DotLoader.wrap("#s-relay", { d: D(72), viewBox: VB(72), dots: 4, relay: true, durationMs: 2400 });
+  await wait(120);
+  var lit = o4.dots.filter(function (d) { return d.style.opacity !== "0.18"; });
+  var dim = o4.dots.filter(function (d) { return d.style.opacity === "0.18"; });
+  check("relay: exactly one lit", lit.length === 1, "lit " + lit.length);
+  check("relay: others dimmed", dim.length === 3, "dim " + dim.length);
+  o4.stop(); o4.destroy();
+
+  /* 7 — crossing: twins exist and run */
+  var o5 = DotLoader.wrap("#s-crossing", { d: D(72), viewBox: VB(72), dots: 2, crossing: true, durationMs: 2400 });
+  await wait(120);
+  check("crossing: twins created (one per dot)", o5.twins.length === 2, "got " + o5.twins.length);
+  check("crossing: twins positioned", o5.twins.every(function (t) { return t.getAttribute("cx") != null; }));
+  o5.stop(); o5.destroy();
+
+  /* 8 — crossing wins over relay (documented precedence) */
+  var o6 = DotLoader.wrap("#s-both", { d: D(72), viewBox: VB(72), dots: 2, crossing: true, relay: true, durationMs: 2400 });
+  await wait(120);
+  // With relay ignored, no dot carries the relay dim (0.18): opacities
+  // are either "" or the crossing flash values ("1"/"0.55").
+  var relayDim = o6.dots.filter(function (d) { return d.style.opacity === "0.18"; });
+  check("crossing+relay: relay ignored (no 0.18 dim)", relayDim.length === 0,
+    JSON.stringify(o6.dots.map(function (d) { return d.style.opacity; })));
+  o6.stop(); o6.destroy();
+
+  /* 9 — wobble: dot leaves the pure path (perpendicular offset) */
+  var o7 = DotLoader.wrap("#s-wobble", { d: D(72), viewBox: VB(72), wobble: 6, wobbleCycles: 2, durationMs: 2400 });
+  await wait(400);
+  var wx = parseFloat(o7.dot.getAttribute("cx")), wy = parseFloat(o7.dot.getAttribute("cy"));
+  var wdist = Math.sqrt((wx - 36) * (wx - 36) + (wy - 36) * (wy - 36));
+  check("wobble: dot deviates from the pure path", !near(wdist, 36, 1.5), wdist.toFixed(1));
+  o7.stop(); o7.destroy();
+
+  /* 10 — color applied and cleared by destroy */
+  var o8 = DotLoader.wrap("#s-color", { d: D(72), viewBox: VB(72), color: "#6a9bcc", trail: 2, autoStart: false });
+  var fill = o8.dot.style.fill;
+  check("color: applied (hex or normalized rgb)",
+    fill === "#6a9bcc" || fill === "rgb(106, 155, 204)", fill);
+  o8.destroy();
+  check("destroy: svg removed, position untouched",
+    !document.querySelector("#s-color svg"));
+
+  /* 11 — full destroy: dots, twins, ghosts all removed */
+  var o9 = DotLoader.wrap("#s-destroy", { d: D(72), viewBox: VB(72), trail: 3, dots: 2, crossing: true });
+  await wait(100);
+  var owned = o9.dots.concat(o9.twins, o9.ghosts);
+  o9.destroy();
+  check("destroy: every owned element removed",
+    owned.every(function (el) { return !el.parentNode; }));
+  check("destroy: svg removed", !document.querySelector("#s-destroy svg"));
+
+  /* 12 — reduced motion: dots created but never shown */
+  var realMM = window.matchMedia;
+  window.matchMedia = function (q) { return { matches: q.indexOf("prefers-reduced-motion") >= 0, media: q, addListener: function(){}, removeListener: function(){}, addEventListener: function(){}, removeEventListener: function(){} }; };
+  var o10 = DotLoader.wrap("#s-reduced", { d: D(72), viewBox: VB(72) });
+  await wait(120);
+  check("reduced motion: no rAF loop", !o10.isRunning());
+  check("reduced motion: dot invisible (CSS default opacity 0)",
+    getComputedStyle(o10.dot).opacity === "0", getComputedStyle(o10.dot).opacity);
+  o10.destroy();
+  window.matchMedia = realMM;
+
+  var pass = 0, fail = 0, html = "";
+  for (var i = 0; i < results.length; i++) {
+    if (results[i].ok) pass++; else fail++;
+    html += '<div class="' + (results[i].ok ? "pass" : "fail") + '">' +
+      (results[i].ok ? "PASS" : "FAIL") + " — " + results[i].n +
+      (results[i].d ? " (" + results[i].d + ")" : "") + "</div>";
+  }
+  document.getElementById("results").innerHTML = html;
+  document.title = fail === 0 ? "DOT TESTS: PASS" : "DOT TESTS: FAIL " + fail;
+}
+run();
+</script>
+</body>
+</html>

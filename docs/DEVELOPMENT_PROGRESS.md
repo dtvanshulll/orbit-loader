@@ -144,6 +144,36 @@ Order: orbit (reference implementation) → dot → shimmer → chase →
 handshake (same fixup pattern) → ripple/pulse/typing verification →
 docs sync → playground verification → category gate.
 
+### Cleanup 1.2 — DotLoader (COMPLETE)
+
+Decision: **IMPROVE**.
+
+- `stop()` now clears the ghost breadcrumbs' opacity — previously a
+  stopped loader left its trail frozen visible, contradicting the
+  stylesheet's "invisible whenever no rAF loop is running" contract
+  (bug found by reading `stop()` against the CSS comment).
+- `start()` after `stop()` restarts the lap from the path's start with
+  an empty trail history — OrbitLoader's fresh-lap semantics (was:
+  silently continued from the stopped position; sibling inconsistency).
+- `wrap()` static-container fixup + restore (same as orbit);
+  `controller.container` exposed.
+- `create()` rejects a non-`<path>` element with a clear error.
+- `relay` is ignored when `crossing` is set (the flash owns the dots'
+  opacity — the two modes silently fought per frame before);
+  documented in the source header and STYLES.md.
+- `wrap()` gains `svgClassName`/`pathClassName` (orbit parity; were
+  hardcoded).
+- STYLES.md: removed the nonexistent `dots: [3, 8, 1]` array form
+  (documented-but-never-implemented; idea recorded in ROADMAP);
+  controller shape corrected.
+
+Tests: new `tests/dot-test.html` — **26/26 PASS** (guards, on-path
+positioning, trail build + stop clearing, restart semantics, static
+host fixup, relay/crossing/precedence, wobble deviation, color
+serialization, full destroy, reduced motion). Full gate: smoke
+48/178 OK, build OK, orbit/route/regression/dist PASS, playground
+dot card live and positioned.
+
 ### Cleanup 1.1 — OrbitLoader (COMPLETE)
 
 Decision: **IMPROVE**.

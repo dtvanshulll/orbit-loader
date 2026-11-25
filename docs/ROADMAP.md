@@ -22,6 +22,9 @@ is a different module that can reuse `src/shapes/` for its path math.
 - **Fading trail behind DotLoader's dot** — the dot style itself shipped
   (`dot-loader.js`); a trail of dimming ghost dots behind it is the
   natural next step if a use case asks for it.
+- **Varying dot count per lap** — `dots: [3, 8, 1]` growing and
+  shrinking the train as it travels (an idea that was once documented
+  as shipped; it never was — recorded here where it belongs).
 
 ## More shape generators
 

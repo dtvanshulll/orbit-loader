@@ -60,11 +60,17 @@
    *   relay      (default false) with dots > 1, only one dot is lit at a
    *                           time; the light passes to the next dot as
    *                           the base position crosses into its slot —
-   *                           a baton pass, not a train
+   *                           a baton pass, not a train. Ignored when
+   *                           `crossing` is also set (the crossing
+   *                           flash owns the dots' opacity).
    *   crossing   (default false) doubles the dots and sends the second
    *                           half the opposite way; each pair flashes
    *                           briefly every time it passes through
    *                           itself
+   *
+   * start() after stop() restarts the lap from the path's start (and
+   * clears the breadcrumb history), matching OrbitLoader's fresh-lap
+   * semantics.
    *
    * The dot element is created here and appended next to the path (they
    * must share an SVG so coordinates line up); destroy() removes it again
@@ -75,6 +81,10 @@
    * if set, start() is a no-op and the dot never becomes visible.
    */
   function create(pathEl, options) {
+    if (!pathEl || typeof pathEl.getPointAtLength !== "function" ||
+        typeof pathEl.getTotalLength !== "function") {
+      throw new Error("DotLoader.create: pathEl must be an SVG <path> element");
+    }
     options = options || {};
     var durationMs = options.durationMs != null ? options.durationMs : 2200;
     var reverse = options.direction === "reverse";
@@ -191,7 +201,7 @@
           dots[j].style.opacity = gap < flashDist ? "1" : "";
         }
       }
-      if (relay && dots.length > 1) {
+      if (relay && !crossing && dots.length > 1) {
         // The baton: exactly one dot lit, decided by which slot the base
         // position is currently crossing.
         var lit = Math.floor(pos / (total / dots.length)) % dots.length;
@@ -217,6 +227,12 @@
 
     function start() {
       if (reducedMotion || rafId != null) return;
+      // Restart semantics, matching OrbitLoader's fresh lap: a
+      // stop()/start() cycle begins again from the path's start with
+      // an empty breadcrumb trail (stop() already cleared the ghosts'
+      // opacity, so nothing flashes stale mid-trail).
+      pos = 0;
+      history.length = 0;
       for (var i = 0; i < dots.length; i++) dots[i].classList.add(activeClass);
       for (var j = 0; j < twins.length; j++) twins[j].classList.add(activeClass);
       lastTs = null;
@@ -236,6 +252,11 @@
         twins[j].classList.remove(activeClass);
         twins[j].style.opacity = "";
       }
+      // Ghosts too: their opacity is driven per-frame, so without this
+      // a stopped loader left its breadcrumb trail frozen visible —
+      // the stylesheet's "invisible whenever no rAF loop is running"
+      // contract only held before the first run.
+      for (var m = 0; m < ghosts.length; m++) ghosts[m].style.opacity = "";
     }
 
     function destroy() {
@@ -281,6 +302,8 @@
    * essential for letters/words. `guideD` (default: same as d) lets the
    * guide show a fuller drawing than the crawled path, e.g. a letter's
    * inside spaces while the dot takes the outer contour only.
+   * `svgClassName` / `pathClassName` override the injected classes, same
+   * as OrbitLoader.wrap().
    *
    * The path gets class "orbit-loader-track" (invisible by default in
    * orbit-loader.css) rather than the core's "orbit-loader-thread": in
@@ -293,9 +316,14 @@
     if (!container) throw new Error("DotLoader.wrap: container not found");
     if (!options.d) throw new Error("DotLoader.wrap: options.d (an SVG path 'd' string) is required");
 
+    // Same static-container fixup as OrbitLoader.wrap(): the injected
+    // SVG is absolutely positioned and would escape a static host.
+    var forcedPosition = global.getComputedStyle(container).position === "static";
+    if (forcedPosition) container.style.position = "relative";
+
     var svg = document.createElementNS(SVG_NS, "svg");
     svg.setAttribute("viewBox", options.viewBox || "0 0 100 100");
-    svg.setAttribute("class", "orbit-loader-path");
+    svg.setAttribute("class", options.svgClassName || "orbit-loader-path");
     svg.setAttribute("aria-hidden", "true");
 
     // offset: grow the SVG canvas beyond the box on all sides, exactly as
@@ -320,19 +348,22 @@
 
     var path = document.createElementNS(SVG_NS, "path");
     path.setAttribute("d", options.d);
-    path.setAttribute("class", "orbit-loader-track");
+    path.setAttribute("class", options.pathClassName || "orbit-loader-track");
     svg.appendChild(path);
     container.appendChild(svg);
 
     var controller = create(path, options);
     controller.svg = svg;
+    controller.container = container;
     // wrap() owns the svg it injected; create()'s destroy only ever
     // touches the dots/ghosts/twins it created, so wrap it here rather
-    // than leaving an orphaned <svg> in the container after destroy().
+    // than leaving an orphaned <svg> in the container after destroy() —
+    // and undo the position fixup wrap() itself applied.
     var innerDestroy = controller.destroy;
     controller.destroy = function () {
       innerDestroy();
       if (svg.parentNode) svg.parentNode.removeChild(svg);
+      if (forcedPosition) container.style.position = "";
     };
     return controller;
   }

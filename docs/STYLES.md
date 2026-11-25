@@ -68,15 +68,22 @@ OrbitLoader (`d`, `viewBox`, `durationMs`, `direction`, `offset`,
 | option | default | meaning |
 |---|---|---|
 | `dotRadius` | `3` | the dot's radius, in the path's own coordinate space |
-| `dots` | `1` | how many dots travel the path, evenly spaced (or `dots: [3, 8, 1]` to vary the count per lap) |
+| `dots` | `1` | how many dots travel the path, evenly spaced — 2+ turns one bead into a train |
 | `color` | `null` | the dot's fill; omit for `currentColor` |
 | `wobble` | `0` | the moth: the dot also breathes perpendicular to the path by this amplitude (path units) |
 | `wobbleCycles` | `3` | full in-out undulations per lap for `wobble`; keep it whole so closed paths loop seamlessly |
 | `trail` | `0` | breadcrumbs: this many ghost footprints follow the head, each smaller and fainter |
-| `relay` | `false` | with `dots` > 1, only one dot is lit; the light passes along as the base position crosses each slot |
+| `relay` | `false` | with `dots` > 1, only one dot is lit; the light passes along as the base position crosses each slot. Ignored when `crossing` is set (the flash owns the dots' opacity) |
 | `crossing` | `false` | doubles the dots and sends the second half the opposite way; each pair flashes when it passes through itself |
 
-Controller also exposes: `dot(s)`, `twins`, `ghosts`.
+Controller exposes: `path`, `dot` (the head), `dots`, `twins`,
+`ghosts`, plus `start()` / `stop()` / `destroy()` / `isRunning()`;
+`wrap()` adds `svg` and `container`. A `stop()`/`start()` cycle
+restarts the lap from the path's start, like OrbitLoader. The
+breadcrumb trail is cleared on stop — it never freezes visible.
+
+`wrap()` makes the container `position: relative` if it is static and
+restores the caller's value on `destroy()`.
 
 ## ShimmerLoader — `src/styles/shimmer-loader.js`
 
