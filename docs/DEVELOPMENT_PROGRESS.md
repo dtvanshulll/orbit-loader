@@ -16,8 +16,8 @@ Sequence: 1) Route/Page Transition System → 2) Path-Wipe Reveal →
 
 ## Current component
 
-**Component 1 — RouteLoader (`src/styles/route-loader.js`)** — status: `VERIFICATION`
-(final verification pass done; see test log below).
+**Component 1 — RouteLoader (`src/styles/route-loader.js`)** — status: `COMPLETE`
+(verified; see test log below).
 
 ### Completed work
 
@@ -93,6 +93,49 @@ Sequence: 1) Route/Page Transition System → 2) Path-Wipe Reveal →
 ### Remaining work for this component
 
 - None known. (Pre-existing, out-of-scope items are backlogged below.)
+
+## Fix batch — existing-component cleanup (COMPLETE)
+
+Eight issues from the audit of existing components, all verified
+against source and fixed across three commits (`3a75e1b`, `6aa5ef8`,
+`4395979`):
+
+1. **React adapter dropped `d`/`viewBox`/`width` for container-based
+   styles** — forwarded. (`6aa5ef8`)
+2. **`resolveD` silently rendered nothing on unknown shape names** —
+   throws now. (`6aa5ef8`)
+3. **React `Tabs` ignored `segFraction`** — the prop was never
+   forwarded to TabLoader's `segmentFraction` (names differ), so the
+   drawn underline kept the 0.16 default while `measure()` used the
+   custom fraction; label text was also missing from the effect deps,
+   so label changes left the underline under stale geometry. Both
+   fixed; verified in-browser: `segFraction={0.5}` draws exactly 0.5
+   of the rail, label swap re-measures. (`4395979`)
+4. **React adapter didn't forward `d`/`viewBox`** — see #1. (`6aa5ef8`)
+5. **ToastLoader depletion assumed 16.7ms frames** — drained ~2x too
+   fast on 120Hz displays. Now driven by the rAF timestamp delta
+   (wall-clock accurate at any refresh rate); hover-pause advances the
+   timestamp without consuming lifetime. Verified in-browser: a 1000ms
+   toast with a 400ms mid-count pause expires at ~1400ms. (`4395979`)
+6. **ProgressLoader's `steps` variant was dead code** —
+   `setProgressSteps()` existed but `setProgress()` never routed to
+   it, so `steps` behaved exactly like the continuous fill. Routed
+   (and the demo loop quantizes too); verified: `setProgress(0.3)`
+   with `steps: 4` paints 0.25, continuous variant unquantized. Docs
+   for `variant`/`steps` added to STYLES-UI. (`4395979`)
+7. **DropdownLoader `select(i)` while closed mutated state** — guarded
+   like its siblings `open()`/`close()`; verified no-op closed,
+   functional open. (`4395979`)
+8. **`wrap()` SVG boilerplate duplicated across orbit/dot/shimmer/chase/
+   handshake loaders** — decision: **keep, documented**. Extracting a
+   shared helper would break the standalone `<script>`-per-file
+   contract (a sibling style must never import another style module);
+   the duplication is noted in ARCHITECTURE's "Why loader styles are
+   sibling files" section with a keep-in-sync warning. (`4395979`)
+
+Regression gates for the batch: smoke 49 files OK, build OK,
+route-test 44/44 PASS, `tests/fix-verify.html` 7/7 PASS, React
+adapter mounts OK.
 
 ## Backlog (discovered during this component, not fixed here)
 

@@ -100,6 +100,15 @@ depends on `src/styles/orbit-loader.js` (only the shared `src/css/` for base
 styling). See "Adding a new loader style" in `README.md` for the rule
 going forward.
 
+The same goes for the `wrap()` SVG boilerplate (svg element, viewBox,
+size measurement, reduced-motion flag) that `orbit`, `dot`, `shimmer`,
+`chase` and `handshake` each carry their own copy of. It looks like the
+obvious thing to extract — and that is the trap: a shared helper would
+make every style file depend on it, ending the load-one-style standalone
+contract. The duplication stays; if the boilerplate ever needs to
+change, change it in every file that carries it in the same commit (a
+grep for `createElementNS` across `src/styles/` finds them all).
+
 `ripple-loader.js` is the extreme case of the same principle: it has no
 path at all — rings radiate from the container's center — so it doesn't
 even take a path element. `create()` and `wrap()` are the same call,
