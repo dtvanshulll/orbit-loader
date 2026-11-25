@@ -235,6 +235,11 @@ export declare const Tab: React.FC<ComponentProps>;
 export declare const Page: React.FC<ComponentProps>;
 export declare const Button: React.FC<ComponentProps>;
 export declare const Toast: React.FC<ComponentProps>;
+export declare const Swap: React.FC<ComponentProps>;
+export declare const Route: React.FC<ComponentProps>;
+export declare const CountUp: React.FC<ComponentProps>;
+export declare const Shake: React.FC<ComponentProps>;
+export declare const Shuffle: React.FC<ComponentProps>;
 export declare const Progress: React.FC<ComponentProps>;
 export declare const Search: React.FC<ComponentProps>;
 export declare const Modal: React.FC<ComponentProps>;
@@ -254,7 +259,6 @@ export interface TabsProps {
 }
 export declare function Tabs(props: TabsProps): React.ReactElement;
 export declare const Input: React.FC<ComponentProps>;
-export declare const Route: React.FC<ComponentProps>;
 
 export interface CountUpOptions {
   from?: number;

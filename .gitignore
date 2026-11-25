@@ -1,11 +1,6 @@
 node_modules/
 dist/
-react-test.bundle.js
-tl-*.png
-react-test.b*.js
-pt-*.png
-
-# local verification screenshots
-shot-*.png
-tmp-shot-*.png
-.tmp-*.png
+# generated React test bundles (built locally into tests/)
+tests/react-test.b*.js
+# local verification screenshots at repo root only
+/*.png
