@@ -173,3 +173,29 @@ Two deliberate consequences:
   "chasing dots" look (several short segments) would need a different
   dasharray pattern and isn't the same visual effect OrbitLoader is
   named for — see `ROADMAP.md`.
+
+## Why style registration stays in four explicit lists
+
+Adding one animation style touches four hand-maintained places:
+
+1. `src/traceloop.js` — one `import './styles/<name>-loader.js'` line
+   (required: esbuild bundles what the entry imports; a glob or a
+   generated list would need a build step where the library itself has
+   none).
+2. `src/css/<name>.css` + one entry in `scripts/build-css.js`'s `order`
+   array (required: the concatenated `dist/traceloop.css` order is
+   semantic — base tokens first, per-style blocks, variant overrides
+   last — and no directory listing can express that intent).
+3. `playground/index.html` — one `<script src="../src/styles/…">` tag
+   (required: parser-blocking script tags keep the no-build dev site
+   simple; the alternative is async loading and race conditions).
+4. `playground/js/pg-data.js` — one `GLOBALS` entry (key → global
+   constructor name) and a `CONTAINER_STYLES` entry (container-based
+   vs path-based; intrinsic metadata about the style, not derivable).
+
+A shared "style registry" file cannot centralize these: the library
+must never depend on the playground, the playground must never depend
+on the ESM entry, and the CSS order is semantic rather than
+alphabetical. The lists stay explicit and hand-synced — if you add a
+style, change all four in the same commit. A grep for the style's key
+across `src/ scripts/ playground/` finds them all.

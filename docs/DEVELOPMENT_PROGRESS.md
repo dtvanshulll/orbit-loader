@@ -227,14 +227,44 @@ adapter mounts OK.
 
 ## Backlog (discovered during this component, not fixed here)
 
+- `index.d.ts`: `LoaderOptions` remains a grab-bag for the 20 older
+  styles (React declares for Swap/CountUp/Shake/Shuffle added with the
+  restructuring, `4395979`).
+
+## Repository restructuring (COMPLETE)
+
+Stages executed across commits `5047c37`, `c3c94e6`, `e0145a2`,
+`0ba62cb` (tracker), `4395979`:
+
+1. **Root hygiene** (`5047c37`): 5 tracked `tmp-*.png` screenshots
+   removed (committed by accident, zero references); react test
+   bundles relocated from repo root into `tests/` with the test pages'
+   script src updated; `.gitignore`'s five overlapping png patterns
+   replaced by one anchored `/*.png`.
+2. **Executed plans removed** (`c3c94e6`): `plans/001-003` all
+   executed (dropdown placement documented, smoke.js shipped, filter
+   fade shipped); `docs/superpowers/plans/` hybrid-redesign plan
+   executed (playground has hero, sections, drawer, search). Git
+   history preserves all.
+3. **Misleading names fixed** (`e0145a2`): `src/css/variants.css` →
+   `page-variants.css` (only PageLoader's wipe panels); `animations/
+   scenes-more.js` → `scenes-2.js` (sequence now scenes.js, scenes-2,
+   scenes-3 … scenes-13); `tests/fix-verify.html` → `regression.html`.
+4. **Registration sprawl documented** (`0ba62cb`): ARCHITECTURE's
+   "Why style registration stays in four explicit lists" — the wrap()
+   boilerplate keep-in-sync note and the four-list rationale.
+
+Regression gates for the restructuring: smoke OK, build OK,
+`tests/regression.html` 7/7 PASS.
+
+## Backlog (discovered during this component, not fixed here)
+
 - `index.d.ts`: React declares missing for Swap/CountUp/Shake/Shuffle;
   `LoaderOptions` remains a grab-bag for the 20 older styles.
 - `AGENTS.md` Files list never gained lines for swap/countup/shake/
   shuffle loaders (route-loader's line was added with this component).
 - `docs/STYLES.md` claims "60 categories, 94 demos"; the playground
   registry lists 46 — one is stale.
-- Root `tmp-*.png` screenshots should be removed or gitignored.
-- Uncommitted working tree (predates this component; commit pending).
 
 ## Components remaining in this category
 
