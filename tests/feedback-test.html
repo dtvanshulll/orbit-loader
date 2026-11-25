@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<!--
+  TraceLoop — feedback styles test harness (progress + feedback category):
+  CountUpLoader, ShakeLoader, ShuffleLoader in one page (all three are
+  small, text/transform-only styles).
+  Covers: count formatting (decimals/separator/prefix/suffix), easing
+  catalog, repeat loops, reduced motion, duration clamp (negative
+  durationMs used to loop rAF forever), shake variants + decay,
+  shuffle FLIP reorder + deterministic mover + clamps.
+  Open in a browser; verdict lands in the page body and document.title.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<title>FEEDBACK TESTS: RUNNING</title>
+<link rel="stylesheet" href="../dist/traceloop.css">
+<style>
+  body { font: 13px/1.5 monospace; background: #141413; color: #faf9f5; padding: 20px; }
+  .pass { color: #788c5d; } .fail { color: #d97757; }
+  .stat { font-size: 28px; color: #d97757; margin: 10px 0; }
+  .row { padding: 8px 12px; background: #262420; border: 1px solid #33312c; margin: 4px 0; width: 240px; }
+</style>
+</head>
+<body>
+<div id="results">running…</div>
+<div class="stat" id="c1">0</div>
+<div class="stat" id="c2">0</div>
+<div class="stat" id="c3">0</div>
+<div class="stat" id="c4">0</div>
+<div class="stat" id="c5">0</div>
+<div id="sh1" style="width:200px;height:40px;background:#262420">shake me</div>
+<div id="sh2" style="width:200px;height:40px;background:#262420">hard shake</div>
+<div id="sh3" style="width:200px;height:40px;background:#262420">reduced</div>
+<div id="sf1">
+  <div class="row">alpha</div><div class="row">beta</div><div class="row">gamma</div><div class="row">delta</div>
+</div>
+<div id="sf2">
+  <div class="row">one</div><div class="row">two</div>
+</div>
+<div id="sf3">
+  <div class="row">solo</div>
+</div>
+<div id="sf4">
+  <div class="row">r1</div><div class="row">r2</div><div class="row">r3</div>
+</div>
+
+<script src="../src/styles/countup-loader.js"></script>
+<script src="../src/styles/shake-loader.js"></script>
+<script src="../src/styles/shuffle-loader.js"></script>
+<script>
+"use strict";
+var results = [];
+function check(n, ok, d) { results.push({ n: n, ok: !!ok, d: d || "" }); }
+function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+async function run() {
+  /* — CountUpLoader — */
+
+  /* 1 — basic count lands on the target with separators */
+  var c1 = CountUpLoader.create("#c1", { value: 12480, durationMs: 400, autoStart: false });
+  c1.start();
+  await wait(700);
+  check("countup: lands on 12,480", document.getElementById("c1").textContent === "12,480",
+    document.getElementById("c1").textContent);
+  check("countup: isRunning false after landing", !c1.isRunning());
+
+  /* 2 — decimals, prefix, suffix */
+  var c2 = CountUpLoader.create("#c2", { value: 99.5, decimals: 1, prefix: "$", suffix: "/mo", durationMs: 300, autoStart: false });
+  c2.start();
+  await wait(600);
+  check("countup: decimals+prefix+suffix", document.getElementById("c2").textContent === "$99.5/mo",
+    document.getElementById("c2").textContent);
+
+  /* 3 — separator: null disables grouping */
+  var c3 = CountUpLoader.create("#c3", { value: 1234567, separator: null, durationMs: 300, autoStart: false });
+  c3.start();
+  await wait(600);
+  check("countup: separator null → no grouping", document.getElementById("c3").textContent === "1234567",
+    document.getElementById("c3").textContent);
+
+  /* 4 — unknown easing falls back to expo (no throw, lands) */
+  var c4 = CountUpLoader.create("#c4", { value: 500, easing: "nonsense", durationMs: 300, autoStart: false });
+  c4.start();
+  await wait(600);
+  check("countup: unknown easing falls back", document.getElementById("c4").textContent === "500",
+    document.getElementById("c4").textContent);
+
+  /* 5 — negative durationMs clamped (used to rAF-loop forever) */
+  var c5 = CountUpLoader.create("#c5", { value: 42, durationMs: -5, autoStart: false });
+  c5.start();
+  await wait(400);
+  var txt = document.getElementById("c5").textContent;
+  check("countup: negative duration clamped, lands", txt === "42", txt);
+  check("countup: no runaway rAF (stopped)", !c5.isRunning());
+  c5.destroy();
+
+  /* 6 — repeat loop: restMs > 0 reruns */
+  var c6 = CountUpLoader.create("#c1", { value: 1000, durationMs: 200, restMs: 150, autoStart: false });
+  c6.start();
+  await wait(900); // two cycles: 200+150+200 = 550 < 900
+  check("countup: restMs loop reruns (still running or re-counting)", c6.isRunning() ||
+    parseFloat(document.getElementById("c1").textContent.replace(/,/g, "")) < 1000);
+  c6.stop();
+
+  /* 7 — reduced motion: final value printed once */
+  var realMM = window.matchMedia;
+  window.matchMedia = function (q) { return { matches: q.indexOf("prefers-reduced-motion") >= 0, media: q, addListener: function(){}, removeListener: function(){}, addEventListener: function(){}, removeEventListener: function(){} }; };
+  var c7 = CountUpLoader.create("#c2", { value: 777, durationMs: 5000, autoStart: false });
+  c7.start();
+  await wait(80);
+  check("countup reduced: final value immediately", document.getElementById("c2").textContent === "777",
+    document.getElementById("c2").textContent);
+  check("countup reduced: not running", !c7.isRunning());
+  c7.destroy();
+  window.matchMedia = realMM;
+
+  /* — ShakeLoader — */
+
+  /* 8 — default variant shakes then settles */
+  var s1 = ShakeLoader.create("#sh1", { autoStart: false });
+  s1.start();
+  check("shake: isRunning during shake", s1.isRunning());
+  await wait(800);
+  check("shake: settles after durationMs", !s1.isRunning());
+  check("shake: transform cleared on settle", document.getElementById("sh1").style.transform === "");
+
+  /* 9 — hard variant is bigger than default */
+  var s2 = ShakeLoader.create("#sh2", { variant: "hard", autoStart: false });
+  s2.start();
+  var frames = s2.el.getAnimations().filter(function (a) { return a.transitionProperty == null; });
+  var maxOff = 0;
+  if (frames.length) {
+    frames[0].effect.getKeyframes().forEach(function (k) {
+      var m = /translate\(([-\d.]+)px/.exec(k.transform || "");
+      if (m) maxOff = Math.max(maxOff, Math.abs(parseFloat(m[1])));
+    });
+  }
+  check("shake hard: amplitude 5px", Math.abs(maxOff - 5) < 0.6, maxOff.toFixed(2));
+  s2.stop();
+
+  /* 10 — unknown variant falls back to default (3px) */
+  var s2b = ShakeLoader.create("#sh2", { variant: "wild", autoStart: false });
+  s2b.start();
+  var f2 = s2b.el.getAnimations().filter(function (a) { return a.transitionProperty == null; });
+  var amp2 = 0;
+  if (f2.length) f2[0].effect.getKeyframes().forEach(function (k) {
+    var m = /translate\(([-\d.]+)px/.exec(k.transform || "");
+    if (m) amp2 = Math.max(amp2, Math.abs(parseFloat(m[1])));
+  });
+  check("shake: unknown variant → default 3px", Math.abs(amp2 - 3) < 0.6, amp2.toFixed(2));
+  s2b.stop();
+
+  /* 11 — reduced motion: no-op */
+  window.matchMedia = function (q) { return { matches: q.indexOf("prefers-reduced-motion") >= 0, media: q, addListener: function(){}, removeListener: function(){}, addEventListener: function(){}, removeEventListener: function(){} }; };
+  var s3 = ShakeLoader.create("#sh3", { autoStart: false });
+  s3.start();
+  check("shake reduced: no-op", !s3.isRunning());
+  s3.destroy();
+  window.matchMedia = realMM;
+
+  /* — ShuffleLoader — */
+
+  /* 12 — FLIP reorder: last promoted to first */
+  var sf1 = document.getElementById("sf1");
+  var before = sf1.children[0].textContent;
+  var f1 = ShuffleLoader.create(sf1, { autoStart: false, intervalMs: 60000 });
+  f1.shuffle();
+  await wait(700);
+  check("shuffle: last child promoted to first", sf1.children[0].textContent === "delta" && before === "alpha",
+    sf1.children[0].textContent);
+  check("shuffle: glide settles (no residual transform)",
+    Array.prototype.every.call(sf1.children, function (el) { return !el.style.transform; }));
+  f1.stop();
+
+  /* 13 — deterministic mover: each cycle promotes the then-last child */
+  var sf2 = document.getElementById("sf2");
+  var f2b = ShuffleLoader.create(sf2, { autoStart: false, intervalMs: 60000 });
+  f2b.shuffle();
+  await wait(700);
+  check("shuffle: cycle 1 promotes last (two → first)", sf2.children[0].textContent === "two",
+    sf2.children[0].textContent);
+  f2b.shuffle();
+  await wait(700);
+  check("shuffle: cycle 2 promotes the new last (one → first)", sf2.children[0].textContent === "one",
+    sf2.children[0].textContent);
+  f2b.stop();
+
+  /* 14 — fewer than 2 children: shuffle is a no-op, no interval */
+  var f3 = ShuffleLoader.create("#sf3", { autoStart: false });
+  f3.start();
+  check("shuffle: single child → no interval loop", !f3.isRunning());
+  f3.destroy();
+
+  /* 15 — moveFrom: "first" promotes the first child (no visual change) */
+  var sf4 = document.getElementById("sf4");
+  var f4 = ShuffleLoader.create(sf4, { autoStart: false, intervalMs: 60000, moveFrom: "first" });
+  f4.shuffle();
+  await wait(700);
+  check("shuffle: moveFrom first keeps order", sf4.children[0].textContent === "r1");
+  f4.stop();
+
+  var pass = 0, fail = 0, html = "";
+  for (var i = 0; i < results.length; i++) {
+    if (results[i].ok) pass++; else fail++;
+    html += '<div class="' + (results[i].ok ? "pass" : "fail") + '">' +
+      (results[i].ok ? "PASS" : "FAIL") + " — " + results[i].n +
+      (results[i].d ? " (" + results[i].d + ")" : "") + "</div>";
+  }
+  document.getElementById("results").innerHTML = html;
+  document.title = fail === 0 ? "FEEDBACK TESTS: PASS" : "FEEDBACK TESTS: FAIL " + fail;
+}
+run();
+</script>
+</body>
+</html>

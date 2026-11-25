@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<!--
+  TraceLoop — ProgressLoader test harness (progress + feedback category).
+  Covers: dual-mode calls (path-based vs container-based), setProgress
+  continuous + steps quantization, done(), indeterminate variant,
+  static-container fixup, destroy ownership (container vs path calls),
+  reduced motion, clamped steps.
+  Open in a browser; verdict lands in the page body and document.title.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<title>PROGRESS TESTS: RUNNING</title>
+<link rel="stylesheet" href="../dist/traceloop.css">
+<style>
+  body { font: 13px/1.5 monospace; background: #141413; color: #faf9f5; padding: 20px; }
+  .pass { color: #788c5d; } .fail { color: #d97757; }
+  .stage { width: 220px; height: 60px; background: #262420; border: 1px solid #33312c; margin: 10px 0; position: relative; color: #d97757; }
+</style>
+</head>
+<body>
+<div id="results">running…</div>
+<div class="stage" id="p-cont"></div>
+<div class="stage" id="p-steps"></div>
+<div class="stage" id="p-static" style="position: static"></div>
+<div class="stage" id="p-indet"></div>
+<div class="stage" id="p-destroy"></div>
+<div class="stage" id="p-reduced"></div>
+<svg viewBox="0 0 220 20" width="220" height="20"><path id="p-own-path" d="M5,10 L215,10" fill="none" stroke="#33312c" stroke-width="4" stroke-linecap="round"/></svg>
+
+<script src="../src/styles/progress-loader.js"></script>
+<script>
+"use strict";
+var results = [];
+function check(n, ok, d) { results.push({ n: n, ok: !!ok, d: d || "" }); }
+function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+async function run() {
+  /* 1 — container call without d throws */
+  var threw = "";
+  try { ProgressLoader.create("#p-cont", {}); } catch (e) { threw = e.message; }
+  check("container without d: throws", threw.indexOf("options.d") >= 0, threw);
+
+  /* 2 — continuous fill: setProgress paints the fraction */
+  var p1 = ProgressLoader.create("#p-cont", {
+    d: "M10,30 L210,30", viewBox: "0 0 220 60", autoStart: false, color: "#d97757"
+  });
+  p1.setProgress(0.5);
+  await wait(650); // the eased glide
+  var dash = p1.path.style.strokeDasharray;
+  var seg = parseFloat(dash);
+  var total = p1.path.getTotalLength();
+  check("setProgress(0.5): half the path filled", Math.abs(seg / total - 0.5) < 0.03,
+    (seg / total).toFixed(3));
+  p1.setProgress(1);
+  await wait(650);
+  check("setProgress(1): full fill", Math.abs(parseFloat(p1.path.style.strokeDasharray) / total - 1) < 0.02);
+
+  /* 3 — done(): fills and stops the demo */
+  p1.setProgress(0.4);
+  await wait(500);
+  p1.done();
+  await wait(700);
+  check("done: fills to the end", Math.abs(parseFloat(p1.path.style.strokeDasharray) / total - 1) < 0.03);
+  p1.stop();
+
+  /* 4 — steps variant: quantized */
+  var p2 = ProgressLoader.create("#p-steps", {
+    variant: "steps", steps: 4, d: "M10,30 L210,30", viewBox: "0 0 220 60",
+    autoStart: false, color: "#6a9bcc"
+  });
+  p2.setProgress(0.3); // round(1.2) = 1 → 0.25
+  await wait(650);
+  var s1 = parseFloat(p2.path.style.strokeDasharray) / p2.path.getTotalLength();
+  check("steps: setProgress(0.3) quantizes to 0.25", Math.abs(s1 - 0.25) < 0.03, s1.toFixed(3));
+  p2.setProgress(0.85); // round(3.4) = 3 → 0.75
+  await wait(650);
+  var s2 = parseFloat(p2.path.style.strokeDasharray) / p2.path.getTotalLength();
+  check("steps: setProgress(0.85) quantizes to 0.75", Math.abs(s2 - 0.75) < 0.03, s2.toFixed(3));
+  p2.stop();
+
+  /* 5 — steps=0 clamped (was NaN paint) */
+  var p2b = ProgressLoader.create("#p-steps", {
+    variant: "steps", steps: 0, d: "M10,30 L210,30", viewBox: "0 0 220 60", autoStart: false
+  });
+  var threw2 = "";
+  try { p2b.setProgress(0.5); } catch (e) { threw2 = e.message; }
+  await wait(600);
+  var s3 = p2b.path.style.strokeDasharray;
+  check("steps=0: clamped to 1 (no NaN)", threw2 === "" && s3.indexOf("NaN") < 0, s3);
+  p2b.stop(); p2b.destroy();
+
+  /* 6 — indeterminate variant */
+  var p3 = ProgressLoader.create("#p-indet", {
+    variant: "indeterminate", d: "M10,30 L210,30", viewBox: "0 0 220 60", autoStart: false
+  });
+  p3.start();
+  await wait(200);
+  var o1 = p3.path.style.strokeDashoffset;
+  await wait(150);
+  var o2 = p3.path.style.strokeDashoffset;
+  check("indeterminate: rAF loop moves the segment", p3.isRunning() && o1 !== o2, o1 + " vs " + o2);
+  p3.stop();
+  check("indeterminate: stop cancels", !p3.isRunning());
+  p3.destroy();
+
+  /* 7 — static container fixup (container calls only) */
+  var host = document.getElementById("p-static");
+  var p4 = ProgressLoader.create(host, { d: "M10,30 L210,30", viewBox: "0 0 220 60", autoStart: false });
+  check("static host: forced to relative", getComputedStyle(host).position === "relative");
+  p4.destroy();
+  check("static host: position restored on destroy", host.style.position === "");
+
+  /* 8 — destroy ownership: container call removes the svg, path call doesn't */
+  var p5 = ProgressLoader.create("#p-destroy", { d: "M10,30 L210,30", viewBox: "0 0 220 60", autoStart: false });
+  p5.destroy();
+  check("container call: svg removed on destroy", !document.querySelector("#p-destroy svg"));
+  var own = document.getElementById("p-own-path");
+  var p6 = ProgressLoader.create(own, { autoStart: false });
+  p6.destroy();
+  check("path call: caller's svg untouched", document.getElementById("p-own-path") !== null &&
+    own.parentNode !== null);
+
+  /* 9 — reduced motion: setProgress still paints (static fill is fine) */
+  var realMM = window.matchMedia;
+  window.matchMedia = function (q) { return { matches: q.indexOf("prefers-reduced-motion") >= 0, media: q, addListener: function(){}, removeListener: function(){}, addEventListener: function(){}, removeEventListener: function(){} }; };
+  var p7 = ProgressLoader.create("#p-reduced", { d: "M10,30 L210,30", viewBox: "0 0 220 60", autoStart: false });
+  p7.start();
+  check("reduced: engaged with a static fill (no demo)", p7.isRunning() &&
+    p7.path.getAnimations().filter(function (a) { return a.transitionProperty == null; }).length === 0);
+  p7.setProgress(0.6);
+  await wait(100);
+  check("reduced: setProgress still paints", parseFloat(p7.path.style.strokeDasharray) > 0);
+  p7.destroy();
+  window.matchMedia = realMM;
+
+  var pass = 0, fail = 0, html = "";
+  for (var i = 0; i < results.length; i++) {
+    if (results[i].ok) pass++; else fail++;
+    html += '<div class="' + (results[i].ok ? "pass" : "fail") + '">' +
+      (results[i].ok ? "PASS" : "FAIL") + " — " + results[i].n +
+      (results[i].d ? " (" + results[i].d + ")" : "") + "</div>";
+  }
+  document.getElementById("results").innerHTML = html;
+  document.title = fail === 0 ? "PROGRESS TESTS: PASS" : "PROGRESS TESTS: FAIL " + fail;
+}
+run();
+</script>
+</body>
+</html>

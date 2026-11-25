@@ -277,6 +277,30 @@ already met the bar at ship time).
 **Verdict: Category 2 PASSES its completion gate.** Next category:
 3 — progress + feedback (progress, countup, shake, shuffle).
 
+### Cleanup 3.1 — progress + feedback styles (COMPLETE)
+
+Category 3 audit: progress 353L (57 demos, no harness), countup 176L
+(10 demos), shake 129L (4 demos), shuffle 180L (4 demos). None had
+the static-container fixup.
+
+- **ProgressLoader**: `steps: 0` divided by zero in
+  `setProgressSteps` (NaN fill) — floored at 1; container calls now
+  get the static-position fixup (restored on destroy; path calls
+  never touch the caller's positioning).
+- **CountUpLoader**: negative `durationMs` made the rAF progress
+  stay negative forever — an infinite loop; floored at 1.
+- **ShakeLoader / ShuffleLoader**: `durationMs` floored at 1 to
+  match (WAAPI treats negative as 0, churning the repeat loop).
+- STYLES-UI: all three feedback styles gained the Controller shape
+  (they had none); progress's dual-mode ownership documented.
+
+Tests: new `tests/progress-test.html` **15/15 PASS** (dual-mode,
+continuous + steps quantization, done(), indeterminate rAF loop,
+fixup, destroy ownership, reduced motion, steps clamp); new
+`tests/feedback-test.html` **22/22 PASS** (count formatting/easing/
+repeat/clamp, shake variants/decay/reduced, shuffle FLIP/determinism/
+clamps). Gate: smoke 47/170, build OK.
+
 ### Cleanup 2.5 — TabLoader (COMPLETE)
 
 Decision: **KEEP — polish only** (the healthiest of the category:

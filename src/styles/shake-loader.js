@@ -51,7 +51,7 @@
     if (!el) throw new Error("ShakeLoader.create: element not found");
     var variants = { little: 1.5, "default": 3, hard: 5 };
     var amp = variants[options.variant] != null ? variants[options.variant] : variants["default"];
-    var durationMs = options.durationMs != null ? options.durationMs : 600;
+    var durationMs = Math.max(1, options.durationMs != null ? options.durationMs : 600);
     var decay = options.decay != null ? Math.max(0, Math.min(1, options.decay)) : 1;
     var restMs = Math.max(0, options.restMs != null ? options.restMs : 0);
     var autoStart = options.autoStart !== false;

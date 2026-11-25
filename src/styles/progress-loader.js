@@ -52,7 +52,7 @@
   function create(pathEl, options) {
     options = options || {};
     var variant = options.variant != null ? options.variant : "bar";
-    var steps = options.steps != null ? options.steps : 4;
+    var steps = Math.max(1, Math.round(options.steps != null ? options.steps : 4));
     var chunk = options.chunk != null ? options.chunk : 0.18;
     var strokeWidth = options.strokeWidth != null ? options.strokeWidth : 2;
     var container = null;
@@ -72,6 +72,11 @@
         container = document.querySelector(container);
       }
       if (!container) throw new Error("ProgressLoader.create: target not found");
+      // The injected SVG is absolutely positioned; a static container
+      // would let it escape. Undone on destroy (container calls only —
+      // a path-based call never touches the caller's positioning).
+      var forcedPosition = global.getComputedStyle(container).position === "static";
+      if (forcedPosition) container.style.position = "relative";
       if (!options.d && variant === "ring") {
         // Ring preset: a circle sized to the container so the common
         // case needs no path math from the consumer.
@@ -317,6 +322,7 @@
       if (ownsSvg) {
         var svg = pathEl.parentNode;
         if (svg && svg.parentNode) svg.parentNode.removeChild(svg);
+        if (forcedPosition) container.style.position = "";
       } else {
         // A path-based call never owns pathEl's svg — only the head
         // dot and any tick marks we injected into it are ours to undo.

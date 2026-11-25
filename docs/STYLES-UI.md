@@ -242,10 +242,15 @@ pass a path element, or a container plus `d`.
 | `variant` | `'bar'` | `'bar'` (continuous fill), `'ring'` (circular track), `'steps'` (fill quantizes to `steps` boundaries — each new segment pops the head; tick marks sit on the track), `'indeterminate'` (a chunk slides the track forever) |
 | `steps` | `4` | segment count for the `'steps'` variant |
 
-Controller also exposes: `path`, `head`, `setProgress(p)`, `done()`.
-`setProgress` routes by variant: `'steps'` quantizes to the nearest
-boundary, `'indeterminate'` stops the loop first, everything else
-eases a continuous fill.
+Controller also exposes: `el`, `svg`, `path`, `head`,
+`setProgress(p)`, `done()`, `start()`, `stop()`, `destroy()`,
+`isRunning()`. `setProgress` routes by variant: `'steps'` quantizes to
+the nearest boundary, `'indeterminate'` stops the loop first,
+everything else eases a continuous fill. Container calls get the
+static-position fixup (restored on `destroy()`); a path-based call
+never touches the caller's positioning. Under reduced motion
+`setProgress()` still paints (a static fill is fine — it's not
+motion); `steps` is floored at 1 so a zero count can't NaN the fill.
 
 ## SearchLoader — `src/styles/search-loader.js`
 
@@ -397,7 +402,11 @@ no CSS file. Reduced motion: the final value is set once, no count.
 | `restMs` | `0` | `0` runs once; `> 0` repeats the count after this pause (demo loops) |
 | `autoStart` | `true` | start counting at creation |
 
-## ShakeLoader — `src/styles/shake-loader.js`
+Controller also exposes: `el`, `start()`, `stop()`, `destroy()`,
+`isRunning()`, `value()`. `durationMs` is floored at 1 — a negative
+duration used to make the rAF progress stay negative forever and loop
+without end. Reduced motion prints the final value once (a number
+that never moves is the accessible version). — `src/styles/shake-loader.js`
 
 The attention shake: the element judders in place and settles — an
 invalid field, a rejected card, a row that can't be deleted.
@@ -417,6 +426,11 @@ makes it read as shaking. Reduced motion: no shake at all.
 | `restMs` | `0` | `0` shakes once; `> 0` repeats after this pause (demo loops) |
 | `autoStart` | `true` | shake at creation |
 
+Controller also exposes: `el`, `start()`, `stop()`, `destroy()`,
+`isRunning()`. Unknown variants fall back to the default amplitude;
+`stop()` clears the inline transform so the element lands exactly
+where it started.
+
 ## ShuffleLoader — `src/styles/shuffle-loader.js`
 
 The reorder: a list that keeps reshuffling itself, each row gliding
@@ -435,3 +449,8 @@ element children are the rows. Reduced motion: rows snap, no glide.
 | `moveFrom` | `'last'` | which child is promoted to the top each cycle: `'last'`, `'first'` (demotes instead), or an index |
 | `easing` | fast-out curve | the glide's easing — items leave promptly, arrive gently |
 | `autoStart` | `true` | shuffle on the loop immediately |
+
+Controller also exposes: `container`, `shuffle()`, `start()`,
+`stop()`, `destroy()`, `isRunning()`. Fewer than two children → no
+loop. Reduced motion still promotes the row (a layout change, not
+motion) but skips the glide.

@@ -63,7 +63,7 @@
     if (!el) throw new Error("CountUpLoader.create: element not found");
     var from = options.from != null ? options.from : 0;
     var to = options.value != null ? options.value : 100;
-    var durationMs = options.durationMs != null ? options.durationMs : 2000;
+    var durationMs = Math.max(1, options.durationMs != null ? options.durationMs : 2000);
     var easingName = options.easing || "easeOutExpo";
     var decimals = Math.max(0, Math.round(options.decimals != null ? options.decimals : 0));
     var separator = options.separator !== undefined ? options.separator : ",";

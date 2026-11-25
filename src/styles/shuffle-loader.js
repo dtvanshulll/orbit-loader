@@ -55,7 +55,7 @@
     if (typeof container === "string") container = global.document.querySelector(container);
     if (!container) throw new Error("ShuffleLoader.create: container not found");
     var intervalMs = Math.max(400, options.intervalMs != null ? options.intervalMs : 2600);
-    var durationMs = options.durationMs != null ? options.durationMs : 480;
+    var durationMs = Math.max(1, options.durationMs != null ? options.durationMs : 480);
     var moveFrom = options.moveFrom != null ? options.moveFrom : "last";
     var easing = options.easing || "cubic-bezier(0.23, 1, 0.32, 1)";
     var autoStart = options.autoStart !== false;
