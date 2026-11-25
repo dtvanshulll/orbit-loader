@@ -252,6 +252,31 @@ escape bug, no harness), toast 320L (1 clamp, no harness), swap
 no controller docs, no harness). Order: button → swap → page →
 toast → tab → gate.
 
+### CATEGORY 2 GATE — one-shot transitions (PASS)
+
+All 5 components through the full lifecycle (route and pathwipe
+already met the bar at ship time).
+
+- **Full regression**: smoke 47/170 OK, build 4/4, ALL 13 harnesses
+  PASS (button 28, swap 22, page 29, toast 19 + the 7 looping
+  harnesses 184 checks + route 44 + pathwipe 31 + regression 7 +
+  dist + tabs).
+- **API consistency** (verified from source): all 5 check reduced
+  motion once, expose `isRunning()`, clean up in `destroy()`, and
+  carry robustness clamps. 4 of 5 apply the static-container fixup +
+  restore — tab legitimately doesn't (its SVG is in-flow, nothing to
+  escape). All 5 have Controller sections in STYLES-UI (swap's was
+  absent before this category).
+- **Recurring bug pattern found and fixed category-wide**: triggered
+  styles kept animations/timers the demo loop created without
+  tracking them, so `stop()`/`destroy()` mid-flight left frozen
+  states (swap's fill:forwards panels, page's fill:both bars). Both
+  now track and cancel.
+- **Website**: 33 transition cards render, no init errors.
+
+**Verdict: Category 2 PASSES its completion gate.** Next category:
+3 — progress + feedback (progress, countup, shake, shuffle).
+
 ### Cleanup 2.5 — TabLoader (COMPLETE)
 
 Decision: **KEEP — polish only** (the healthiest of the category:
