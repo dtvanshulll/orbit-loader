@@ -185,16 +185,26 @@
       bar.style.opacity = left > 0 ? 1 : 0;
     }
 
-    function tick() {
+    var lastTs = null; // previous frame's timestamp — wall-clock dt
+
+    function tick(ts) {
       if (!running) return;
       // Linear depletion: a countdown should read as constant rate —
-      // easing here would lie about the time left. Hover pauses the
-      // clock without losing the position.
+      // easing here would lie about the time left. Depletion is driven
+      // by the frame timestamp's delta, not a per-frame constant, so
+      // the countdown stays wall-clock accurate on any refresh rate
+      // and under frame drops (the old 16.7ms guess drained ~2x too
+      // fast on 120Hz displays). Hover pauses the clock without
+      // losing the position: paused frames advance lastTs but consume
+      // nothing, so resuming never fast-forwards through the pause.
+      if (lastTs == null) lastTs = ts;
+      var dt = ts - lastTs;
+      lastTs = ts;
       if (paused) {
         raf = global.requestAnimationFrame(tick);
         return;
       }
-      left -= 16.7 / lifetime;
+      left -= dt / lifetime;
       if (left <= 0) {
         left = 0;
         paint();
@@ -249,6 +259,7 @@
       running = true;
       el.classList.add("is-active");
       left = 1;
+      lastTs = null; // the first frame after begin consumes no time
       paint();
       enterBeat();
       raf = global.requestAnimationFrame(tick);

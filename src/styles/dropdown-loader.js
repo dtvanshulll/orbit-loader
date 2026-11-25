@@ -229,6 +229,8 @@
 
     /** Select row i: its check draws, then the menu closes. */
     function select(i) {
+      if (!isOpen) return; // a closed menu has no rows to select — same
+                           // guard open()/close() carry
       if (i < 0 || i >= rows.length) return;
       selected = i;
       var cp = rows[i].querySelector(".orbit-loader-dropdown-check path");

@@ -157,8 +157,13 @@ pass a path element, or a container plus `d`.
 | `headRadius` | `3` | the frontier dot's radius, px |
 | `color` | `null` | fill and head color |
 | `guideOpacity` | `0.3` | the unfilled track's opacity |
+| `variant` | `'bar'` | `'bar'` (continuous fill), `'ring'` (circular track), `'steps'` (fill quantizes to `steps` boundaries — each new segment pops the head; tick marks sit on the track), `'indeterminate'` (a chunk slides the track forever) |
+| `steps` | `4` | segment count for the `'steps'` variant |
 
 Controller also exposes: `path`, `head`, `setProgress(p)`, `done()`.
+`setProgress` routes by variant: `'steps'` quantizes to the nearest
+boundary, `'indeterminate'` stops the loop first, everything else
+eases a continuous fill.
 
 ## SearchLoader — `src/styles/search-loader.js`
 

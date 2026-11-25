@@ -194,8 +194,12 @@
     }
 
     // Public setter: stops the indeterminate loop, then eases the fill.
+    // The 'steps' variant quantizes here too — without this route the
+    // variant's setProgressSteps was dead code and 'steps' behaved
+    // exactly like the continuous fill.
     function setProgress(p) {
       if (variant === "indeterminate") { stopIndeterminate(); }
+      if (variant === "steps") { setProgressSteps(p); return; }
       fillTo(p);
     }
 

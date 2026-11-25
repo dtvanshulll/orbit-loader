@@ -62,6 +62,10 @@ export function Tabs(props) {
     var opts = { tabs: n, autoStart: false };
     if (color != null) opts.color = color;
     if (durationMs != null) opts.durationMs = durationMs;
+    // Forward the underline length: measure() computes segment targets
+    // from segFraction × rail width, so the drawn underline must use
+    // the SAME fraction or the two disagree the moment it's customized.
+    opts.segmentFraction = segFraction;
     var ctrl = TabLoader.create(railRef.current, opts);
     ctrlRef.current = ctrl;
     // Measure after layout, then park the underline under the active tab.
@@ -77,8 +81,10 @@ export function Tabs(props) {
       if (ctrlRef.current) ctrlRef.current.destroy();
       ctrlRef.current = null;
     };
+    // Label text changes the measured geometry; segFraction changes the
+    // underline length — both rebuild the rail.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [n, color, durationMs]);
+  }, [n, items.join('|'), color, durationMs, segFraction]);
 
   function select(i, moveFocus) {
     if (i === activeRef.current || i < 0 || i >= n) return;

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<!--
+  TraceLoop — regression harness for the cleanup fix batch:
+    #5 ToastLoader depletion is wall-clock (timestamp-delta driven)
+    #6 ProgressLoader 'steps' variant actually quantizes
+    #7 DropdownLoader select() is a no-op while closed
+  Open in a browser; verdict lands in the page body and document.title.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<title>FIX VERIFY: RUNNING</title>
+<link rel="stylesheet" href="../dist/traceloop.css">
+<style>
+  body { font: 13px/1.5 monospace; background: #141413; color: #faf9f5; padding: 20px; }
+  .pass { color: #788c5d; } .fail { color: #d97757; }
+  .stage { width: 240px; height: 80px; background: #262420; border: 1px solid #33312c; margin: 10px 0; position: relative; }
+</style>
+</head>
+<body>
+<div id="results">running…</div>
+<div class="stage" id="p-steps"></div>
+<div class="stage" id="dd" style="height:44px"></div>
+<div class="stage" id="toast" style="height:56px"></div>
+
+<script src="../src/styles/progress-loader.js"></script>
+<script src="../src/styles/dropdown-loader.js"></script>
+<script src="../src/styles/toast-loader.js"></script>
+<script>
+"use strict";
+var results = [];
+function check(n, ok, d) { results.push({ n: n, ok: !!ok, d: d || "" }); }
+function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+function fracOf(pathEl) {
+  var dash = pathEl.style.strokeDasharray || pathEl.getAttribute("stroke-dasharray") || "";
+  var seg = parseFloat(dash.split(" ")[0]);
+  var total = pathEl.getTotalLength();
+  return seg / total;
+}
+async function run() {
+  /* #6 — the 'steps' variant quantizes setProgress to step boundaries */
+  var ps = ProgressLoader.create("#p-steps", {
+    variant: "steps", steps: 4, autoStart: false,
+    d: "M10,40 L230,40", viewBox: "0 0 240 80", color: "#6a9bcc"
+  });
+  var path = document.querySelector("#p-steps .orbit-loader-thread");
+  ps.setProgress(0.3);          // round(0.3*4)=1 → 1/4 = 0.25
+  await wait(600);              // the eased glide is 350ms
+  var f1 = fracOf(path);
+  check("steps: setProgress(0.3) quantizes to 0.25", Math.abs(f1 - 0.25) < 0.02, "got " + f1.toFixed(3));
+  ps.setProgress(0.85);         // round(3.4)=3 → 0.75
+  await wait(600);
+  var f2 = fracOf(path);
+  check("steps: setProgress(0.85) quantizes to 0.75", Math.abs(f2 - 0.75) < 0.02, "got " + f2.toFixed(3));
+  ps.setProgress(1);
+  await wait(700);
+  check("steps: setProgress(1) fills fully", Math.abs(fracOf(path) - 1) < 0.02, "got " + fracOf(path).toFixed(3));
+  ps.destroy();
+
+  /* #7 — select() while closed neither throws nor mutates */
+  var ddHost = document.querySelector("#dd");
+  var dd = DropdownLoader.create("#dd", { items: ["Alpha", "Beta", "Gamma"], autoStart: false });
+  var vBefore = dd.value();
+  var selectedBefore = ddHost.querySelectorAll(".is-selected").length;
+  var threw = "";
+  try { dd.select(1); } catch (e) { threw = e.message; }
+  check("dropdown: select() while closed is a silent no-op",
+    !threw && dd.value() === vBefore && ddHost.querySelectorAll(".is-selected").length === selectedBefore,
+    threw || ("value " + vBefore + "→" + dd.value()));
+  dd.open();
+  dd.select(1);
+  await wait(500); // check draws 220ms, then the menu closes at 380ms
+  check("dropdown: select() while open selects the row", dd.value() === 1, "value " + dd.value());
+  dd.destroy();
+
+  /* #5 — toast depletion is wall-clock: pause 400ms mid-count, the
+     total lifetime stretches by (about) the paused time */
+  var t = ToastLoader.create("#toast", { durationMs: 1000, restMs: 1e6, autoStart: false });
+  var host = document.querySelector("#toast");
+  t.begin(1000);
+  var t0 = performance.now();
+  var expired = new Promise(function (res) {
+    var iv = setInterval(function () {
+      if (!host.classList.contains("is-active")) { clearInterval(iv); res(performance.now() - t0); }
+    }, 30);
+  });
+  await wait(300);
+  host.dispatchEvent(new MouseEvent("mouseenter")); // pause
+  await wait(400);
+  host.dispatchEvent(new MouseEvent("mouseleave")); // resume
+  var elapsed = await expired;
+  // 1000ms lifetime + ~400ms paused (tolerance for polling granularity)
+  check("toast: wall-clock lifetime survives a mid-count pause",
+    elapsed > 1280 && elapsed < 1600, "elapsed " + Math.round(elapsed) + "ms");
+  t.destroy();
+
+  /* regression — continuous variant still fills exactly */
+  var pc = ProgressLoader.create("#p-steps", {
+    autoStart: false, d: "M10,40 L230,40", viewBox: "0 0 240 80", color: "#6a9bcc"
+  });
+  var path2 = document.querySelector("#p-steps .orbit-loader-thread");
+  pc.setProgress(0.3);
+  await wait(600);
+  check("continuous: setProgress(0.3) is NOT quantized", Math.abs(fracOf(path2) - 0.3) < 0.02,
+    "got " + fracOf(path2).toFixed(3));
+  pc.destroy();
+
+  var fails = results.filter(function (r) { return !r.ok; });
+  document.getElementById("results").innerHTML = results.map(function (r) {
+    return "<div class='" + (r.ok ? "pass" : "fail") + "'>" + (r.ok ? "PASS" : "FAIL") +
+      " — " + r.n + (r.ok ? "" : " :: " + r.d) + "</div>";
+  }).join("") +
+    "<div style='margin-top:10px;font-weight:bold'>" +
+    (fails.length ? "FAIL " + fails.length : "ALL PASS") + " — " +
+    (results.length - fails.length) + "/" + results.length + "</div>";
+  document.title = fails.length ? "FIX VERIFY: FAIL " + fails.length : "FIX VERIFY: PASS";
+}
+run();
+</script>
+</body>
+</html>
