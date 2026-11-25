@@ -98,11 +98,13 @@ export const ButtonLoader: {
   create(el: HTMLElement | string, options?: LoaderOptions): LoaderController & {
     begin(): void;
     success(): void;
+    fail(): void;
     reset(): void;
   };
   wrap(el: HTMLElement | string, options?: LoaderOptions): LoaderController & {
     begin(): void;
     success(): void;
+    fail(): void;
     reset(): void;
   };
 };
@@ -238,6 +240,13 @@ export declare const PathWipe: React.FC<ComponentProps>;
 export declare const CountUp: React.FC<ComponentProps>;
 export declare const Shake: React.FC<ComponentProps>;
 export declare const Shuffle: React.FC<ComponentProps>;
+export declare const Progress: React.FC<ComponentProps>;
+export declare const Search: React.FC<ComponentProps>;
+export declare const Modal: React.FC<ComponentProps>;
+export declare const Accordion: React.FC<ComponentProps>;
+export declare const Drawer: React.FC<ComponentProps>;
+export declare const Dropdown: React.FC<ComponentProps>;
+export declare const Input: React.FC<ComponentProps>;
 export declare const Progress: React.FC<ComponentProps>;
 export declare const Search: React.FC<ComponentProps>;
 export declare const Modal: React.FC<ComponentProps>;

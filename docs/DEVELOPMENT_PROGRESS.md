@@ -277,6 +277,26 @@ already met the bar at ship time).
 **Verdict: Category 2 PASSES its completion gate.** Next category:
 3 — progress + feedback (progress, countup, shake, shuffle).
 
+### Cross-cutting — React adapter + type hints (COMPLETE)
+
+- **React declares gap**: `Progress`, `Search`, `Modal`, `Accordion`,
+  `Drawer`, `Dropdown`, `Input` were exported by `react/index.js` but
+  had no `export declare const` in `src/index.d.ts` (the same class
+  of registration bug the category 1 gate caught for Pulse/Chase).
+  All 7 added; ButtonLoader's type block gained `fail()` (shipped in
+  2.1 but never typed).
+- **React adapter bug**: `Progress` was registered path-based, so its
+  `width` prop sized the host div but was never forwarded as the
+  style option the injected SVG needs, and a `d`-less usage threw.
+  ProgressLoader is a container+d style — registered container-based
+  like Ripple/Pulse.
+- Adapter otherwise clean: all 24 styles exported, options passed
+  through raw (callbacks survive), recreate keyed on a JSON
+  signature, destroy on unmount, SSR-safe.
+
+Verified: build 4/4 (react bundle included), TABS READY, smoke
+47/170.
+
 ### Cleanup 4.1 — component styles (COMPLETE)
 
 Category 4 audit: search 270L, modal 251L, accordion 218L, drawer
