@@ -57,11 +57,11 @@
     if (typeof el === "string") el = document.querySelector(el);
     if (!el) throw new Error("TabLoader.create: container not found");
     var tabs = Math.max(1, options.tabs != null ? options.tabs : 4);
-    var segFrac = options.segmentFraction != null ? options.segmentFraction : 0.16;
-    var durationMs = options.durationMs != null ? options.durationMs : 700;
-    var restMs = options.restMs != null ? options.restMs : 1500;
-    var stretch = options.stretch != null ? options.stretch : 1.5;
-    var strokeWidth = options.strokeWidth != null ? options.strokeWidth : 3;
+    var segFrac = Math.min(1, Math.max(0.01, options.segmentFraction != null ? options.segmentFraction : 0.16));
+    var durationMs = Math.max(1, options.durationMs != null ? options.durationMs : 700);
+    var restMs = Math.max(0, options.restMs != null ? options.restMs : 1500);
+    var stretch = Math.max(1, options.stretch != null ? options.stretch : 1.5);
+    var strokeWidth = Math.max(0, options.strokeWidth != null ? options.strokeWidth : 3);
     var color = options.color != null ? options.color : null;
     var labels = options.labels || null;
     var autoStart = options.autoStart !== false;

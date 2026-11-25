@@ -252,6 +252,25 @@ escape bug, no harness), toast 320L (1 clamp, no harness), swap
 no controller docs, no harness). Order: button → swap → page →
 toast → tab → gate.
 
+### Cleanup 2.5 — TabLoader (COMPLETE)
+
+Decision: **KEEP — polish only** (the healthiest of the category:
+React tabs-test coverage, in-flow SVG, resize handling, destroy
+cleanup all already present).
+
+- Robustness clamps to match the siblings: `segmentFraction`
+  0.01–1 (values > 1 drew an underline longer than the rail),
+  `stretch` ≥ 1 (below 1 the segment contracts mid-crawl — the doc
+  defines 1 as rigid), `strokeWidth` ≥ 0, `durationMs` ≥ 1,
+  `restMs` ≥ 0.
+- No dedicated vanilla harness: tab's behavior is covered by
+  `tests/tabs-test.jsx` (React, 12 checks), the smoke run, and the
+  playground cards — a third overlapping harness would test the same
+  dash math a third time.
+
+Verified: TABS READY, smoke 47/170, build OK, playground tab cards
+running.
+
 ### Cleanup 2.4 — ToastLoader (COMPLETE)
 
 Decision: **IMPROVE**.
