@@ -252,6 +252,28 @@ escape bug, no harness), toast 320L (1 clamp, no harness), swap
 no controller docs, no harness). Order: button → swap → page →
 toast → tab → gate.
 
+### Cleanup 2.3 — PageLoader (COMPLETE)
+
+Decision: **IMPROVE**.
+
+- Untracked cycle animations: the wipe variants' cover/hold/reveal
+  animations were local to `runCycle()` and never canceled — the
+  `bars` variant animates with `fill: both`, so a `stop()` mid-cycle
+  left the bars frozen mid-extension. Cycle animations are now
+  tracked and canceled in `stop()`/`destroy()`.
+- The static-position fixup was applied but never restored on
+  `destroy()`; now saved/restored.
+- Clamps: `barCount` rounded + floored at 1 (0 built zero panels and
+  the wipe cycle stalled silently — `onfinish` never fired to schedule
+  the next cycle), `thickness` ≥ 1, `durationMs` ≥ 1, `restMs` ≥ 0.
+- STYLES-UI: variants documented, `done()`'s no-op on wipe variants
+  documented, resize re-measure documented.
+
+Tests: new `tests/page-test.html` — **29/29 PASS** (bar trickle/done
+lifecycle, curved-d path measuring, all four wipe variants' cycles,
+stop-mid-cycle freeze check, clamps, resize re-measure, destroy,
+reduced motion).
+
 ### Cleanup 2.2 — SwapLoader (COMPLETE)
 
 Decision: **IMPROVE**.

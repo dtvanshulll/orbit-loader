@@ -29,7 +29,12 @@ Controller also exposes: `segment`, `play(from, to)`, `set(f)`.
 
 The top-of-page progress bar: `start()` trickles toward 90%,
 `done()` sweeps to 100% and fades. Container-based; pins to the
-container's top edge.
+container's top edge (made `position: relative` if static, restored
+on `destroy()`). Five variants: `bar` (the trickle), plus the full-
+page wipes `curtain`, `iris`, `slide` and `bars` — on the wipe
+variants the demo loop runs cover/hold/reveal cycles and `done()` is
+a no-op (the cycle owns the rhythm). The bar re-measures its real-
+pixel viewBox on resize.
 
 | option | default | meaning |
 |---|---|---|

@@ -61,10 +61,10 @@
     if (typeof el === "string") el = document.querySelector(el);
     if (!el) throw new Error("PageLoader.create: container not found");
     var variant = options.variant != null ? options.variant : "bar";
-    var barCount = options.barCount != null ? options.barCount : 5;
-    var thickness = options.thickness != null ? options.thickness : 3;
-    var durationMs = options.durationMs != null ? options.durationMs : 3600;
-    var restMs = options.restMs != null ? options.restMs : 1400;
+    var barCount = Math.max(1, Math.round(options.barCount != null ? options.barCount : 5));
+    var thickness = Math.max(1, options.thickness != null ? options.thickness : 3);
+    var durationMs = Math.max(1, options.durationMs != null ? options.durationMs : 3600);
+    var restMs = Math.max(0, options.restMs != null ? options.restMs : 1400);
     var color = options.color != null ? options.color : null;
     var autoStart = options.autoStart !== false;
 
@@ -74,10 +74,9 @@
     // stretched viewBox, browsers compute dash patterns in screen
     // space and the bar would shatter into repeating dashes. If the
     // host is statically positioned, make it relative so the bar pins
-    // correctly.
-    if (global.getComputedStyle(el).position === "static") {
-      el.style.position = "relative";
-    }
+    // correctly (restored on destroy).
+    var forcedPosition = global.getComputedStyle(el).position === "static";
+    if (forcedPosition) el.style.position = "relative";
     var customD = options.d || null;
 
     // The 'bar' variant keeps the original edge-bar SVG; every other
@@ -191,9 +190,17 @@
 
     // The wipe variants: one full cycle = cover, hold, reveal. Each
     // variant choreographs its own keyframes; the loop re-runs the
-    // cycle on the demo timer so previews keep moving.
+    // cycle on the demo timer so previews keep moving. The cycle's
+    // animations are tracked so stop()/destroy() can cancel them —
+    // the bars variant uses fill:both, and an untracked mid-cycle
+    // stop used to leave the bars frozen mid-extension.
+    var cycleAnims = [];
     function runCycle() {
       if (!running) return;
+      for (var c = 0; c < cycleAnims.length; c++) {
+        try { cycleAnims[c].cancel(); } catch (e) { /* already finished */ }
+      }
+      cycleAnims = [];
       var dur = Math.min(1200, durationMs / 3);
       var ease = "cubic-bezier(0.65, 0, 0.35, 1)";
       var anims = [];
@@ -236,6 +243,7 @@
           })(panels[i], i);
         }
       }
+      cycleAnims = anims;
       if (anims.length && anims[0].onfinish !== undefined) {
         anims[0].onfinish = function () {
           if (running) cycleTimer = global.setTimeout(runCycle, restMs);
@@ -319,6 +327,10 @@
     function stop() {
       running = false;
       if (cycleTimer != null) { global.clearTimeout(cycleTimer); cycleTimer = null; }
+      for (var c = 0; c < cycleAnims.length; c++) {
+        try { cycleAnims[c].cancel(); } catch (e) { /* already finished */ }
+      }
+      cycleAnims = [];
       if (raf != null) { global.cancelAnimationFrame(raf); raf = null; }
       if (doneTimer != null) { global.clearTimeout(doneTimer); doneTimer = null; }
       if (restTimer != null) { global.clearTimeout(restTimer); restTimer = null; }
@@ -336,6 +348,7 @@
       for (var i = 0; i < panels.length; i++) {
         if (panels[i].parentNode) panels[i].parentNode.removeChild(panels[i]);
       }
+      if (forcedPosition) el.style.position = "";
     }
 
     function isRunning() { return running; }

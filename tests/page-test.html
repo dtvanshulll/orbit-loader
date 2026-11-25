@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<!--
+  TraceLoop — PageLoader test harness (one-shot transitions category).
+  Covers: the bar variant's trickle/done lifecycle, all four wipe
+  variants' cycles, stop-mid-cycle (the frozen-bars bug), clamps,
+  resize re-measure, destroy restoration, reduced motion.
+  Open in a browser; verdict lands in the page body and document.title.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<title>PAGE TESTS: RUNNING</title>
+<link rel="stylesheet" href="../dist/traceloop.css">
+<style>
+  body { font: 13px/1.5 monospace; background: #141413; color: #faf9f5; padding: 20px; }
+  .pass { color: #788c5d; } .fail { color: #d97757; }
+  .page { width: 280px; height: 120px; background: #262420; border: 1px solid #33312c; margin: 10px 0; position: relative; color: #d97757; }
+</style>
+</head>
+<body>
+<div id="results">running…</div>
+<div class="page" id="p-bar"></div>
+<div class="page" id="p-curve" style="height:80px"></div>
+<div class="page" id="p-bars"></div>
+<div class="page" id="p-curtain"></div>
+<div class="page" id="p-iris"></div>
+<div class="page" id="p-slide"></div>
+<div class="page" id="p-clamp"></div>
+<div class="page" id="p-destroy"></div>
+<div class="page" id="p-reduced"></div>
+
+<script src="../src/styles/page-loader.js"></script>
+<script>
+"use strict";
+var results = [];
+function check(n, ok, d) { results.push({ n: n, ok: !!ok, d: d || "" }); }
+function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+function waapi(el) {
+  return el.getAnimations().filter(function (a) { return a.transitionProperty == null; });
+}
+/* The wipe variants animate their PANELS (children), not the container
+   itself — count animations across the container's subtree. */
+function subtreeAnims(el) {
+  var all = waapi(el);
+  var panels = el.querySelectorAll(".orbit-loader-page-panel");
+  for (var i = 0; i < panels.length; i++) {
+    all = all.concat(waapi(panels[i]));
+  }
+  return all;
+}
+
+async function run() {
+  /* 1 — input guards */
+  var threw = "";
+  try { PageLoader.create("#nope", {}); } catch (e) { threw = e.message; }
+  check("create: missing container throws", threw.indexOf("container not found") >= 0, threw);
+
+  /* 2 — bar variant: trickle, done sweep, reset */
+  var p1 = PageLoader.create("#p-bar", { durationMs: 1200, restMs: 200, color: "#d97757" });
+  check("create: bar svg injected", !!p1.bar && !!p1.svg);
+  check("start: isRunning true", p1.isRunning());
+  check("start: activeClass added", p1.el.classList.contains("is-active"));
+  await wait(500);
+  var dash = p1.bar.style.strokeDasharray;
+  check("trickle: bar visible with a nonzero segment",
+    parseFloat(dash) > 0 && p1.bar.style.opacity === "1", dash);
+  p1.done();
+  check("done: isRunning false immediately", !p1.isRunning());
+  await wait(600); // sweep 500ms done, before the 200ms demo rest restarts
+  check("done: bar reset (empty dasharray paints nothing)",
+    parseFloat(p1.bar.style.strokeDasharray) === 0, p1.bar.style.strokeDasharray);
+  p1.stop();
+
+  /* 3 — curved bar: custom d is honored */
+  var p2 = PageLoader.create("#p-curve", { d: "M0,50 Q50,20 100,50", color: "#6a9bcc", autoStart: false });
+  check("curve: path d applied", p2.bar.getAttribute("d") === "M0,50 Q50,20 100,50");
+  check("curve: total measured from the path (> straight 100)",
+    p2.bar.getTotalLength() > 100, p2.bar.getTotalLength().toFixed(1));
+  p2.start();
+  await wait(200);
+  check("curve: trickles along the path", parseFloat(p2.bar.style.strokeDasharray) > 0);
+  p2.stop(); p2.destroy();
+
+  /* 4 — wipe variants: cycles run on all four */
+  var variants = [["#p-bars", "bars", 5], ["#p-curtain", "curtain", 2], ["#p-iris", "iris", 1], ["#p-slide", "slide", 1]];
+  for (var v = 0; v < variants.length; v++) {
+    var pv = PageLoader.create(variants[v][0], { variant: variants[v][1], durationMs: 900, restMs: 150, color: "#788c5d" });
+    await wait(250);
+    var moving = subtreeAnims(pv.el).length > 0;
+    check("variant " + variants[v][1] + ": cycle running (" + variants[v][2] + " panels)",
+      moving && pv.isRunning(), "anims " + subtreeAnims(pv.el).length);
+    pv.stop();
+    check("variant " + variants[v][1] + ": stop cancels the cycle",
+      subtreeAnims(pv.el).length === 0 && !pv.isRunning());
+    pv.destroy();
+    check("variant " + variants[v][1] + ": panels removed",
+      document.querySelectorAll(variants[v][0] + " .orbit-loader-page-panel").length === 0);
+  }
+
+  /* 5 — stop mid-bars-cycle: no frozen bars (the fill:both bug) */
+  var p3 = PageLoader.create("#p-bars", { variant: "bars", durationMs: 2400, restMs: 400, color: "#d97757" });
+  await wait(350); // mid-cycle: bars extended with fill:both
+  p3.stop();
+  var frozen = Array.prototype.some.call(
+    document.querySelectorAll("#p-bars .orbit-loader-page-panel"),
+    function (b) { return parseFloat(getComputedStyle(b).transform.split(",")[3]) > 0.05; });
+  check("bars: stop mid-cycle resets the panels (no fill:both freeze)", !frozen);
+  p3.destroy();
+
+  /* 6 — clamps: barCount 0 builds 1 panel (cycle can't stall) */
+  var p4 = PageLoader.create("#p-clamp", { variant: "bars", barCount: 0, durationMs: 600, restMs: 100, autoStart: false });
+  check("barCount=0: clamped to 1 panel", p4.el.querySelectorAll(".orbit-loader-page-panel").length === 1);
+  p4.start();
+  await wait(200);
+  check("barCount=0: cycle still runs", subtreeAnims(p4.el).length > 0);
+  p4.stop(); p4.destroy();
+
+  /* 7 — resize re-measures the bar's real-pixel viewBox */
+  var p5 = PageLoader.create("#p-destroy", { color: "#d97757", autoStart: false });
+  var vb1 = p5.svg.getAttribute("viewBox");
+  document.getElementById("p-destroy").style.width = "360px";
+  window.dispatchEvent(new Event("resize"));
+  var vb2 = p5.svg.getAttribute("viewBox");
+  check("resize: viewBox re-measured", vb1 !== vb2, vb1 + " -> " + vb2);
+  document.getElementById("p-destroy").style.width = "";
+  p5.destroy();
+  check("destroy: svg removed, listener path clean", !document.querySelector("#p-destroy svg"));
+
+  /* 8 — reduced motion: start is a no-op */
+  var realMM = window.matchMedia;
+  window.matchMedia = function (q) { return { matches: q.indexOf("prefers-reduced-motion") >= 0, media: q, addListener: function(){}, removeListener: function(){}, addEventListener: function(){}, removeEventListener: function(){} }; };
+  var p6 = PageLoader.create("#p-reduced", {});
+  p6.start();
+  check("reduced: start is a no-op", !p6.isRunning());
+  check("reduced: nothing visible", !p6.el.classList.contains("is-active"));
+  p6.destroy();
+  window.matchMedia = realMM;
+
+  var pass = 0, fail = 0, html = "";
+  for (var i = 0; i < results.length; i++) {
+    if (results[i].ok) pass++; else fail++;
+    html += '<div class="' + (results[i].ok ? "pass" : "fail") + '">' +
+      (results[i].ok ? "PASS" : "FAIL") + " — " + results[i].n +
+      (results[i].d ? " (" + results[i].d + ")" : "") + "</div>";
+  }
+  document.getElementById("results").innerHTML = html;
+  document.title = fail === 0 ? "PAGE TESTS: PASS" : "PAGE TESTS: FAIL " + fail;
+}
+run();
+</script>
+</body>
+</html>
