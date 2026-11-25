@@ -854,11 +854,31 @@ restart, onDone semantics, loop mode, destroy, autoPlay) plus a live
 integration check sequencing a real PageLoader (start → done → stop,
 firedSteps verified). Gate: smoke 48 files, build OK.
 
-**Category 1 is now complete: all 3 components done.** A category
-gate for the new-development category (route + pathwipe + sequence)
-runs next.
+**Category 1 is now complete: all 3 components done.**
+
+### CATEGORY 1 GATE — page transitions & choreography (PASS)
+
+All 3 new-development components through the full lifecycle.
+
+- **Full regression** (all run): route 44/44, pathwipe 31/31,
+  sequence 23/23, regression harness PASS, smoke 48 files / 170
+  animations, build 4/4.
+- **API consistency**: all three are one-shot triggered styles with
+  `isRunning()`, clean `destroy()`, reduced-motion checks, and
+  harnesses; sequence adds the orchestration layer without touching
+  any style's internals.
+- **Docs**: STYLES-UI has all three sections; README's table lists
+  25 source files; ARCHITECTURE documents the sequence's no-visuals
+  placement; AGENTS/CLAUDE synced.
+
+**Verdict: Category 1 (new development) PASSES its completion gate.**
+The library now stands at 25 styles / 170 animations, with every
+style through the cleanup lifecycle and the P3 choreography API
+shipped.
 
 ## Category completion
 
-Not complete — 2 of 3 components done. Category gate runs after all
-three.
+**COMPLETE — all 3 components done and the category gate PASSED**
+(see the gate verdict above). The category section of this tracker
+now moves to the cleanup workstream's remaining categories, all of
+which are also complete (2.1–2.5, gate, 3.1, 4.1, cross-cutting).
