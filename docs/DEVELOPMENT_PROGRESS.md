@@ -234,7 +234,7 @@ adapter mounts OK.
 ## Repository restructuring (COMPLETE)
 
 Stages executed across commits `5047c37`, `c3c94e6`, `e0145a2`,
-`f6d493b`:
+`f6d493b`, `0ba62cb` (types), `5b578df` (tracker):
 
 1. **Root hygiene** (`5047c37`): 5 tracked `tmp-*.png` screenshots
    removed (committed by accident, zero references); react test
@@ -250,15 +250,9 @@ Stages executed across commits `5047c37`, `c3c94e6`, `e0145a2`,
    `page-variants.css` (only PageLoader's wipe panels); `animations/
    scenes-more.js` → `scenes-2.js` (sequence now scenes.js, scenes-2,
    scenes-3 … scenes-13); `tests/fix-verify.html` → `regression.html`.
-4. **Docs truthfulness** (`f6d493b`): AGENTS.md Files list completed
-   (swap/countup/shake/shuffle added, css list updated to
-   page-variants.css); `docs/STYLES.md` counts corrected to 46
-   categories / 176 demos.
-5. **React declares added** (`5047c37`, completed `39669b0`):
-   Swap/CountUp/Shake/Shuffle React component declares added to
-   index.d.ts; Route declare moved up with its siblings. (An earlier
-   tracker note wrongly attributed these to `4395979` — that commit
-   was the loader fix batch and did not touch index.d.ts.)
+4. **Registration sprawl documented** (`0ba62cb`): ARCHITECTURE's
+   "Why style registration stays in four explicit lists" — the wrap()
+   boilerplate keep-in-sync note and the four-list rationale.
 
 Regression gates for the restructuring: smoke OK, build OK,
 `tests/regression.html` 7/7 PASS.
