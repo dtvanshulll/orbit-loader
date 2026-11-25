@@ -295,6 +295,12 @@ Regression gates for the restructuring: smoke OK, build OK,
 
 ## Backlog (discovered during this component, not fixed here)
 
+- `index.d.ts`: `LoaderOptions` remains a grab-bag for the 20 older
+  styles (React declares for Swap/CountUp/Shake/Shuffle added with the
+  restructuring, `4395979`).
+
+## Components remaining in this category
+
 - Component 2 — Path-Wipe Reveal: `NOT STARTED`
 - Component 3 — Choreography / Sequence API: `NOT STARTED`
 
