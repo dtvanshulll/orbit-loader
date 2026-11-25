@@ -101,8 +101,8 @@
   {
     name: "Sparkline Stat",
     category: "Chart Card",
-    style: "orbit",
-    note: "A stat card whose trend line draws itself up to the current number",
+    style: "progress",
+    note: "A stat card whose trend line plots itself up to the current number",
     box: {
       width: 320, height: 130,
       html: "<div style='padding:14px 16px;display:flex;flex-direction:column;gap:8px;height:100%;box-sizing:border-box'>" +
@@ -116,7 +116,7 @@
     },
     parts: [
       { style: "orbit", el: ".tl-spark",
-        options: { d: "M2,38 L34,30 L66,34 L98,20 L130,26 L162,12 L194,18 L226,6", viewBox: "0 0 228 42", durationMs: 2200, restMs: 1800, strokeWidth: 2, color: "#788c5d", guideOpacity: 0.2 } }
+        options: { d: "M2,38 L34,30 L66,34 L98,20 L130,26 L162,12 L194,18 L226,6", viewBox: "0 0 228 42", durationMs: 2200, restMs: 1800, strokeWidth: 2, color: "#788c5d", guideOpacity: 0.2, headRadius: 2.5 } }
     ]
   },
   {
@@ -212,7 +212,7 @@
     name: "Live Counter",
     category: "Chart Card",
     style: "countup",
-    note: "The number counts itself up with an expo tail while the trend line draws beneath it",
+    note: "The number counts itself up with an expo tail while the trend line plots beneath it",
     box: {
       width: 320, height: 140,
       html: "<div style='padding:14px 16px;display:flex;flex-direction:column;gap:6px;height:100%;box-sizing:border-box'>" +
@@ -224,9 +224,7 @@
     },
     parts: [
       { style: "countup", el: ".tl-live-num",
-        options: { value: 48213, durationMs: 2600, easing: "easeOutExpo", separator: ",", restMs: 2400 } },
-      { style: "orbit", el: ".tl-live-spark",
-        options: { d: "M2,38 L34,30 L66,34 L98,20 L130,26 L162,12 L194,18 L226,6", viewBox: "0 0 228 42", durationMs: 2200, restMs: 2800, strokeWidth: 2, color: "#6a9bcc", guideOpacity: 0.2 } }
+        options: { d: "M2,38 L34,30 L66,34 L98,20 L130,26 L162,12 L194,18 L226,6", viewBox: "0 0 228 42", durationMs: 2200, restMs: 2800, strokeWidth: 2, color: "#6a9bcc", guideOpacity: 0.2, headRadius: 2.5 } }
     ]
   },
   {
@@ -309,20 +307,17 @@
   {
     name: "Save Spinner",
     category: "Form",
-    style: "orbit",
-    note: "A Ladda-style save: the spinner rings inside the button while its border traces the wait",
+    style: "button",
+    note: "A Ladda-style save: the button's own border traces the wait while the label holds",
     box: {
       width: 320, height: 110,
       html: "<div style='display:flex;align-items:center;justify-content:center;height:100%;padding:0 20px;box-sizing:border-box'>" +
             "<button class='tl-save-btn' style='position:relative;display:flex;align-items:center;justify-content:center;gap:9px;width:200px;height:42px;background:#d97757;border:0;border-radius:8px;" + DISPLAY + "font-size:12.5px;font-weight:600;color:#141413;cursor:pointer;overflow:hidden'>" +
-            "<span class='tl-save-spin' style='position:relative;width:16px;height:16px;flex:none'></span>" +
             "<span>Saving…</span></button>" +
             "</div>",
       styleCss: CARD
     },
     parts: [
-      { style: "orbit", el: ".tl-save-spin",
-        options: { d: "M12,3 a9,9 0 1,1 -0.01,0", viewBox: "0 0 24 24", segmentFraction: 0.28, durationMs: 1100, strokeWidth: 2.5, color: "#141413" } },
       { style: "button", el: ".tl-save-btn",
         options: { variant: "trace", durationMs: 2400, restMs: 1600, strokeWidth: 2, color: "#141413" } }
     ]

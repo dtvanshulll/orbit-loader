@@ -67,21 +67,6 @@
   },
 
   {
-    name: "Silver Infinity",
-    style: "shimmer",
-    note: "Light sweeping through an infinity band on black",
-    box: { width: 120, height: 60, background: "#000", border: "1px solid #4a473e", borderRadius: 16 },
-    options: {
-      d: { shape: "infinity", args: [120] },
-      viewBox: "0 0 120 60",
-      durationMs: 2400,
-      bandWidth: 10,
-      bandOpacity: 0.5,
-      color: "#e8e6dc"
-    }
-  },
-
-  {
     name: "Loading Box",
     style: "orbit",
     note: "The outline is measured from real text at runtime \u2014 any label works",
@@ -136,21 +121,6 @@
       strokeWidth: 3,
       color: "#6a9bcc",
       guideOpacity: 0.35
-    }
-  },
-
-  {
-    name: "Card Shimmer",
-    style: "shimmer",
-    note: "A skeleton card outline \u2014 the loading-skeleton look, but alive",
-    box: { width: 140, height: 40 },
-    options: {
-      d: { shape: "roundRect", args: [140, 40, 20] },
-      viewBox: "0 0 140 40",
-      durationMs: 2400,
-      bandWidth: 8,
-      bandOpacity: 0.25,
-      color: "#e8e6dc"
     }
   },
 

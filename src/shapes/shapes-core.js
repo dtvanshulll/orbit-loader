@@ -142,8 +142,7 @@
    * height: size/2, the classic wide-and-short ∞ proportion). Sampled
    * from the Gerono lemniscate (x = cos t, y = sin t · cos t) into a
    * smooth closed polyline starting at the center crossing, so the
-   * crawler passes through the middle on every lap. Pair with
-   * ShimmerLoader for the filled-band-with-light-through-it look.
+   * crawler passes through the middle on every lap.
    */
   function infinity(size, height) {
     height = height != null ? height : size * 0.5;

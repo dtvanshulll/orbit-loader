@@ -6,7 +6,7 @@ Loading and UI-transition animations that trace real SVG paths — zero dependen
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg)](package.json)
 
-**TraceLoop** draws a glowing segment that crawls along any `<path>` you give it: circles, squares, letters, words, infinity signs, your logo. Twenty-five styles — eight looping loaders, nine one-shot transitions (tab switches, page loads, buttons, toasts, progress, panel swaps, route changes, attention shakes, path-wipe reveals) and eight component animations (search bars, modals, accordions, drawers, dropdowns, inputs, counting numbers, list shuffles) — all driven by the path itself, so the motion follows your shape instead of being bolted next to it.
+**TraceLoop** draws a glowing segment that crawls along any `<path>` you give it: circles, squares, letters, words, infinity signs, your logo. Twenty-four styles — seven looping loaders, nine one-shot transitions (tab switches, page loads, buttons, toasts, progress, panel swaps, route changes, attention shakes, path-wipe reveals) and eight component animations (search bars, modals, accordions, drawers, dropdowns, inputs, counting numbers, list shuffles) — all driven by the path itself, so the motion follows your shape instead of being bolted next to it.
 
 ## Quick start
 
@@ -81,15 +81,14 @@ Most loader libraries give you a spinner: a shape rotated by CSS, blind to your 
 - **Zero dependencies, zero build.** Plain ES5 and one CSS file. Works from a `<script>` tag in any page, any framework, none at all.
 - **Reduced motion is not an afterthought** — every style checks `prefers-reduced-motion` once at creation and renders nothing that moves.
 
-**What it doesn't do:** spinners, skeleton screens (the shimmer style is a band, not a layout skeleton), Lottie-grade character animation, or React components — it's DOM in, DOM out; wrap it yourself.
+**What it doesn't do:** spinners, skeleton screens, Lottie-grade character animation, or React components — it's DOM in, DOM out; wrap it yourself.
 
-## The twenty-five styles
+## The twenty-four styles
 
 | File | Global | What it does |
 |---|---|---|
 | `src/styles/orbit-loader.js` | `OrbitLoader` | the core: a glowing segment crawls any path, forever |
 | `src/styles/dot-loader.js` | `DotLoader` | a traveling dot — with flutter, breadcrumb trails, relay batons, crossing twins |
-| `src/styles/shimmer-loader.js` | `ShimmerLoader` | a soft light band sweeps the path like brushed metal |
 | `src/styles/ripple-loader.js` | `RippleLoader` | rings radiate from the container — container-based, no path |
 | `src/styles/pulse-loader.js` | `PulseLoader` | a ring breathes in place, anchored by a steady center dot — container-based, no path |
 | `src/styles/chase-loader.js` | `ChaseLoader` | several dashes chase in formation around the path — the multi-runner orbit |
@@ -121,7 +120,7 @@ The `src/shapes/` files (optional) generate `d` strings so you don't have to wri
 
 ## Try it
 
-- **Playground** — all 178 animations with live sliders and copy-paste code: clone the repo, serve the folder, open `playground/index.html`
+- **Playground** — all 170 animations with live sliders and copy-paste code: clone the repo, serve the folder, open `playground/index.html`
 - **Components library** — the same playground, categories view: 46 real-world blocks (navbar, hero, login, stats, FAQ, pricing, footer, data table and more) built as mockups and animated by the styles above — the way you'd actually ship them
 - **UI transitions in context** — `examples/ui-transitions.html`: one mock app where every trigger is wired
 - **Classic demos** — `examples/index.html`

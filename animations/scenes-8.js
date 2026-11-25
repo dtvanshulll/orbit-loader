@@ -109,8 +109,8 @@
   {
     name: "Donut Chart",
     category: "Chart Card",
-    style: "orbit",
-    note: "A donut that draws its own ring while the legend waits",
+    style: "progress",
+    note: "A donut that fills its own ring while the legend waits",
     box: {
       width: 320, height: 150,
       html: "<div style='padding:14px 16px;display:flex;align-items:center;gap:16px;height:100%;box-sizing:border-box'>" +
@@ -126,7 +126,7 @@
     },
     parts: [
       { style: "orbit", el: ".tl-donut",
-        options: { d: { shape: "circle", args: [88] }, durationMs: 2200, restMs: 1600, strokeWidth: 7, color: "#d97757", guideOpacity: 0.15 } }
+        options: { d: { shape: "circle", args: [88] }, durationMs: 2200, restMs: 1600, strokeWidth: 7, color: "#d97757", guideOpacity: 0.15, headRadius: 0 } }
     ]
   },
   {

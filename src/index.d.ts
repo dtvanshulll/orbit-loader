@@ -64,10 +64,6 @@ export const DotLoader: {
   wrap(container: HTMLElement | string, options: LoaderOptions): LoaderController;
   create(pathEl: SVGPathElement, options: LoaderOptions): LoaderController;
 };
-export const ShimmerLoader: {
-  wrap(container: HTMLElement | string, options: LoaderOptions): LoaderController;
-  create(pathEl: SVGPathElement, options: LoaderOptions): LoaderController;
-};
 export const RippleLoader: {
   create(container: HTMLElement | string, options?: LoaderOptions): LoaderController;
   wrap(container: HTMLElement | string, options?: LoaderOptions): LoaderController;
@@ -227,7 +223,6 @@ export interface ComponentProps extends LoaderOptions {
 }
 export declare const Orbit: React.FC<ComponentProps>;
 export declare const Dot: React.FC<ComponentProps>;
-export declare const Shimmer: React.FC<ComponentProps>;
 export declare const Ripple: React.FC<ComponentProps>;
 export declare const Typing: React.FC<ComponentProps>;
 export declare const Handshake: React.FC<ComponentProps>;

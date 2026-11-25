@@ -2,9 +2,8 @@
  * ButtonLoader — the submit-button border trace: while a button's
  * action is pending, a glowing segment crawls around the button's own
  * border perimeter; on success the whole border lights and settles.
- * Sibling style module with its own create(), container-based like
- * ripple/typing/tether. Needs only orbit-loader.css; does NOT require
- * orbit-loader.js or the files in src/shapes/.
+ * Sibling style module with its own create(), container-based. Needs
+ * only orbit-loader.css; does NOT require orbit-loader.js or src/shapes/.
  *
  * What makes it different from a spinner dropped next to a button:
  * the feedback happens ON the button — its own silhouette becomes the
@@ -14,8 +13,13 @@
  * This is a ONE-SHOT, triggered style:
  *   btn.begin();     // border crawl starts (pending)
  *   btn.success();   // full border lights once, then fades
+ *   btn.fail();      // the border settles once in the danger color,
+ *                    // then fades and the trace color is restored
  *   btn.reset();     // back to idle
  * Call start() to run the built-in demo loop (begin → success forever).
+ *
+ * options:
+ *   dangerColor  (default "#e5484d") the fail() feedback color
  *
  * Usage:
  *   var btn = ButtonLoader.create(document.querySelector('button'), {
@@ -56,6 +60,7 @@
     var segFrac = options.segmentFraction != null ? options.segmentFraction : 0.22;
     var strokeWidth = options.strokeWidth != null ? options.strokeWidth : 2;
     var color = options.color != null ? options.color : null;
+    var dangerColor = options.dangerColor != null ? options.dangerColor : "#e5484d";
     var autoStart = options.autoStart !== false;
 
     // Checked once at creation, not live — same reasoning as the core.
@@ -69,10 +74,10 @@
       fillLayer.className = "orbit-loader-button-fill";
       if (color != null) fillLayer.style.background = color;
       el.appendChild(fillLayer);
-      return makeFill(el, fillLayer, durationMs, reducedMotion, autoStart);
+      return makeFill(el, fillLayer, durationMs, dangerColor, reducedMotion, autoStart);
     }
     if (variant === "ripple") {
-      return makeRipple(el, color, durationMs, reducedMotion, autoStart);
+      return makeRipple(el, color, dangerColor, durationMs, reducedMotion, autoStart);
     }
 
     var svg = document.createElementNS(SVG_NS, "svg");
@@ -108,8 +113,7 @@
       var iw = Math.max(1, w - inset * 2), ih = Math.max(1, h - inset * 2);
       var r = Math.min(radius, iw / 2, ih / 2);
       svg.setAttribute("viewBox", "0 0 " + w + " " + h);
-      svg.setAttribute("width", w);
-      svg.setAttribute("height", h);
+      svg.setAttribute("width", w); svg.setAttribute("height", h);
       // Rounded rect as one path, starting after the top-left corner
       // and running clockwise.
       var d = "M" + (x + r) + "," + y +
@@ -132,19 +136,16 @@
       seg.style.strokeDashoffset = -(startFrac * total);
     }
 
-    /**
-     * Pending: the crawler laps the border forever until success(),
-     * reset() or destroy() stops it.
-     */
+    /** Pending: the crawler laps the border until success()/fail(),
+     * reset() or destroy() stops it. */
     function begin() {
       if (reducedMotion) return;
       measure();
       if (successAnim) successAnim.cancel();
       if (lapAnim) lapAnim.cancel();
       el.classList.add("is-active");
-      // Infinite lap: dashoffset runs one full period per lap. The
-      // dash pattern's period equals the perimeter, so the loop is
-      // seamless.
+      // Infinite lap: the dash pattern's period equals the perimeter,
+      // so one dashoffset period per lap loops seamlessly.
       var segLen = total * segFrac;
       lapAnim = seg.animate(
         [{ strokeDashoffset: 0 }, { strokeDashoffset: -total }],
@@ -152,14 +153,26 @@
       );
     }
 
-    /**
-     * Success: the whole border lights at once, holds a beat, fades.
-     * Cancels the pending lap.
-     */
+    /** Success: the whole border lights at once, holds, fades. */
     function success() {
       if (reducedMotion) return;
+      settle(lapAnim, null);
+    }
+
+    /** Failure: the border settles once in the danger color — the same
+     * settle as success(), read as a no — then the trace color is
+     * restored, so a red flash never rethemes a brand-colored trace. */
+    function fail() {
+      if (reducedMotion) return;
+      var prevStroke = seg.style.stroke; seg.style.stroke = dangerColor;
+      settle(lapAnim, function () { seg.style.stroke = prevStroke; });
+    }
+
+    /* Shared settle: one full-border draw, hold, fade. `done` runs
+     * when the animation lands (used by fail() to restore the stroke). */
+    function settle(lap, done) {
       measure();
-      if (lapAnim) lapAnim.cancel();
+      if (lap) lap.cancel();
       var ease = "cubic-bezier(0.2, 0, 0.2, 1)";
       successAnim = seg.animate([
         { strokeDasharray: "0 " + total, strokeDashoffset: 0, opacity: 1 },
@@ -167,6 +180,7 @@
         { opacity: 0 }
       ], { duration: 900, easing: ease });
       successAnim.onfinish = function () {
+        if (done) done();
         el.classList.remove("is-active");
         // Demo mode: go again after a beat.
         restTimer = global.setTimeout(function () { begin(); }, 1600);
@@ -210,26 +224,19 @@
     if (autoStart) start();
 
     return {
-      el: el,
-      svg: svg,
-      segment: seg,
-      begin: begin,
-      success: success,
-      reset: reset,
-      start: start,
-      stop: stop,
-      destroy: destroy,
-      isRunning: isRunning
+      el: el, svg: svg, segment: seg,
+      begin: begin, success: success, fail: fail, reset: reset,
+      start: start, stop: stop, destroy: destroy, isRunning: isRunning
     };
   }
 
   /**
-   * 'fill' variant controller: a color layer sweeps in from the left
-   * on begin() (the "working" state), then drains to the right on
-   * success(). The layer is clipped to the button's own border-radius
-   * via CSS overflow, so no path math is needed.
+   * 'fill' variant controller: a color layer sweeps in from the left on
+   * begin() (the "working" state), then drains right on success()/fail().
+   * The layer is clipped to the button's own border-radius via CSS
+   * overflow, so no path math is needed.
    */
-  function makeFill(el, layer, durationMs, reducedMotion, autoStart) {
+  function makeFill(el, layer, durationMs, dangerColor, reducedMotion, autoStart) {
     var busy = false;
     function begin() {
       if (reducedMotion) return;
@@ -245,8 +252,10 @@
         layer.style.transform = "scaleX(1)";
       }
     }
-    function success() {
-      if (!busy) { begin(); }
+    /* Drain the layer right-to-left; fail() drains it in the danger
+     * color first, then restores whatever fill the caller set. */
+    function drain(bg) {
+      if (bg != null) layer.style.background = bg;
       if (layer.animate) {
         layer.animate(
           [{ transform: "scaleX(1)", transformOrigin: "right center" },
@@ -256,6 +265,19 @@
       } else {
         layer.style.transform = "scaleX(0)";
       }
+    }
+    function success() {
+      if (!busy) { begin(); }
+      drain();
+      busy = false;
+      el.classList.remove("is-active");
+    }
+    function fail() {
+      if (reducedMotion) return;
+      if (!busy) { begin(); }
+      var prev = layer.style.background;
+      drain(dangerColor);
+      layer.style.background = prev;
       busy = false;
       el.classList.remove("is-active");
     }
@@ -267,8 +289,8 @@
     var demoTimer = null;
     function start() {
       if (reducedMotion || demoTimer != null) return;
-      // Preview loop: sweep in, hold, drain, rest, repeat — so a
-      // static preview shows the full cycle, not one dead frame.
+      // Preview loop: sweep in, hold, drain, rest, repeat — the full
+      // cycle, never one dead frame.
       begin();
       demoTimer = setTimeout(function () {
         success();
@@ -289,19 +311,19 @@
     if (autoStart) start();
     return {
       el: el, layer: layer,
-      begin: begin, success: success, reset: reset,
+      begin: begin, success: success, fail: fail, reset: reset,
       start: start, stop: stop, destroy: destroy, isRunning: function () { return busy; }
     };
   }
 
   /**
-   * 'ripple' variant controller: a circle expands from the press
-   * point and fades — the tactile acknowledgment. begin(x, y) takes
-   * optional page-relative press coordinates; without them the ripple
-   * starts from the center. success() is a no-op kept for API parity.
+   * 'ripple' variant controller: a circle expands from the press point
+   * and fades — the tactile acknowledgment. begin(x, y) takes optional
+   * page-relative press coordinates (center without them); fail() fires
+   * a danger-colored ripple from the center.
    */
-  function makeRipple(el, color, durationMs, reducedMotion, autoStart) {
-    function begin(x, y) {
+  function makeRipple(el, color, dangerColor, durationMs, reducedMotion, autoStart) {
+    function begin(x, y, rippleColor) {
       if (reducedMotion) return;
       var rect = el.getBoundingClientRect();
       var cx = x != null ? x - rect.left : rect.width / 2;
@@ -309,32 +331,30 @@
       var size = Math.max(rect.width, rect.height) * 2.2;
       var dot = document.createElement("span");
       dot.className = "orbit-loader-button-ripple";
-      dot.style.width = size + "px";
-      dot.style.height = size + "px";
-      dot.style.left = (cx - size / 2) + "px";
-      dot.style.top = (cy - size / 2) + "px";
-      if (color != null) dot.style.background = color;
+      dot.style.cssText = "width:" + size + "px;height:" + size + "px;left:" + (cx - size / 2) + "px;top:" + (cy - size / 2) + "px;" +
+        (function () { var f = rippleColor || color; return f != null ? "background:" + f : ""; })();
       el.appendChild(dot);
       el.classList.add("is-active");
+      var drop = function () { if (dot.parentNode) dot.parentNode.removeChild(dot); };
       if (dot.animate) {
-        var anim = dot.animate(
+        dot.animate(
           [{ transform: "scale(0)", opacity: 0.35 },
            { transform: "scale(1)", opacity: 0 }],
           { duration: durationMs * 0.55, easing: "cubic-bezier(0.2, 0, 0.2, 1)" }
-        );
-        anim.onfinish = function () {
-          if (dot.parentNode) dot.parentNode.removeChild(dot);
-        };
+        ).onfinish = drop;
       } else {
-        setTimeout(function () {
-          if (dot.parentNode) dot.parentNode.removeChild(dot);
-        }, durationMs * 0.55);
+        setTimeout(drop, durationMs * 0.55);
       }
     }
     function press(ev) {
       begin(ev.clientX, ev.clientY);
     }
     function success() { /* ripple is momentary; nothing to settle */ }
+    function fail() {
+      if (reducedMotion) return;
+      var r = el.clientWidth / 2, c = el.clientHeight / 2;
+      begin(r, c, dangerColor);
+    }
     function reset() {
       var dots = el.querySelectorAll(".orbit-loader-button-ripple");
       for (var i = 0; i < dots.length; i++) {
@@ -368,7 +388,7 @@
     }
     return {
       el: el,
-      begin: begin, success: success, reset: reset,
+      begin: begin, success: success, fail: fail, reset: reset,
       start: start, stop: stop, destroy: destroy, isRunning: function () { return false; }
     };
   }

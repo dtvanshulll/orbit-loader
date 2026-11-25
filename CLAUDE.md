@@ -52,10 +52,6 @@ change.
   positioned per-frame via `getPointAtLength()` in a rAF loop. A sibling
   style module — needs only the shared CSS in `src/css/`, never another
   style module's JS.
-- `src/styles/shimmer-loader.js` — the shimmer-band style (`ShimmerLoader`): the
-  path drawn as a wide translucent band with a bright shimmer line and
-  glow head traveling its center. A sibling style module with the same
-  rules.
 - `src/styles/pulse-loader.js` — the pulse style (`PulseLoader`): a ring
   that breathes in place — swells and softens on the spot, anchored by a
   steady center dot. The quiet/ambient style. Container-based: `create()`

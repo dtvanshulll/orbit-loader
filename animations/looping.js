@@ -150,22 +150,6 @@
   },
 
   {
-    name: "Glass Ring",
-    style: "shimmer",
-    note: "A translucent glass ring with light sweeping around inside it",
-    box: { width: 72, height: 72 },
-    options: {
-      d: { shape: "circle", args: [72] },
-      viewBox: "0 0 72 72",
-      durationMs: 2000,
-      bandWidth: 8,
-      bandOpacity: 0.2,
-      strokeWidth: 2.5,
-      color: "#6a9bcc"
-    }
-  },
-
-  {
     name: "Slow Pond",
     style: "ripple",
     note: "Two wide calm rings \u2014 a stone dropped in water, on loop",

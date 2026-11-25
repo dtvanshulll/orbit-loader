@@ -8,7 +8,7 @@
   // Card sections: every animation belongs to one of three groups,
   // rendered as titled sections so the growing library stays scannable.
   var SECTIONS = [
-    { label: "Looping loaders", styles: ["orbit", "dot", "shimmer", "ripple", "pulse", "chase", "typing", "handshake"] },
+    { label: "Looping loaders", styles: ["orbit", "dot", "ripple", "pulse", "chase", "typing", "handshake"] },
     { label: "UI transitions", styles: ["tab", "page", "button", "toast", "progress", "route", "pathwipe"] },
     { label: "Components", styles: ["search", "modal", "accordion", "drawer", "dropdown", "input"] }
   ];
@@ -61,7 +61,8 @@
   // category map) built as mockups and animated by the existing styles.
   // Each category becomes its own titled section after the style groups.
   var SCENE_SECTIONS = [
-    "Navbar", "Hero", "Login", "Stats", "FAQ", "Feedback", "Cookie Banner", "CTA", "Pricing", "Newsletter", "Testimonial", "Application Shell", "Countdown", "Stepper", "Feature Grid", "Banner", "Footer", "Data Table", "Team", "Leaderboard", "Audio Player", "Contact", "Reviews", "Logos", "Sidebar", "Dashboard", "Chart Card", "Kanban", "Calendar", "Blog", "Gallery", "Bento", "Shopping Cart", "Checkout", "Product Card", "Signup", "About", "Inbox", "Issue List", "Settings", "Order History", "Integrations", "Activity", "File Manager", "Empty State", "Search"
+    "Navbar", "Hero", "Login", "Stats", "FAQ", "Feedback", "Cookie Banner", "CTA", "Pricing", "Newsletter", "Testimonial", "Application Shell", "Countdown", "Stepper", "Feature Grid", "Banner", "Footer", "Data Table", "Team", "Leaderboard", "Audio Player", "Contact", "Reviews", "Sidebar", "Dashboard", "Chart Card", "Kanban", "Calendar", "Gallery", "Bento", "Shopping Cart", "Checkout", "Product Card", "Signup", "About", "Inbox", "Issue List", "Settings", "Order History", "Integrations", "Activity", "File Manager", "Empty State", "Search",
+    "Auth", "Form", "Verification", "Button", "Social", "Upload", "Download", "List", "Rating", "Poll", "Chat", "Checklist", "Annotation", "Confirmation", "Notification", "Toast", "Breadcrumbs", "Pagination", "Command"
   ];
 
   PG.SECTIONS = SECTIONS;

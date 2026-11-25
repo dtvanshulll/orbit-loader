@@ -108,9 +108,10 @@ Sequence: 1) Route/Page Transition System → 2) Path-Wipe Reveal →
 Category order (by age × importance × unexamined surface — the fix
 batch already cleared the known defects in transitions/components):
 
-1. **Looping loaders** (orbit, dot, shimmer, ripple, pulse, chase,
-   typing, handshake) — the oldest code and the library's identity;
-   no dedicated test harness existed for any of them.
+1. **Looping loaders** (orbit, dot, ripple, pulse, chase, typing,
+   handshake — shimmer REMOVED from the library during the component
+   cleanup, see its record below) — the oldest code and the library's
+   identity; dedicated harnesses now exist for orbit and dot.
 2. One-shot transitions (tab, page, button, toast, swap) — route/
    pathwipe already meet the bar.
 3. Progress + feedback (progress, countup, shake, shuffle).
@@ -140,9 +141,75 @@ Orbit-specific: `create()` on a non-path threw a cryptic TypeError
 "> 1" (doc fixed); STYLES.md's controller line listed `guide`/`anim`
 which the controller never exposed (doc fixed).
 
-Order: orbit (reference implementation) → dot → shimmer → chase →
-handshake (same fixup pattern) → ripple/pulse/typing verification →
-docs sync → playground verification → category gate.
+Order: orbit (reference implementation) → dot → shimmer (REMOVED
+instead — see the component-cleanup record) → chase → handshake
+(same fixup pattern) → ripple/pulse/typing verification → docs sync →
+playground verification → category gate.
+
+### Component cleanup — ShimmerLoader REMOVED; Shell Toast, Skeleton
+### demos, Logo Strip removed; orbit overuse corrected; ButtonLoader
+### gains fail() (COMPLETE, uncommitted)
+
+Driven by an external audit directive. Stage-by-stage:
+
+**Removed from the library:**
+
+- `ShimmerLoader` (the component the directive named "Shimmer"):
+  source, CSS, build order, traceloop entry, React adapter, types,
+  playground script/GLOBALS/band ranges, 3 looping-section cards,
+  STYLES.md section, README row. Its usage profile was the
+  placeholder-sheen family the directive prunes (skeletons, logo
+  sheen, hover sheen); with its scene surface removed it had no
+  remaining job. Styles: 25 → 24 (7 looping).
+- Scene demos: Skeleton Card + Skeleton List [Skeleton], Logo Strip
+  [Logos], Blog Teaser [Blog] (shimmer-dependent), Shell Toast
+  [Application Shell]. Categories Logos + Blog emptied and dropped
+  from the sidebar registry; Skeleton was an orphan category (never
+  registered).
+- `examples/infinity-banner.html` (a whole page built on Shimmer);
+  shimmer figure/script/css links removed from the other examples.
+
+**Registration bug fixed:** 20 scene categories (Button, Skeleton,
+Rating, Form, Toast, Auth, …) had demos but no sidebar section — they
+all piled into the first scene grid ("Navbar"). SCENE_SECTIONS now
+covers every category: 63 sections = 63 categories, zero orphans.
+
+**Orbit overuse corrected (judged per demo, not bulk-swapped):**
+
+- The five CHART demos (Sparkline Stat, Live Counter, Dashboard Mini,
+  Revenue Chart, Donut Chart) drew data with the loader's glowing
+  comet — misread as loading. Converted to ProgressLoader, whose
+  solid fill reads as data plotting itself; guide lines preserved.
+- Save Spinner [Form]: the orbit ring inside the button is gone; the
+  button's own border trace (ButtonLoader) carries the wait.
+- Kept, with reasons: the path-trace demos (underlines, check draws,
+  strike-throughs, annotation, magnifier, sort arrow, spines) — those
+  ARE the library's core competency; and the meaningful rings
+  (selection, presence, play, pager, active tool) — the ring is the
+  state indicator, not decoration. Orbit remains an independent
+  component with its own demo cards.
+
+**Button overhaul:**
+
+- Audited all 10 button experiences (ButtonLoader + Button/Auth/
+  Social/Checkout/Hero/Download/CTA/Form demos). All KEEP — each
+  shows a distinct pattern (fill, trace, ripple, check-draw,
+  paired-count); none redundant.
+- ButtonLoader: new `fail()` state on all three variants (trace:
+  danger-color border settle with trace-color restore; fill: danger
+  sweep-drain; ripple: danger pulse from center), new `dangerColor`
+  option (default #e5484d). File held at exactly 400 lines.
+- Button demos now presented under their own "Button" sidebar section
+  (was: piled into Navbar via the orphan fallback).
+- Fixed: Button Loading's note claimed a check handoff the config
+  never had (note now matches); Sidebar Icons' note said "skeleton"
+  (searchable residue — reworded).
+
+**Verified:** smoke 47 files / 170 animations, build 4/4 (CSS 17
+parts), all six harnesses PASS (orbit 34, dot 26, route 44, pathwipe
+31, regression 7, dist), playground 170 cards no errors, search
+returns 0 for shimmer/skeleton/blog/shell toast, fail() danger color
+verified in-browser, mobile 375px layout intact (no overflow).
 
 ### Cleanup 1.2 — DotLoader (COMPLETE)
 

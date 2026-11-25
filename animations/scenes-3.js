@@ -28,29 +28,6 @@
 
   list.push(
   {
-    name: "Logo Strip",
-    category: "Logos",
-    style: "shimmer",
-    note: "A trusted-by strip with a light band passing over the wordmarks",
-    box: {
-      width: 320, height: 96,
-      html: "<div style='padding:14px 20px;display:flex;flex-direction:column;gap:14px;height:100%;box-sizing:border-box;padding-bottom:24px'>" +
-            "<div style='" + DISPLAY + "font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#8f8d84'>Trusted by teams at</div>" +
-            "<div class='tl-strip' style='position:relative;display:flex;align-items:center;justify-content:space-between;padding-bottom:10px'>" +
-            "<span style='" + DISPLAY + "font-size:14px;font-weight:700;color:#b0aea5'>Acme</span>" +
-            "<span style='" + BODY + "font-size:15px;font-style:italic;color:#8f8d84'>Fjord</span>" +
-            "<span style='" + DISPLAY + "font-size:13px;font-weight:600;letter-spacing:0.12em;color:#b0aea5'>NIMBUS</span>" +
-            "<span style='" + BODY + "font-size:15px;color:#8f8d84'>Vertex</span>" +
-            "</div></div>",
-      styleCss: CARD
-    },
-    parts: [
-      { style: "shimmer", el: ".tl-strip",
-        options: { d: "M0,27 H280", viewBox: "0 0 280 29", durationMs: 3000, strokeWidth: 3, color: "#faf9f5", guideOpacity: 0.12 } }
-    ]
-  },
-
-  {
     name: "Sidebar Active",
     category: "Sidebar",
     style: "orbit",
@@ -87,8 +64,8 @@
   {
     name: "Dashboard Mini",
     category: "Dashboard",
-    style: "orbit",
-    note: "An admin overview: stat tiles over a revenue line the loader draws itself",
+    style: "progress",
+    note: "An admin overview: stat tiles over a revenue line plotting itself",
     box: {
       width: 320, height: 208,
       html: "<div style='padding:14px 16px;display:flex;flex-direction:column;gap:10px;height:100%;box-sizing:border-box'>" +
@@ -106,16 +83,15 @@
     },
     parts: [
       { style: "orbit", el: ".tl-chart",
-        options: { d: "M0,44 C24,38 40,18 64,26 C88,34 104,12 128,20 C152,28 168,8 192,15 C216,22 240,6 264,11 L286,8",
-                   viewBox: "0 0 288 56", durationMs: 3400, restMs: 2200, strokeWidth: 2, color: "#d97757", guideOpacity: 0.25 } }
+        options: { d: "M0,44 C24,38 40,18 64,26 C88,34 104,12 128,20 C152,28 168,8 192,15 C216,22 240,6 264,11 L286,8", viewBox: "0 0 288 56", durationMs: 3400, restMs: 2200, strokeWidth: 2, color: "#d97757", guideOpacity: 0.25, headRadius: 2.5 } }
     ]
   },
 
   {
     name: "Revenue Chart",
     category: "Chart Card",
-    style: "orbit",
-    note: "A chart card whose data line is the loader's path â€” the guide is the rest of the series",
+    style: "progress",
+    note: "A chart card whose data line plots itself — the guide is the rest of the series",
     box: {
       width: 320, height: 212,
       html: "<div style='padding:14px 16px;display:flex;flex-direction:column;gap:10px;height:100%;box-sizing:border-box'>" +
@@ -132,8 +108,7 @@
     },
     parts: [
       { style: "orbit", el: ".tl-chart",
-        options: { d: "M0,78 C20,70 34,52 56,58 C78,64 92,30 116,38 C140,46 156,18 180,26 C204,34 222,10 246,20 C262,26 276,14 288,16",
-                   viewBox: "0 0 288 88", durationMs: 3600, restMs: 2400, strokeWidth: 2, color: "#d97757", guideOpacity: 0.25 } }
+        options: { d: "M0,78 C20,70 34,52 56,58 C78,64 92,30 116,38 C140,46 156,18 180,26 C204,34 222,10 246,20 C262,26 276,14 288,16", viewBox: "0 0 288 88", durationMs: 3600, restMs: 2400, strokeWidth: 2, color: "#d97757", guideOpacity: 0.25, headRadius: 2.5 } }
     ]
   },
 

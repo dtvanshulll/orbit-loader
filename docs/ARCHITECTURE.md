@@ -87,12 +87,11 @@ This split means:
 
 ## Why loader styles are sibling files, not options
 
-`dot-loader.js` and `shimmer-loader.js` each duplicate a little of what
+`dot-loader.js` duplicates a little of what
 `src/styles/orbit-loader.js` does (the `wrap()` markup-building, the reduced-motion
 check) on purpose. They are different *visual styles* with genuinely
 different mechanics — the dot can't use dasharray at all and needs a
-per-frame `getPointAtLength()` rAF loop; the shimmer layers band and glow
-c clones around the same dashoffset chase — so an option flag in the core
+per-frame `getPointAtLength()` rAF loop — so an option flag in the core
 would be a branch, and a shared "effects helper" would be an abstraction
 with one user. A sibling file per style keeps each one readable on its
 own, lets a consumer load only the styles it uses, and means none of them
@@ -101,7 +100,7 @@ styling). See "Adding a new loader style" in `README.md` for the rule
 going forward.
 
 The same goes for the `wrap()` SVG boilerplate (svg element, viewBox,
-size measurement, reduced-motion flag) that `orbit`, `dot`, `shimmer`,
+size measurement, reduced-motion flag) that `orbit`, `dot`,
 `chase` and `handshake` each carry their own copy of. It looks like the
 obvious thing to extract — and that is the trap: a shared helper would
 make every style file depend on it, ending the load-one-style standalone

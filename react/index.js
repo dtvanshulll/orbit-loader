@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import {
-  OrbitLoader, DotLoader, ShimmerLoader, RippleLoader, PulseLoader,
+  OrbitLoader, DotLoader, RippleLoader, PulseLoader,
   ChaseLoader, TypingLoader,
   HandshakeLoader, TabLoader, PageLoader, ButtonLoader, ToastLoader,
   ProgressLoader, SearchLoader, ModalLoader, AccordionLoader, DrawerLoader,
@@ -107,7 +107,6 @@ function makeComponent(Style, name, containerBased) {
 
 export const Orbit = makeComponent(OrbitLoader, 'Orbit', false);
 export const Dot = makeComponent(DotLoader, 'Dot', false);
-export const Shimmer = makeComponent(ShimmerLoader, 'Shimmer', false);
 export const Ripple = makeComponent(RippleLoader, 'Ripple', true);
 export const Pulse = makeComponent(PulseLoader, 'Pulse', true);
 export const Chase = makeComponent(ChaseLoader, 'Chase', false);

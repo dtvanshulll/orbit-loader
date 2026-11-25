@@ -20,7 +20,7 @@ component styles live in [STYLES-UI.md](STYLES-UI.md).
 
 The playground's **Components library** shows these same styles doing
 real jobs inside finished blocks — navbar, hero, login, stats, FAQ,
-pricing, footer, data table and more (46 categories, 178 demos). Each
+pricing, footer, data table and more (63 categories, 170 demos). Each
 card's usage panel copies a one-call-per-element recipe; see
 `animations/scenes.js` and `animations/scenes-2.js` for the scene
 configs and `playground/js/pg-render.js` (`buildScene`) for how parts
@@ -84,18 +84,6 @@ breadcrumb trail is cleared on stop — it never freezes visible.
 
 `wrap()` makes the container `position: relative` if it is static and
 restores the caller's value on `destroy()`.
-
-## ShimmerLoader — `src/styles/shimmer-loader.js`
-
-A soft light band sweeps the path like brushed metal.
-
-| option | default | meaning |
-|---|---|---|
-| `bandWidth` | `10` | the filled band's stroke width, in path units |
-| `bandOpacity` | `0.25` | how strongly the band is filled; the glow rides on top of it |
-| `strokeWidth` | `2` | the shimmer line's own width |
-| `color` | `null` | stroke color for band + shimmer |
-| `durationMs`, `viewBox`, `offset`, `guideOpacity`, `guideD`, `autoStart` | as OrbitLoader | |
 
 ## RippleLoader — `src/styles/ripple-loader.js`
 

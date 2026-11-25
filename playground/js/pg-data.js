@@ -22,7 +22,7 @@
 (function (global) {
   "use strict";
   var PG = global.PG = global.PG || {};
-  var GLOBALS = { orbit: "OrbitLoader", dot: "DotLoader", shimmer: "ShimmerLoader", ripple: "RippleLoader", pulse: "PulseLoader", chase: "ChaseLoader", typing: "TypingLoader", handshake: "HandshakeLoader", tab: "TabLoader", page: "PageLoader", button: "ButtonLoader", toast: "ToastLoader", progress: "ProgressLoader", search: "SearchLoader", modal: "ModalLoader", accordion: "AccordionLoader", drawer: "DrawerLoader", dropdown: "DropdownLoader", input: "InputLoader", swap: "SwapLoader", countup: "CountUpLoader", shake: "ShakeLoader", shuffle: "ShuffleLoader", route: "RouteLoader", pathwipe: "PathWipeLoader" };
+  var GLOBALS = { orbit: "OrbitLoader", dot: "DotLoader", ripple: "RippleLoader", pulse: "PulseLoader", chase: "ChaseLoader", typing: "TypingLoader", handshake: "HandshakeLoader", tab: "TabLoader", page: "PageLoader", button: "ButtonLoader", toast: "ToastLoader", progress: "ProgressLoader", search: "SearchLoader", modal: "ModalLoader", accordion: "AccordionLoader", drawer: "DrawerLoader", dropdown: "DropdownLoader", input: "InputLoader", swap: "SwapLoader", countup: "CountUpLoader", shake: "ShakeLoader", shuffle: "ShuffleLoader", route: "RouteLoader", pathwipe: "PathWipeLoader" };
   // Container-based styles: no path to trace, create() takes the box.
   var CONTAINER_STYLES = { ripple: 1, pulse: 1, typing: 1, tab: 1, page: 1, button: 1, toast: 1, search: 1, modal: 1, accordion: 1, drawer: 1, dropdown: 1, input: 1, swap: 1, countup: 1, shake: 1, shuffle: 1, route: 1, pathwipe: 1 };
   // Shapes that return { d, ... } objects instead of a bare d string —
@@ -34,8 +34,6 @@
     strokeWidth: [0.5, 12, 0.5],
     dotRadius: [1, 12, 0.5],
     dots: [1, 8, 1],
-    bandWidth: [2, 30, 1],
-    bandOpacity: [0.05, 1, 0.05],
     staggerMs: [0, 600, 10],
     lift: [0.05, 0.8, 0.05],
     segmentFraction: [0.02, 0.9, 0.01],

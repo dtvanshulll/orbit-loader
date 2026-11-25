@@ -7,7 +7,7 @@
  * long lines) read as continuous motion instead of one lone spark.
  *
  * It is a sibling style module with its own create(), like
- * shimmer-loader.js and handshake-loader.js — never a branch inside
+ * handshake-loader.js — never a branch inside
  * orbit-loader.js. Path-based like the core: give it a path element
  * (create) or a container plus options.d (wrap).
  *

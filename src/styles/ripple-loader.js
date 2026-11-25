@@ -6,7 +6,7 @@
  * unlimited concentric circles chasing each other outward.
  *
  * It is a sibling style module with its own create(), like
- * dot-loader.js and shimmer-loader.js — but it is container-based
+ * dot-loader.js — but it is container-based
  * rather than path-based: rings don't trace a path, they radiate from
  * the center of whatever box you give them, so create() and wrap() are
  * the same call and both take the container. It needs only

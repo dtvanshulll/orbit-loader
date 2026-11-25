@@ -14,7 +14,6 @@
  */
 import './styles/orbit-loader.js';
 import './styles/dot-loader.js';
-import './styles/shimmer-loader.js';
 import './styles/ripple-loader.js';
 import './styles/pulse-loader.js';
 import './styles/chase-loader.js';
@@ -44,7 +43,6 @@ import './shapes/outline-glyphs.js';
 
 export const OrbitLoader = window.OrbitLoader;
 export const DotLoader = window.DotLoader;
-export const ShimmerLoader = window.ShimmerLoader;
 export const RippleLoader = window.RippleLoader;
 export const PulseLoader = window.PulseLoader;
 export const ChaseLoader = window.ChaseLoader;
@@ -73,7 +71,6 @@ export const shapes = window.OrbitLoaderShapes;
 export const styles = {
   orbit: OrbitLoader,
   dot: DotLoader,
-  shimmer: ShimmerLoader,
   ripple: RippleLoader,
   pulse: PulseLoader,
   chase: ChaseLoader,

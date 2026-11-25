@@ -56,40 +56,6 @@
   },
 
   {
-    name: "Shell Toast",
-    category: "Application Shell",
-    style: "toast",
-    note: "An admin shell where a deploy notification drops in from the top edge",
-    box: {
-      width: 320, height: 190,
-      styleCss: "position:relative;background:#141413;border:1px solid #33312c;border-radius:10px;box-shadow:" + SHADOW + ";overflow:hidden;",
-      html: "<div style='position:absolute;top:0;left:0;right:0;height:34px;background:#1c1b19;border-bottom:1px solid #33312c;display:flex;align-items:center;padding:0 12px;gap:8px'>" +
-            "<span style='width:8px;height:8px;border-radius:2px;background:#d97757'></span>" +
-            "<span style='" + DISPLAY + "font-size:11px;font-weight:500;color:#b0aea5'>Admin</span>" +
-            "<span style='" + DISPLAY + "margin-left:auto;font-size:10px;color:#8f8d84'>Production</span></div>" +
-            "<div style='" + DISPLAY + "position:absolute;top:46px;left:16px;font-size:11px;color:#8f8d84'>3 deploys today &middot; all green</div>" +
-            "<div style='position:absolute;top:88px;left:16px;right:16px;border-top:1px solid #262420'>" +
-            "<div style='display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #262420'>" +
-            "<span style='width:7px;height:7px;border-radius:50%;background:#788c5d;flex:none'></span>" +
-            "<span style='" + DISPLAY + "flex:1;font-size:11px;color:#b0aea5'>web-app &middot; main</span>" +
-            "<span style='" + DISPLAY + "font-size:9.5px;color:#8f8d84'>14m ago</span></div>" +
-            "<div style='display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #262420'>" +
-            "<span style='width:7px;height:7px;border-radius:50%;background:#788c5d;flex:none'></span>" +
-            "<span style='" + DISPLAY + "flex:1;font-size:11px;color:#b0aea5'>docs &middot; release</span>" +
-            "<span style='" + DISPLAY + "font-size:9.5px;color:#8f8d84'>1h ago</span></div>" +
-            "<div style='display:flex;align-items:center;gap:8px;padding:7px 0'>" +
-            "<span style='width:7px;height:7px;border-radius:50%;background:#788c5d;flex:none'></span>" +
-            "<span style='" + DISPLAY + "flex:1;font-size:11px;color:#b0aea5'>cli &middot; main</span>" +
-            "<span style='" + DISPLAY + "font-size:9.5px;color:#8f8d84'>3h ago</span></div>" +
-            "</div>" +
-            "<div class='tl-shell-toast' style='position:absolute;top:44px;right:12px;width:170px'></div>"
-    },
-    parts: [
-      { style: "toast", el: ".tl-shell-toast",
-        options: { title: "Deploy succeeded", message: "api-service is live on production", enter: "drop", durationMs: 3400, restMs: 1600, color: "#788c5d" } }
-    ]
-  },
-  {
     name: "Notification Stack",
     category: "Toast",
     style: "toast",

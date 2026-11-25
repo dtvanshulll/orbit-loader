@@ -25,27 +25,6 @@
 
   list.push(
   {
-    name: "Blog Teaser",
-    category: "Blog",
-    style: "shimmer",
-    note: "An article card where a light band passes over the cover art, like a hover sheen",
-    box: {
-      width: 320, height: 208,
-      html: "<div style='padding:14px 16px;display:flex;flex-direction:column;gap:10px;height:100%;box-sizing:border-box'>" +
-            "<div class='tl-cover' style='position:relative;height:78px;border-radius:8px;background:linear-gradient(135deg,#d97757 0%,#6a9bcc 100%);overflow:hidden'></div>" +
-            "<div style='display:flex;align-items:center;gap:8px'><span style='" + DISPLAY + "font-size:9px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:#d97757'>Engineering</span><span style='" + DISPLAY + "font-size:9.5px;color:#8f8d84'>Nov 24 &middot; 6 min</span></div>" +
-            "<div style='" + DISPLAY + "font-size:14px;font-weight:600;line-height:1.3;color:#faf9f5'>Why the path is the API</div>" +
-            "<div style='display:flex;align-items:center;gap:6px;margin-top:auto'><span style='" + DISPLAY + "font-size:11px;font-weight:500;color:#d97757'>Read</span>" + lucide(ARROW, 12, 12, "#d97757") + "</div>" +
-            "</div>",
-      styleCss: CARD
-    },
-    parts: [
-      { style: "shimmer", el: ".tl-cover",
-        options: { d: "M0,39 H288", durationMs: 2800, strokeWidth: 10, color: "#faf9f5", guideOpacity: 0.08 } }
-    ]
-  },
-
-  {
     name: "Gallery Focus",
     category: "Gallery",
     style: "orbit",

@@ -6,7 +6,7 @@
  */
 const fs = require("fs");
 const order = [
-  "base", "dot", "shimmer", "ripple", "pulse", "dot-ghosts", "typing",
+  "base", "dot", "ripple", "pulse", "dot-ghosts", "typing",
   "transitions", "search", "modal", "drawer", "accordion",
   "dropdown", "input", "swap", "route", "page-variants", "pathwipe"
 ];

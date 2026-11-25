@@ -1,6 +1,6 @@
 /*!
  * TraceLoop — SCENE CONFIGS, part seven: the missing chrome — navbars,
- * sidebars, buttons, skeleton screens, breadcrumbs, pagination and a
+ * sidebars, buttons, placeholder screens, breadcrumbs, pagination and a
  * command palette. Same contract as scenes.js; icons are sourced Lucide
  * paths (better-icons).
  */
@@ -80,7 +80,7 @@
     name: "Sidebar Icons",
     category: "Sidebar",
     style: "orbit",
-    note: "An icon-only rail: the active tool's ring traces itself, the panel holds its skeleton",
+    note: "An icon-only rail: the active tool's ring traces itself, the panel holds its placeholder blocks",
     box: {
       width: 320, height: 176,
       html: "<div style='display:flex;height:100%;box-sizing:border-box'>" +
@@ -165,49 +165,6 @@
     parts: [
       { style: "pulse", el: ".tl-live-btn",
         options: { rings: 1, durationMs: 2000, strokeWidth: 3, maxOpacity: 0.4, color: "#d97757" } }
-    ]
-  },
-  {
-    name: "Skeleton Card",
-    category: "Skeleton",
-    style: "shimmer",
-    note: "The classic loading card: image and text placeholders under one passing sheen",
-    box: {
-      width: 320, height: 150,
-      html: "<div style='padding:14px 16px;display:flex;gap:12px;height:100%;box-sizing:border-box'>" +
-            "<span class='tl-sk-img' style='position:relative;width:110px;height:110px;border-radius:8px;background:#262420;flex:none'></span>" +
-            "<div style='flex:1;display:flex;flex-direction:column;gap:9px;padding-top:4px'>" +
-            "<span class='tl-sk-t' style='position:relative;display:block;width:80%;height:11px;border-radius:4px;background:#262420'></span>" +
-            "<span class='tl-sk-b' style='position:relative;display:block;width:100%;height:8px;border-radius:4px;background:#262420'></span>" +
-            "<span style='display:block;width:64%;height:8px;border-radius:4px;background:#262420'></span>" +
-            "<span style='margin-top:auto;display:flex;gap:6px'>" +
-            "<span style='width:54px;height:20px;border-radius:6px;background:#262420'></span>" +
-            "<span style='width:40px;height:20px;border-radius:6px;background:#262420'></span></span>" +
-            "</div></div>",
-      styleCss: CARD
-    },
-    parts: [
-      { style: "shimmer", el: ".tl-sk-img", options: { d: { shape: "underline", args: [110, 2] }, durationMs: 2600, strokeWidth: 4, color: "#faf9f5", guideOpacity: 0.08 } },
-      { style: "shimmer", el: ".tl-sk-t", options: { d: { shape: "underline", args: [110, 2] }, durationMs: 2600, strokeWidth: 4, color: "#faf9f5", guideOpacity: 0.08 } },
-      { style: "shimmer", el: ".tl-sk-b", options: { d: { shape: "underline", args: [130, 2] }, durationMs: 2600, strokeWidth: 4, color: "#faf9f5", guideOpacity: 0.08 } }
-    ]
-  },
-  {
-    name: "Skeleton List",
-    category: "Skeleton",
-    style: "shimmer",
-    note: "Three loading rows — avatar, name line, meta line — each swept by the band",
-    box: {
-      width: 320, height: 150,
-      html: "<div style='padding:10px 16px;display:flex;flex-direction:column;justify-content:space-between;height:100%;box-sizing:border-box'>" +
-            skelRow(1) + skelRow(2) + skelRow(3) +
-            "</div>",
-      styleCss: CARD
-    },
-    parts: [
-      { style: "shimmer", el: ".tl-skl-1", options: { d: { shape: "underline", args: [230, 2] }, durationMs: 2600, strokeWidth: 4, color: "#faf9f5", guideOpacity: 0.08 } },
-      { style: "shimmer", el: ".tl-skl-2", options: { d: { shape: "underline", args: [230, 2] }, durationMs: 2600, strokeWidth: 4, color: "#faf9f5", guideOpacity: 0.08 } },
-      { style: "shimmer", el: ".tl-skl-3", options: { d: { shape: "underline", args: [230, 2] }, durationMs: 2600, strokeWidth: 4, color: "#faf9f5", guideOpacity: 0.08 } }
     ]
   },
   {
