@@ -27,6 +27,8 @@ import './styles/toast-loader.js';
 import './styles/swap-loader.js';
 import './styles/countup-loader.js';
 import './styles/shake-loader.js';
+import './styles/shuffle-loader.js';
+import './styles/shuffle-loader.js';
 import './styles/progress-loader.js';
 import './styles/search-loader.js';
 import './styles/modal-loader.js';
@@ -54,6 +56,8 @@ export const ToastLoader = window.ToastLoader;
 export const SwapLoader = window.SwapLoader;
 export const CountUpLoader = window.CountUpLoader;
 export const ShakeLoader = window.ShakeLoader;
+export const ShuffleLoader = window.ShuffleLoader;
+export const ShuffleLoader = window.ShuffleLoader;
 export const ProgressLoader = window.ProgressLoader;
 export const SearchLoader = window.SearchLoader;
 export const ModalLoader = window.ModalLoader;
@@ -80,6 +84,8 @@ export const styles = {
   swap: SwapLoader,
   countup: CountUpLoader,
   shake: ShakeLoader,
+  shuffle: ShuffleLoader,
+  shuffle: ShuffleLoader,
   progress: ProgressLoader,
   search: SearchLoader,
   modal: ModalLoader,

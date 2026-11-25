@@ -277,3 +277,22 @@ makes it read as shaking. Reduced motion: no shake at all.
 | `decay` | `1` | how much the amplitude dies away: `1` settles to a quarter strength, `0` constant amplitude like csshake |
 | `restMs` | `0` | `0` shakes once; `> 0` repeats after this pause (demo loops) |
 | `autoStart` | `true` | shake at creation |
+
+## ShuffleLoader — `src/styles/shuffle-loader.js`
+
+The reorder: a list that keeps reshuffling itself, each row gliding
+from its old spot to its new one — task queues, standings,
+leaderboards. The FLIP pattern (measure First, reorder Last, Invert,
+Play) with this library's own reorder policy: one deterministic mover
+per cycle, the last child promoted to the top by default, so demo
+loops are reproducible and the eye can follow a single element
+through the swap. Container-based, no CSS file; the container's
+element children are the rows. Reduced motion: rows snap, no glide.
+
+| Option | Default | Meaning |
+|---|---|---|
+| `intervalMs` | `2600` | the pause between shuffles — the demo loop's rhythm |
+| `durationMs` | `480` | how long one glide takes |
+| `moveFrom` | `'last'` | which child is promoted to the top each cycle: `'last'`, `'first'` (demotes instead), or an index |
+| `easing` | fast-out curve | the glide's easing — items leave promptly, arrive gently |
+| `autoStart` | `true` | shuffle on the loop immediately |

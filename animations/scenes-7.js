@@ -211,7 +211,7 @@
     ]
   },
   {
-    name: "Breadcrumbs",
+    name: "Breadcrumb Trail",
     category: "Breadcrumbs",
     style: "orbit",
     note: "A breadcrumb trail whose current page underlines itself",

@@ -306,3 +306,28 @@ export const ShakeLoader: {
     isRunning(): boolean;
   };
 };
+
+export interface ShuffleOptions {
+  intervalMs?: number;
+  durationMs?: number;
+  moveFrom?: 'last' | 'first' | number;
+  easing?: string;
+  autoStart?: boolean;
+}
+export const ShuffleLoader: {
+  create(container: HTMLElement | string, options?: ShuffleOptions): {
+    container: HTMLElement;
+    shuffle(): void;
+    start(): void;
+    stop(): void;
+    destroy(): void;
+    isRunning(): boolean;
+  };
+  wrap(container: HTMLElement | string, options?: ShuffleOptions): {
+    container: HTMLElement;
+    shuffle(): void;
+    stop(): void;
+    destroy(): void;
+    isRunning(): boolean;
+  };
+};
