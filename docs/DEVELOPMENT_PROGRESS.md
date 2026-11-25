@@ -56,14 +56,24 @@ not site chrome).
 
 ### Phases
 
-- Phase 2 — architecture cleanup & bug fixes: `IN PROGRESS`
-- Phase 3 — design system: tokens already strong; focus-ring audit pending
+- Phase 2 — architecture cleanup & bug fixes: `COMPLETE` (P2–P6 fixed;
+  commit `a2ca3fd`)
+- Phase 3 — design system: tokens already strong; focus-ring audit
+  pending
 - Phase 4 — reusable components: the pg-* modules already are them; no
   over-fragmentation planned
-- Phase 5 — showcase infra: per-style direction options, reset control
-- Phase 6 — lazy loading & performance: planned (P1 above)
+- Phase 5 — showcase infra: per-style direction options DONE (`a2ca3fd`);
+  reset control pending
+- Phase 6 — lazy loading & performance: `COMPLETE` (P1 fixed;
+  300→9 concurrent animations on browse, verified across scroll cycles;
+  scene-card live-flag leak found and fixed during verification)
 - Phase 7 — page polish · Phase 8 — responsive/a11y review ·
   Phase 9 — regression gate: pending
+
+**Watched item:** one transient tune-render left a stage empty
+(unreproduced; render clears before building, so a mid-build throw
+would leave a blank card). If it recurs, wrap the build half of
+render() and re-queue on failure.
 
 ---
 
