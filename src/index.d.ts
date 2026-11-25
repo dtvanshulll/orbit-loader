@@ -224,6 +224,8 @@ export interface ComponentProps extends LoaderOptions {
 export declare const Orbit: React.FC<ComponentProps>;
 export declare const Dot: React.FC<ComponentProps>;
 export declare const Ripple: React.FC<ComponentProps>;
+export declare const Pulse: React.FC<ComponentProps>;
+export declare const Chase: React.FC<ComponentProps>;
 export declare const Typing: React.FC<ComponentProps>;
 export declare const Handshake: React.FC<ComponentProps>;
 export declare const Tab: React.FC<ComponentProps>;

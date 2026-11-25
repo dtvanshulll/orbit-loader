@@ -211,6 +211,36 @@ parts), all six harnesses PASS (orbit 34, dot 26, route 44, pathwipe
 returns 0 for shimmer/skeleton/blog/shell toast, fail() danger color
 verified in-browser, mobile 375px layout intact (no overflow).
 
+### CATEGORY 1 GATE — looping loaders (PASS)
+
+All 7 components through the full lifecycle. Gate checks:
+
+- **Full regression**: smoke 47/170 OK, build 4/4, ALL 11 harnesses
+  PASS (orbit 34, dot 26, ripple 23, pulse 25, chase 28, typing 25,
+  handshake 23 = 184 looping checks; route 44, pathwipe 31,
+  regression 7, dist, tabs).
+- **API consistency** (verified from source, not assumed): all 7
+  check reduced motion once at creation, wire `activeClass`, apply
+  the static-container fixup (in `create()` for container-based, in
+  `wrap()` for path-based), and expose `start/stop/destroy/
+  isRunning`. Path-based styles guard their input with a clear
+  `<path>` error and expose `path`; container-based styles throw
+  "container not found" and expose `el`/`svg` — consistent within
+  each family.
+- **Gate fix**: Pulse and Chase were missing their React type
+  declares in `index.d.ts` (the adapter exported them; the hints
+  didn't exist). Added — all 7 now declare in types.
+- **Docs**: STYLES.md has a section + controller line for all 7;
+  README table rows present; zero Shimmer residue.
+- **Exports/registration**: traceloop entry (16 refs), React adapter,
+  types, playground — all present for all 7.
+- **Website**: 70 looping cards render, no init errors; lazy
+  activation working (cards run when scrolled into view).
+
+**Verdict: Category 1 PASSES its completion gate.** Next category:
+2 — one-shot transitions (tab, page, button, toast, swap; route and
+pathwipe already meet the bar).
+
 ### Cleanup 1.7 — HandshakeLoader (COMPLETE)
 
 Decision: **IMPROVE**.
