@@ -92,8 +92,14 @@
       }
 
       if (key === "direction") {
+        // Two value families share the option name: the loopers crawl
+        // forward/reverse, the route transition travels left/right/up/
+        // down. Offer the family the card's current value belongs to.
+        var values = ["left", "right", "up", "down"].indexOf(value) >= 0
+          ? ["left", "right", "up", "down"]
+          : ["forward", "reverse"];
         var sel = document.createElement("select");
-        ["forward", "reverse"].forEach(function (d) {
+        values.forEach(function (d) {
           var o = document.createElement("option");
           o.value = d; o.textContent = d;
           if (d === value) o.selected = true;

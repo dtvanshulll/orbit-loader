@@ -6,7 +6,6 @@
   "use strict";
   var PG = global.PG = global.PG || {};
   var GLOBALS = PG.GLOBALS;
-  var SCRIPTS = PG.SCRIPTS;
   var CONTAINER_STYLES = PG.CONTAINER_STYLES;
   var OBJECT_SHAPES = PG.OBJECT_SHAPES;
   function argsCode(args) {
@@ -122,56 +121,6 @@
       lines.push(g + ".wrap('#your-element');");
     }
     return lines.join("\n");
-  }
-
-  function buildEmbedBlock(card) {
-    var cfg = card.cfg;
-    var opts = cfg.options;
-    var isRipple = !!CONTAINER_STYLES[cfg.style];
-    var varName = "shape";
-    var pre = [];
-    var usesObjectShape = opts.d && typeof opts.d === "object" && OBJECT_SHAPES[opts.d.shape];
-    var usesTextBox = opts.d && typeof opts.d === "object" && opts.d.shape === "textBox";
-
-    if (usesTextBox) {
-      pre.push("  var box = OrbitLoaderShapes.textBoxForElement(");
-      pre.push("    document.querySelector('.orbit-loader-wrap'), " + argsCode(opts.d.args) + ");");
-      varName = "box";
-    } else if (usesObjectShape) {
-      pre.push("  var shape = OrbitLoaderShapes." + opts.d.shape + "(" + argsCode(opts.d.args) + ");");
-    }
-
-    var boxBits = [];
-    var b = cfg.box || {};
-    if (b.width) boxBits.push("width:" + b.width + "px");
-    if (b.height) boxBits.push("height:" + b.height + "px");
-    if (b.background) boxBits.push("background:" + b.background);
-    if (b.borderRadius) boxBits.push("border-radius:" + b.borderRadius + "px");
-    if (b.border) boxBits.push("border:" + b.border);
-    if (b.padding) boxBits.push("padding:" + b.padding);
-    if (b.fontSize) boxBits.push("font-size:" + b.fontSize + "px");
-    if (b.fontWeight) boxBits.push("font-weight:" + b.fontWeight);
-
-    var out = [];
-    out.push("<!-- " + cfg.name + " \u2014 OrbitLoader -->");
-    out.push('<link rel="stylesheet" href="orbit-loader.css">');
-    out.push("");
-    out.push('<div class="orbit-loader-wrap" style="' + boxBits.join("; ") + '">');
-    if (b.content) out.push("  " + b.content);
-    out.push("</div>");
-    out.push("");
-    out.push('<script src="' + SCRIPTS[cfg.style] + '"><\/script>');
-    if (opts.d && typeof opts.d === "object" && opts.d.shape) out.push('<script src="src/shapes/shapes-core.js"><\/script>');
-    out.push('<script src="src/shapes/shapes-text.js"><\/script>');
-    out.push('<script src="src/shapes/shapes-outline.js"><\/script>');
-    out.push('<script src="src/shapes/outline-glyphs.js"><\/script>');
-    out.push("<script>");
-    if (pre.length) out.push(pre.join("\n"));
-    out.push("  " + GLOBALS[cfg.style] + "." + (isRipple ? "create" : "wrap") + "(document.querySelector('.orbit-loader-wrap'), {");
-    out.push(optionsCode(cfg, opts, varName));
-    out.push("  });");
-    out.push("<\/script>");
-    return out.join("\n");
   }
 
   function buildConfigBlock(card) {

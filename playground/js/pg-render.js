@@ -9,10 +9,11 @@
   var CONTAINER_STYLES = PG.CONTAINER_STYLES;
 
   // Cards whose path needs a real measurement (textBox) can't be drawn
-  // while they're hidden — the intro keeps the whole catalog display:none
-  // at init, and a hidden element measures 0x0, which collapses the box
-  // to nothing. Those cards queue here and re-render the moment the
-  // catalog becomes visible (exitIntro calls PG.renderPending()).
+  // while they're hidden — a hidden element measures 0x0, which
+  // collapses the box to nothing. Those cards queue here and re-render
+  // when something makes them visible. With lazy activation (below)
+  // this queue is only a safety net for out-of-band render() calls on
+  // hidden cards, e.g. a Tune edit racing a filter change.
   var pendingMeasure = [];
 
   // Turn a `d` recipe into { d, guideD, viewBox }. "textBox" is resolved
@@ -74,8 +75,8 @@
     return el;
   }
 
-  // (Re)draw one animation into its stage. Called on load and after
-  // every edit — cheap, since each style's create() is trivial.
+  // (Re)draw one animation into its stage. Called on activation and
+  // after every edit — cheap, since each style's create() is trivial.
   function render(card) {
     var cfg = card.cfg;
     // A card in a hidden subtree would measure a 0x0 box — every
@@ -98,7 +99,8 @@
     if (cfg.parts) {
       card.controller = buildScene(cfg, boxEl);
       card.resolved = null;
-      return;
+      card.live = true; // scenes deactivate too — without this they ran
+      return;           // forever offscreen (the lazy-activation leak)
     }
     var opts = {};
     for (var k in cfg.options) {
@@ -113,6 +115,55 @@
       if (resolved.viewBox) opts.viewBox = resolved.viewBox;
       card.resolved = resolved;
       card.controller = GLOBALS[cfg.style] && window[GLOBALS[cfg.style]].wrap(boxEl, opts);
+    }
+    card.live = true;
+  }
+
+  /*
+   * Lazy activation: a card's animation only exists while its stage is
+   * near the viewport. Measured baseline before this: entering the
+   * catalog started 300 concurrent animations with 174 of 176 stages
+   * offscreen — 98% of the work was invisible. One observer drives
+   * every card: approaching the viewport (by rootMargin) renders and
+   * starts it; leaving that margin destroys the controller, empties
+   * the stage, and pins the stage's last height as a min-height so the
+   * page doesn't jump while you scroll. Re-entering re-renders from
+   * cfg — the tuned options live there, so nothing is lost.
+   */
+  var LAZY_MARGIN = "600px 0px 600px 0px";
+
+  function activate(card) {
+    if (card.live) return;
+    card.stage.style.minHeight = ""; // release the placeholder
+    render(card);
+  }
+
+  function deactivate(card) {
+    if (!card.live) return;
+    var h = card.stage.offsetHeight; // placeholder keeps the layout stable
+    if (card.controller) card.controller.destroy();
+    card.stage.innerHTML = "";
+    if (h > 0) card.stage.style.minHeight = h + "px";
+    card.live = false;
+  }
+
+  function wireLazyRender(cards) {
+    if (!("IntersectionObserver" in global)) {
+      // Ancient browsers get the old behavior: render everything once.
+      for (var i = 0; i < cards.length; i++) render(cards[i]);
+      return;
+    }
+    var io = new global.IntersectionObserver(function (entries) {
+      for (var i = 0; i < entries.length; i++) {
+        var card = entries[i].target.__card;
+        if (!card) continue;
+        if (entries[i].isIntersecting) activate(card);
+        else deactivate(card);
+      }
+    }, { rootMargin: LAZY_MARGIN });
+    for (var c = 0; c < cards.length; c++) {
+      cards[c].stage.__card = cards[c];
+      io.observe(cards[c].stage);
     }
   }
 
@@ -166,6 +217,7 @@
   PG.resolveD = resolveD;
   PG.buildBox = buildBox;
   PG.render = render;
+  PG.wireLazyRender = wireLazyRender;
   // Re-render every card that was queued while hidden. Safe to call any
   // time — cards still hidden simply re-queue.
   PG.renderPending = function () {

@@ -161,8 +161,8 @@
         });
         if (window.matchMedia("(max-width: 999px)").matches) {
           document.body.classList.remove("pg-sidebar-open");
-          var btn = document.getElementById("pg-nav-toggle");
-          if (btn) btn.setAttribute("aria-expanded", "false");
+          var menuBtn = document.getElementById("pg-menu-btn");
+          if (menuBtn) menuBtn.setAttribute("aria-expanded", "false");
         }
       });
       sceneList.appendChild(a);

@@ -7,7 +7,7 @@
  * order by index.html:
  *
  *   pg-data.js      constant tables (this file)
- *   pg-render.js    config to live animation
+ *   pg-render.js    config to live animation, lazy activation
  *   pg-snippet.js   snippet/config generation + clipboard
  *   pg-controls.js  generated tuning controls
  *   pg-card.js      card assembly
@@ -23,7 +23,6 @@
   "use strict";
   var PG = global.PG = global.PG || {};
   var GLOBALS = { orbit: "OrbitLoader", dot: "DotLoader", shimmer: "ShimmerLoader", ripple: "RippleLoader", pulse: "PulseLoader", chase: "ChaseLoader", typing: "TypingLoader", handshake: "HandshakeLoader", tab: "TabLoader", page: "PageLoader", button: "ButtonLoader", toast: "ToastLoader", progress: "ProgressLoader", search: "SearchLoader", modal: "ModalLoader", accordion: "AccordionLoader", drawer: "DrawerLoader", dropdown: "DropdownLoader", input: "InputLoader", swap: "SwapLoader", countup: "CountUpLoader", shake: "ShakeLoader", shuffle: "ShuffleLoader", route: "RouteLoader" };
-  var SCRIPTS = { orbit: "orbit-loader.js", dot: "dot-loader.js", shimmer: "shimmer-loader.js", ripple: "ripple-loader.js", pulse: "pulse-loader.js", chase: "chase-loader.js", typing: "typing-loader.js", handshake: "handshake-loader.js", tab: "tab-loader.js", page: "page-loader.js", button: "button-loader.js", toast: "toast-loader.js", progress: "progress-loader.js", search: "search-loader.js", modal: "modal-loader.js", accordion: "accordion-loader.js", drawer: "drawer-loader.js", dropdown: "dropdown-loader.js", input: "input-loader.js", swap: "swap-loader.js", route: "route-loader.js" };
   // Container-based styles: no path to trace, create() takes the box.
   var CONTAINER_STYLES = { ripple: 1, pulse: 1, typing: 1, tab: 1, page: 1, button: 1, toast: 1, search: 1, modal: 1, accordion: 1, drawer: 1, dropdown: 1, input: 1, swap: 1, countup: 1, shake: 1, shuffle: 1, route: 1 };
   // Shapes that return { d, ... } objects instead of a bare d string —
@@ -60,8 +59,7 @@
     exitMs: [80, 800, 10],
     distance: [2, 30, 1],
     collapsedWidth: [24, 80, 4],
-    expandedWidth: [120, 400, 10],
-    radius: [0, 20, 1]
+    expandedWidth: [120, 400, 10]
   };
   var LETTER_SHAPES = { letter: 1, letterOutline: 1 };
 
@@ -75,7 +73,6 @@
   PG.ICON_CHECK = '<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
 
   PG.GLOBALS = GLOBALS;
-  PG.SCRIPTS = SCRIPTS;
   PG.CONTAINER_STYLES = CONTAINER_STYLES;
   PG.OBJECT_SHAPES = OBJECT_SHAPES;
   PG.RANGES = RANGES;

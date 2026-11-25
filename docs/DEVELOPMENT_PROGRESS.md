@@ -7,6 +7,66 @@ session; update it before ending one. Statuses: `NOT STARTED`,
 The audit report (2026-11-25) established the roadmap; the registered
 audit protocol lives in [docs/rules/CODEBASE-AUDIT.md](rules/CODEBASE-AUDIT.md).
 
+## Workstream: Website upgrade (playground + examples)
+
+**Interrupted:** Component 2 — Path-Wipe Reveal was inspected (PRD/ROADMAP
+read, RouteLoader template studied) but never started — no files written.
+Resume it after the website workstream.
+
+The website is `playground/` (index.html + 10 `pg-*` plain-script modules
+sharing `window.PG` + 8 CSS partials) and `examples/` (3 static pages).
+No framework, no build step — by design, same rules as the library.
+
+### Phase 1 — Audit (COMPLETE)
+
+**Preserve (already good):** `--pg-*` token system with motion tokens;
+real generated controls that re-render; live search + sidebar filter +
+scrollspy; copy with clipboard fallback + icon feedback; scene mockups;
+skip link, focus trap in the nav drawer, reduced-motion handling; every
+module under the 400-line ceiling.
+
+**Findings (prioritized):**
+
+1. **P1 — no lazy activation.** Entering the catalog renders all 176
+   cards at once: **300 concurrent animations, 174 of 176 stages
+   offscreen** (measured). Fix: IntersectionObserver-gated render —
+   activate near the viewport, destroy + placeholder when it leaves
+   (stages have min-heights, so placeholders prevent scroll jump).
+2. **P2 — stale hardcoded counts.** About panel says "19 styles / 113
+   live demos"; actual 24/176. Hero prose hardcodes the same numbers in
+   words. Fix: compute both from the loaded configs (single source).
+3. **P3 — bug:** `pg-nav.js` looks up `pg-nav-toggle`; the button's id
+   is `pg-menu-btn` — aria-expanded isn't reset when a scene category
+   closes the mobile drawer.
+4. **P4 — dead code:** `buildEmbedBlock` (pg-snippet.js) has no caller;
+   `PG.SCRIPTS` exists only for it.
+5. **P5 — controls bug:** the `direction` select hardcodes
+   forward/reverse; RouteLoader's direction is left/right/up/down, so
+   route cards offer wrong values.
+6. **P6 — polish:** no meta description/og tags; duplicate `radius` key
+   in RANGES.
+
+**Deliberate non-changes:** dark-only theme (the "dark lab bench" is the
+documented DESIGN.md direction; loader colors and 176 config backgrounds
+are tuned to it — a light theme would be a redesign, not an upgrade);
+static script tags stay (parser-blocking order is the no-build
+contract); Google Fonts stay external (preconnect + display=swap
+already present); `examples/` stays as-is (consumer-facing examples,
+not site chrome).
+
+### Phases
+
+- Phase 2 — architecture cleanup & bug fixes: `IN PROGRESS`
+- Phase 3 — design system: tokens already strong; focus-ring audit pending
+- Phase 4 — reusable components: the pg-* modules already are them; no
+  over-fragmentation planned
+- Phase 5 — showcase infra: per-style direction options, reset control
+- Phase 6 — lazy loading & performance: planned (P1 above)
+- Phase 7 — page polish · Phase 8 — responsive/a11y review ·
+  Phase 9 — regression gate: pending
+
+---
+
 ## Current category
 
 **Category 1 — Page Transitions & Choreography**

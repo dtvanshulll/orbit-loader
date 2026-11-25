@@ -59,10 +59,24 @@
     for (var c = 0; c < sections.length; c++) {
       sections[c].countEl.textContent = sections[c].grid.querySelectorAll(".pg-card").length;
     }
+    // The hero and About numbers come from the loaded configs, not
+    // prose — they can't drift from reality the way a hardcoded "19
+    // styles / 113 demos" did.
+    var styleNames = {};
+    for (var n = 0; n < list.length; n++) styleNames[list[n].style] = 1;
+    var counted = document.querySelectorAll("[data-count]");
+    for (var d = 0; d < counted.length; d++) {
+      counted[d].textContent = counted[d].getAttribute("data-count") === "styles"
+        ? Object.keys(styleNames).length
+        : list.length;
+    }
     var filter = makeFilter(cards, sections);
     startMark();
     startHero();
     wireReveal();
+    // Animations exist only near the viewport; the observer owns
+    // render/destroy from here on (see pg-render.js).
+    PG.wireLazyRender(cards);
     wireNavDrawer(cards, filter);
     // After the nav exists — the spy paints into its items.
     wireSectionSpy(sections, cards);

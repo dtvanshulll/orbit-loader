@@ -145,9 +145,10 @@
     } else {
       window.setTimeout(function () { document.body.classList.remove("pg-arriving"); }, 320);
     }
-    // Cards that need a real measurement (textBox) queued while the
-    // catalog was hidden — draw them now that layout exists.
-    if (PG.renderPending) PG.renderPending();
+    // Cards that need a real measurement render through the lazy
+    // activation observer now — it fires the moment the catalog becomes
+    // visible, so no manual flush here (that used to draw all 176 at
+    // once, the thing lazy activation exists to prevent).
   }
   function isIntro() {
     return document.body.classList.contains("pg-intro");
