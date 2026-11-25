@@ -47,7 +47,13 @@
     var opts = cfg.options;
     var grid = document.createElement("div");
     grid.className = "pg-controls";
-    var redraw = function () { render(card); };
+    // Every control redraws the stage AND refreshes the Usage snippet —
+    // the code block must always show what the card now does, not what
+    // it did at page load.
+    var redraw = function () {
+      render(card);
+      if (card.snippet) card.snippet.textContent = PG.buildSnippet(card);
+    };
 
     for (var key in opts) {
       if (!Object.prototype.hasOwnProperty.call(opts, key)) continue;
@@ -112,8 +118,14 @@
 
       if (RANGES[key]) {
         var r = RANGES[key];
-        var num = numInput(value, r[0], r[1], r[2], function (v) { opts[key] = v; redraw(); });
-        grid.appendChild(field(key, num));
+        // `key` is one function-scoped binding shared by every iteration
+        // — a closure over it would make every slider write the LAST
+        // option (they all did: tuning strokeWidth set guideOpacity).
+        // Capture the key per iteration.
+        (function (k, label) {
+          var num = numInput(value, r[0], r[1], r[2], function (v) { opts[k] = v; redraw(); });
+          grid.appendChild(field(label, num));
+        })(key, key);
         continue;
       }
     }

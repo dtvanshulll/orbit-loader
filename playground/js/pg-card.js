@@ -8,8 +8,15 @@
   var buildSnippet = PG.buildSnippet;
   var copy = PG.copy;
   var buildControls = PG.buildControls;
+  var render = PG.render;
+  // Tuning mutates cfg.options in place; the reset needs the config as
+  // it arrived. Options are plain JSON data (the config block already
+  // round-trips them through JSON), so a JSON copy is a deep copy.
+  function deepCopyOptions(opts) {
+    return JSON.parse(JSON.stringify(opts || {}));
+  }
   function buildCard(cfg, index) {
-    var card = { cfg: cfg, controller: null };
+    var card = { cfg: cfg, controller: null, originalOptions: deepCopyOptions(cfg.options) };
     var el = document.createElement("section");
     el.className = "pg-card";
 
@@ -79,9 +86,24 @@
         var open = controls.classList.toggle("is-open");
         tune.setAttribute("aria-expanded", open ? "true" : "false");
       });
+      // Reset: put this animation's options back to the config they
+      // arrived with. Rebuilds the controls too, so sliders and pickers
+      // show the restored values instead of lying about the state.
+      var reset = document.createElement("button");
+      reset.className = "pg-tune pg-reset";
+      reset.textContent = "Reset";
+      reset.addEventListener("click", function () {
+        card.cfg.options = deepCopyOptions(card.originalOptions);
+        var fresh = buildControls(card);
+        controls.parentNode.replaceChild(fresh, controls);
+        controls = fresh;
+        if (card.live) render(card);
+        if (card.snippet) card.snippet.textContent = PG.buildSnippet(card);
+      });
       var tuneRow = document.createElement("div");
       tuneRow.className = "pg-tune-row";
       tuneRow.appendChild(tune);
+      tuneRow.appendChild(reset);
       el.appendChild(tuneRow);
       el.appendChild(controls);
       card.tune = tune;

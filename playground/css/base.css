@@ -18,6 +18,8 @@
   --pg-secondary: #b0aea5;
   --pg-muted: #8f8d84;
   --pg-accent: #d97757;
+  /* The hover tint on the accent (the About button's filled hover). */
+  --pg-accent-hi: #e08b6d;
   /* Brand typography: Poppins carries headings, Lora carries long-form
      copy; UI chrome and code stay system/mono so controls read as tools. */
   --pg-font-head: "Poppins", Arial, sans-serif;

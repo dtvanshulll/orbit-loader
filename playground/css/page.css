@@ -247,7 +247,7 @@ body.pg-about-open .pg-footer { display: none; }
   text-decoration: underline;
   text-underline-offset: 3px;
 }
-.pg-about-actions a:hover { color: #d97757; }
+.pg-about-actions a:hover { color: var(--pg-accent); }
 .pg-about-actions button {
   font-family: var(--pg-font-head, "Poppins", Arial, sans-serif);
   font-size: 13px;
@@ -259,7 +259,9 @@ body.pg-about-open .pg-footer { display: none; }
   padding: 9px 16px;
   cursor: pointer;
 }
-.pg-about-actions button:hover { background: #e08b6d; }
+.pg-about-actions button:hover { background: var(--pg-accent-hi); }
+.pg-about-actions a:focus-visible,
+.pg-about-actions button:focus-visible { outline: 2px solid var(--pg-accent); outline-offset: 2px; }
 
 .pg-about-link {
   font-family: var(--pg-font-head, "Poppins", Arial, sans-serif);
