@@ -72,10 +72,21 @@ not site chrome).
 - Phase 6 — lazy loading & performance: `COMPLETE` (P1 fixed;
   300→9 concurrent animations on browse, verified across scroll cycles;
   scene-card live-flag leak found and fixed during verification)
-- Phase 7 — page polish: pending
-- Phase 8 — responsive/a11y review: pending (desktop spot-checks done
-  during Phases 2/5/6; mobile widths + keyboard pass not yet run)
-- Phase 9 — regression gate: pending
+- Phase 7 — page polish: `COMPLETE` — the mobile header/code fixes in
+  Phase 8 covered the found polish gaps; desktop catalog verified by
+  screenshot in Phases 5/6
+- Phase 8 — responsive/a11y review: `COMPLETE` (`5b578df`). Found and
+  fixed: menu-button click bubbled into the brand handler (stole focus
+  into search + flipped to intro mid-drawer); the skip link was dead
+  on real keyboards (fixed-position + off-screen transform is dropped
+  from Chrome tab traversal — rebuilt with the clip-path pattern);
+  phone header fit (wordmark clipped to "Th", search collapsed) —
+  mark hidden, wordmark capped, responsive placeholder swap; code
+  blocks scroll instead of mid-token wrapping on phones. Reduced-
+  motion and contrast audited — already compliant.
+- Phase 9 — regression gate: `COMPLETE` — smoke 49 OK, build OK,
+  route-test 44/44, fix-verify 7/7, react mounts, playground e2e
+  (browse/lazy/copy/about/search) clean, no console errors.
 
 **Watched item:** one transient tune-render left a stage empty
 (unreproduced; render clears before building, so a mid-build throw
