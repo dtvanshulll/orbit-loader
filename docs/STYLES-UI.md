@@ -45,15 +45,26 @@ Controller also exposes: `bar`.
 
 The button's own border is the pending-progress track: `begin()`
 crawls the perimeter, `success()` lights the whole border and fades,
-`reset()` returns to idle. Container-based; pass the button element.
+`fail()` settles the border once in the danger color (the trace color
+is restored after), `reset()` returns to idle. Three variants:
+`trace` (border crawl), `fill` (a color layer sweeps in and drains),
+`ripple` (a circle expands from the press point). Container-based;
+pass the button element. The button is made `position: relative` if
+static and restored on `destroy()` — the feedback SVG lives inside it.
 
 | option | default | meaning |
 |---|---|---|
+| `variant` | `'trace'` | `'trace'`, `'fill'` or `'ripple'` |
 | `radius` | `8` | corner radius, px — match the button's border-radius |
 | `durationMs` | `1100` | one lap around the perimeter |
 | `segmentFraction` | `0.22` | the crawler's length as a fraction of the perimeter |
 | `strokeWidth` | `2` | trace thickness, px |
 | `color` | `null` | trace color |
+| `dangerColor` | `'#e5484d'` | the `fail()` feedback color |
+
+Controller also exposes: `svg`, `segment`/`layer`, `begin()`,
+`success()`, `fail()`, `reset()`, `isRunning()` (the demo loop OR a
+pending `begin()`). Reduced motion: every call is a no-op.
 
 ## ToastLoader — `src/styles/toast-loader.js`
 

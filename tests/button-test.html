@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<!--
+  TraceLoop — ButtonLoader test harness (one-shot transitions category).
+  Covers: input guards, static-container fixup (the trace SVG escaped
+  static buttons), all three variants' begin/success/fail/reset, demo
+  loop start/stop, destroy restoration across variants, reduced motion.
+  Open in a browser; verdict lands in the page body and document.title.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<title>BUTTON TESTS: RUNNING</title>
+<link rel="stylesheet" href="../dist/traceloop.css">
+<style>
+  body { font: 13px/1.5 monospace; background: #141413; color: #faf9f5; padding: 20px; }
+  .pass { color: #788c5d; } .fail { color: #d97757; }
+  .btn { width: 160px; height: 42px; background: #262420; border: 1px solid #33312c; border-radius: 8px;
+         color: #faf9f5; font: 600 12.5px sans-serif; margin: 10px 0; overflow: hidden; }
+</style>
+</head>
+<body>
+<div id="results">running…</div>
+<button class="btn" id="b-trace">Save changes</button>
+<button class="btn" id="b-static" style="position: static">Static host</button>
+<button class="btn" id="b-fill">Fill variant</button>
+<button class="btn" id="b-ripple">Ripple variant</button>
+<button class="btn" id="b-fail">Fail state</button>
+<button class="btn" id="b-destroy">Destroy me</button>
+<button class="btn" id="b-reduced">Reduced motion</button>
+
+<script src="../src/styles/button-loader.js"></script>
+<script>
+"use strict";
+var results = [];
+function check(n, ok, d) { results.push({ n: n, ok: !!ok, d: d || "" }); }
+function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+function waapi(el) {
+  return el.getAnimations().filter(function (a) { return a.transitionProperty == null; });
+}
+
+async function run() {
+  /* 1 — input guards */
+  var threw = "";
+  try { ButtonLoader.create("#nope", {}); } catch (e) { threw = e.message; }
+  check("create: missing button throws", threw.indexOf("container not found") >= 0, threw);
+
+  /* 2 — trace variant: begin laps, success settles */
+  var b1 = ButtonLoader.create("#b-trace", { color: "#d97757", autoStart: false });
+  b1.begin();
+  check("begin: isRunning true", b1.isRunning());
+  check("begin: activeClass added", b1.el.classList.contains("is-active"));
+  var laps = waapi(b1.segment);
+  check("begin: one lap animation on the segment", laps.length === 1, "got " + laps.length);
+  check("begin: lap is infinite", laps[0].effect.getTiming().iterations === Infinity);
+  b1.success();
+  check("success: settle animation replaces the lap", waapi(b1.segment).length === 1);
+  await wait(1100); // settle is 900ms + margin
+  check("success: settles back to idle", !b1.el.classList.contains("is-active"));
+  b1.reset();
+
+  /* 3 — static container fixup (the trace SVG escaped static buttons) */
+  var b2 = ButtonLoader.create("#b-static", { autoStart: false });
+  check("static button: forced to relative", getComputedStyle(b2.el).position === "relative");
+  // The SVG must sit inside the button's box, not the nearest ancestor.
+  var sr = b2.svg.getBoundingClientRect(), br = b2.el.getBoundingClientRect();
+  check("static button: trace SVG anchored to the button box",
+    Math.abs(sr.left - br.left) < 2 && Math.abs(sr.top - br.top) < 2,
+    "dx=" + (sr.left - br.left).toFixed(1));
+  b2.destroy();
+  check("static button: position restored on destroy",
+    document.getElementById("b-static").style.position === "" &&
+    getComputedStyle(document.getElementById("b-static")).position === "static");
+
+  /* 4 — fill variant: begin sweeps, success drains, fail drains danger */
+  var b3 = ButtonLoader.create("#b-fill", { variant: "fill", durationMs: 800, color: "#d97757", autoStart: false });
+  b3.begin();
+  await wait(500);
+  check("fill begin: layer swept in", b3.layer.style.transform !== "scaleX(0)");
+  b3.success();
+  await wait(500);
+  check("fill success: layer drained", getComputedStyle(b3.layer).transform.indexOf("0") >= 0);
+  b3.begin();
+  await wait(450);
+  b3.fail();
+  await wait(60);
+  check("fill fail: danger color applied during drain",
+    b3.layer.style.background === "#e5484d" || b3.layer.style.background === "rgb(229, 72, 77)",
+    b3.layer.style.background);
+  await wait(600);
+  check("fill fail: caller fill restored after drain",
+    b3.layer.style.background === "#d97757" || b3.layer.style.background === "rgb(217, 119, 87)",
+    b3.layer.style.background);
+  b3.destroy();
+  check("fill destroy: layer removed", !document.querySelector("#b-fill .orbit-loader-button-fill"));
+
+  /* 5 — ripple variant: press expands, fail fires a danger ripple */
+  var b4 = ButtonLoader.create("#b-ripple", { variant: "ripple", durationMs: 600, color: "#6a9bcc", autoStart: false });
+  b4.begin(20, 20);
+  check("ripple begin: dot spawned", !!document.querySelector("#b-ripple .orbit-loader-button-ripple"));
+  await wait(500);
+  check("ripple: dot removed after the fade", !document.querySelector("#b-ripple .orbit-loader-button-ripple"));
+  b4.fail();
+  var dot = document.querySelector("#b-ripple .orbit-loader-button-ripple");
+  check("ripple fail: danger ripple spawned", !!dot && (dot.style.background === "#e5484d" || dot.style.background === "rgb(229, 72, 77)"),
+    dot && dot.style.background);
+  b4.reset();
+  b4.destroy();
+
+  /* 6 — trace fail: danger color during settle, restored after */
+  var b5 = ButtonLoader.create("#b-fail", { color: "#d97757", autoStart: false });
+  b5.begin();
+  b5.fail();
+  check("trace fail: danger color on the segment",
+    b5.segment.style.stroke === "#e5484d" || b5.segment.style.stroke === "rgb(229, 72, 77)",
+    b5.segment.style.stroke);
+  await wait(1100);
+  check("trace fail: trace color restored after settle",
+    b5.segment.style.stroke === "#d97757" || b5.segment.style.stroke === "rgb(217, 119, 87)",
+    b5.segment.style.stroke);
+  b5.reset();
+
+  /* 7 — demo loop start/stop */
+  var b6 = ButtonLoader.create("#b-trace", { color: "#d97757", autoStart: false });
+  b6.start();
+  check("demo: running after start", b6.isRunning());
+  b6.stop();
+  check("demo: stopped", !b6.isRunning());
+  check("demo: idle after stop", !b6.el.classList.contains("is-active"));
+
+  /* 8 — destroy restoration (trace) */
+  var b7 = ButtonLoader.create("#b-destroy", { color: "#d97757" });
+  await wait(150);
+  b7.destroy();
+  check("destroy: svg removed", !document.querySelector("#b-destroy svg"));
+  check("destroy: activeClass gone", !document.getElementById("b-destroy").classList.contains("is-active"));
+
+  /* 9 — reduced motion: everything is a no-op */
+  var realMM = window.matchMedia;
+  window.matchMedia = function (q) { return { matches: q.indexOf("prefers-reduced-motion") >= 0, media: q, addListener: function(){}, removeListener: function(){}, addEventListener: function(){}, removeEventListener: function(){} }; };
+  var b8 = ButtonLoader.create("#b-reduced", { color: "#d97757", autoStart: false });
+  b8.begin();
+  check("reduced: begin is a no-op", !b8.el.classList.contains("is-active"));
+  b8.success();
+  check("reduced: success is a no-op", waapi(b8.segment).length === 0);
+  b8.fail();
+  check("reduced: fail is a no-op", waapi(b8.segment).length === 0);
+  b8.destroy();
+  window.matchMedia = realMM;
+
+  var pass = 0, fail = 0, html = "";
+  for (var i = 0; i < results.length; i++) {
+    if (results[i].ok) pass++; else fail++;
+    html += '<div class="' + (results[i].ok ? "pass" : "fail") + '">' +
+      (results[i].ok ? "PASS" : "FAIL") + " — " + results[i].n +
+      (results[i].d ? " (" + results[i].d + ")" : "") + "</div>";
+  }
+  document.getElementById("results").innerHTML = html;
+  document.title = fail === 0 ? "BUTTON TESTS: PASS" : "BUTTON TESTS: FAIL " + fail;
+}
+run();
+</script>
+</body>
+</html>

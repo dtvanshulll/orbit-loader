@@ -62,6 +62,8 @@
     var color = options.color != null ? options.color : null;
     var dangerColor = options.dangerColor != null ? options.dangerColor : "#e5484d";
     var autoStart = options.autoStart !== false;
+    var forcedPosition = global.getComputedStyle(el).position === "static";
+    if (forcedPosition) el.style.position = "relative";
 
     // Checked once at creation, not live — same reasoning as the core.
     var reducedMotion = !!(global.matchMedia &&
@@ -74,10 +76,10 @@
       fillLayer.className = "orbit-loader-button-fill";
       if (color != null) fillLayer.style.background = color;
       el.appendChild(fillLayer);
-      return makeFill(el, fillLayer, durationMs, dangerColor, reducedMotion, autoStart);
+      return makeFill(el, fillLayer, durationMs, dangerColor, reducedMotion, autoStart, forcedPosition);
     }
     if (variant === "ripple") {
-      return makeRipple(el, color, dangerColor, durationMs, reducedMotion, autoStart);
+      return makeRipple(el, color, dangerColor, durationMs, reducedMotion, autoStart, forcedPosition);
     }
 
     var svg = document.createElementNS(SVG_NS, "svg");
@@ -144,8 +146,8 @@
       if (successAnim) successAnim.cancel();
       if (lapAnim) lapAnim.cancel();
       el.classList.add("is-active");
-      // Infinite lap: the dash pattern's period equals the perimeter,
-      // so one dashoffset period per lap loops seamlessly.
+      // Infinite lap: the dash period equals the perimeter, so the
+      // loop point is invisible.
       var segLen = total * segFrac;
       lapAnim = seg.animate(
         [{ strokeDashoffset: 0 }, { strokeDashoffset: -total }],
@@ -202,7 +204,6 @@
       if (running || reducedMotion) return;
       running = true;
       begin();
-      // First success fires after a couple of laps.
       global.setTimeout(function () { if (running) success(); }, durationMs * 2.4);
     }
 
@@ -215,9 +216,12 @@
     function destroy() {
       stop();
       if (svg.parentNode) svg.parentNode.removeChild(svg);
+      if (forcedPosition) el.style.position = "";
     }
 
-    function isRunning() { return running; }
+    // "Running" = the demo loop OR a pending begin(); is-active is the
+    // truthful pending marker (added by begin, removed on settle/reset).
+    function isRunning() { return running || el.classList.contains("is-active"); }
 
     measure();
     paint(0);
@@ -233,10 +237,10 @@
   /**
    * 'fill' variant controller: a color layer sweeps in from the left on
    * begin() (the "working" state), then drains right on success()/fail().
-   * The layer is clipped to the button's own border-radius via CSS
-   * overflow, so no path math is needed.
+   * The layer is clipped to the button's border-radius via CSS overflow,
+   * so no path math is needed.
    */
-  function makeFill(el, layer, durationMs, dangerColor, reducedMotion, autoStart) {
+  function makeFill(el, layer, durationMs, dangerColor, reducedMotion, autoStart, forcedPosition) {
     var busy = false;
     function begin() {
       if (reducedMotion) return;
@@ -252,40 +256,33 @@
         layer.style.transform = "scaleX(1)";
       }
     }
-    /* Drain the layer right-to-left; fail() drains it in the danger
-     * color first, then restores whatever fill the caller set. */
+    /* Drain the layer right-to-left. With a danger color, the color
+     * rides IN the keyframes and the caller's fill is restored on
+     * finish — a synchronous swap would never be seen. */
     function drain(bg) {
+      var prev = bg != null ? layer.style.background : null;
       if (bg != null) layer.style.background = bg;
       if (layer.animate) {
-        layer.animate(
+        var anim = layer.animate(
           [{ transform: "scaleX(1)", transformOrigin: "right center" },
            { transform: "scaleX(0)", transformOrigin: "right center" }],
           { duration: durationMs * 0.45, easing: "cubic-bezier(0.2, 0, 0.2, 1)", fill: "forwards" }
         );
+        if (prev != null) anim.onfinish = function () { layer.style.background = prev; };
       } else {
         layer.style.transform = "scaleX(0)";
+        if (prev != null) layer.style.background = prev;
       }
     }
-    function success() {
-      if (!busy) { begin(); }
-      drain();
+    function settle(bg) {
+      if (!busy) begin();
+      drain(bg);
       busy = false;
       el.classList.remove("is-active");
     }
-    function fail() {
-      if (reducedMotion) return;
-      if (!busy) { begin(); }
-      var prev = layer.style.background;
-      drain(dangerColor);
-      layer.style.background = prev;
-      busy = false;
-      el.classList.remove("is-active");
-    }
-    function reset() {
-      busy = false;
-      el.classList.remove("is-active");
-      layer.style.transform = "scaleX(0)";
-    }
+    function success() { settle(null); }
+    function fail() { if (!reducedMotion) settle(dangerColor); }
+    function reset() { busy = false; el.classList.remove("is-active"); layer.style.transform = "scaleX(0)"; }
     var demoTimer = null;
     function start() {
       if (reducedMotion || demoTimer != null) return;
@@ -295,8 +292,7 @@
       demoTimer = setTimeout(function () {
         success();
         demoTimer = setTimeout(function () {
-          demoTimer = null;
-          start();
+          demoTimer = null; start();
         }, durationMs * 0.7);
       }, durationMs);
     }
@@ -307,6 +303,7 @@
     function destroy() {
       stop();
       if (layer.parentNode) layer.parentNode.removeChild(layer);
+      if (forcedPosition) el.style.position = "";
     }
     if (autoStart) start();
     return {
@@ -322,7 +319,7 @@
    * page-relative press coordinates (center without them); fail() fires
    * a danger-colored ripple from the center.
    */
-  function makeRipple(el, color, dangerColor, durationMs, reducedMotion, autoStart) {
+  function makeRipple(el, color, dangerColor, durationMs, reducedMotion, autoStart, forcedPosition) {
     function begin(x, y, rippleColor) {
       if (reducedMotion) return;
       var rect = el.getBoundingClientRect();
@@ -365,8 +362,8 @@
     var demoTimer = null;
     function start() {
       if (reducedMotion || demoTimer != null) return;
-      // Demo: a center ripple every beat so the preview keeps showing
-      // the press acknowledgment.
+      // Demo: a center ripple every beat, so the preview keeps
+      // showing the press acknowledgment.
       begin();
       demoTimer = setTimeout(function () {
         demoTimer = null;
@@ -380,6 +377,7 @@
     function destroy() {
       stop();
       el.removeEventListener("pointerdown", press);
+      if (forcedPosition) el.style.position = "";
     }
     if (autoStart) {
       // A ripple wants a real press: wire pointerdown so the demo IS
@@ -392,7 +390,6 @@
       start: start, stop: stop, destroy: destroy, isRunning: function () { return false; }
     };
   }
-
   global.ButtonLoader = {
     create: create,
     wrap: create
