@@ -228,40 +228,8 @@ adapter mounts OK.
 ## Backlog (discovered during this component, not fixed here)
 
 - `index.d.ts`: `LoaderOptions` remains a grab-bag for the 20 older
-  styles (React declares for Swap/CountUp/Shake/Shuffle added with the
-  restructuring, `4395979`).
-
-## Repository restructuring (COMPLETE)
-
-Stages executed across commits `5047c37`, `c3c94e6`, `e0145a2`,
-`0ba62cb` (tracker), `4395979`:
-
-1. **Root hygiene** (`5047c37`): 5 tracked `tmp-*.png` screenshots
-   removed (committed by accident, zero references); react test
-   bundles relocated from repo root into `tests/` with the test pages'
-   script src updated; `.gitignore`'s five overlapping png patterns
-   replaced by one anchored `/*.png`.
-2. **Executed plans removed** (`c3c94e6`): `plans/001-003` all
-   executed (dropdown placement documented, smoke.js shipped, filter
-   fade shipped); `docs/superpowers/plans/` hybrid-redesign plan
-   executed (playground has hero, sections, drawer, search). Git
-   history preserves all.
-3. **Misleading names fixed** (`e0145a2`): `src/css/variants.css` →
-   `page-variants.css` (only PageLoader's wipe panels); `animations/
-   scenes-more.js` → `scenes-2.js` (sequence now scenes.js, scenes-2,
-   scenes-3 … scenes-13); `tests/fix-verify.html` → `regression.html`.
-4. **Registration sprawl documented** (`0ba62cb`): ARCHITECTURE's
-   "Why style registration stays in four explicit lists" — the wrap()
-   boilerplate keep-in-sync note and the four-list rationale.
-
-Regression gates for the restructuring: smoke OK, build OK,
-`tests/regression.html` 7/7 PASS.
-
-## Backlog (discovered during this component, not fixed here)
-
-- `index.d.ts`: `LoaderOptions` remains a grab-bag for the 20 older
-  styles (React declares for Swap/CountUp/Shake/Shuffle added with the
-  restructuring, `4395979`).
+  styles (React declares for Swap/CountUp/Shake/Shuffle now present,
+  Route declare moved up with its siblings).
 
 ## Repository restructuring (COMPLETE)
 
@@ -286,18 +254,14 @@ Stages executed across commits `5047c37`, `c3c94e6`, `e0145a2`,
    (swap/countup/shake/shuffle added, css list updated to
    page-variants.css); `docs/STYLES.md` counts corrected to 46
    categories / 176 demos.
-5. **React declares added** (`4395979`): Swap/CountUp/Shake/Shuffle
-   React component declares added to index.d.ts; Route declare moved
-   up with its siblings.
+5. **React declares added** (`5047c37`, completed `39669b0`):
+   Swap/CountUp/Shake/Shuffle React component declares added to
+   index.d.ts; Route declare moved up with its siblings. (An earlier
+   tracker note wrongly attributed these to `4395979` — that commit
+   was the loader fix batch and did not touch index.d.ts.)
 
 Regression gates for the restructuring: smoke OK, build OK,
 `tests/regression.html` 7/7 PASS.
-
-## Backlog (discovered during this component, not fixed here)
-
-- `index.d.ts`: `LoaderOptions` remains a grab-bag for the 20 older
-  styles (React declares for Swap/CountUp/Shake/Shuffle added with the
-  restructuring, `4395979`).
 
 ## Components remaining in this category
 
