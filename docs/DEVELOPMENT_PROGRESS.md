@@ -85,7 +85,7 @@ not site chrome).
   blocks scroll instead of mid-token wrapping on phones. Reduced-
   motion and contrast audited — already compliant.
 - Phase 9 — regression gate: `COMPLETE` — smoke 49 OK, build OK,
-  route-test 44/44, fix-verify 7/7, react mounts, playground e2e
+  route-test 44/44, regression 7/7, react mounts, playground e2e
   (browse/lazy/copy/about/search) clean, no console errors.
 
 **Watched item:** one transient tune-render left a stage empty
@@ -222,7 +222,7 @@ against source and fixed across three commits (`3a75e1b`, `6aa5ef8`,
    sibling files" section with a keep-in-sync warning. (`4395979`)
 
 Regression gates for the batch: smoke 49 files OK, build OK,
-route-test 44/44 PASS, `tests/fix-verify.html` 7/7 PASS, React
+route-test 44/44 PASS, `tests/regression.html` 7/7 PASS, React
 adapter mounts OK.
 
 ## Backlog (discovered during this component, not fixed here)

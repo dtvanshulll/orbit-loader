@@ -7,7 +7,7 @@
  * a `category` (its own playground section + sidebar group) and
  * `parts`: one loader per animated element inside box.html, bound by
  * selector. The loaders are the same ones the style sections demo —
- * scenes show them doing a real job. The rest live in scenes-more.js
+ * scenes show them doing a real job. The rest live in scenes-2.js
  * (both files stay under the 400-line ceiling).
  */
 (function (global) {

@@ -4,7 +4,7 @@
  * Catches the two failure classes that have actually shipped here:
  *   1. syntax errors in any library or scene source (node --check),
  *   2. scene files that pass a syntax check but throw at runtime and
- *      silently register nothing — the scenes-more.js "CHECK is not
+ *      silently register nothing — the scenes-2.js "CHECK is not
  *      defined" bug that dropped 12 of 127 demos while everything
  *      looked green.
  *
