@@ -81,9 +81,23 @@ body.pg-arriving .pg-cards { animation: pg-catalog-in var(--pg-dur-panel) var(--
   /* The search is the only search surface — hiding it left phones with
      no way to search. Compact instead: fill the freed row, drop the kbd
      hint, and skip the focus width-breathe (the row has no slack). */
-  .pg-search { display: flex; flex: 1 1 auto; }
+  .pg-search { display: flex; flex: 1 1 72px; }
   .pg-search:focus-within { flex-basis: auto; }
   .pg-search-kbd { display: none; }
+  /* The phone row carries menu + mark + wordmark + search + GitHub in
+     ~310px of content width — it only fits if every fixed item gives
+     a little: tighter brand gaps, a 24px mark, a 15px wordmark capped
+     at 100px (ellipsis), and a search that shrinks to its icon and
+     breathes open on focus. (Header padding/gap for phones live in
+     footer.css's 760px block — one authority, not two.) */
+  .pg-brand { gap: 10px; }
+  /* The mark is identity at a price a phone row can't pay — the
+     wordmark (and the favicon) carry it; the hero still shows the
+     instrument at full size. */
+  .pg-header .pg-mark { display: none; }
+  .pg-brand-text h1 { font-size: 15px; max-width: 100px; }
+  /* (The code-block scroll rule for phones lives after the base
+     .pg-code .pg-snippet rule below — cascade order matters.) */
   /* The tagline rule below is dead (no <p> in the brand) — kept out.
      The " Playground" suffix is what a phone row can't afford; the
      wordmark alone carries it and the search gets the space back. */
@@ -134,6 +148,12 @@ body.pg-arriving .pg-cards { animation: pg-catalog-in var(--pg-dur-panel) var(--
   padding: 12px 14px;
   white-space: pre-wrap;
   word-break: break-word;
+}
+/* Phones: wrapping splits tokens mid-number ("120" across lines).
+   Scroll instead — the way the base .pg-snippet already behaves. This
+   must come AFTER the base rule above to win the cascade. */
+@media (max-width: 719px) {
+  .pg-code .pg-snippet { white-space: pre; overflow-x: auto; word-break: normal; }
 }
 
 /* ---------- actions ---------- */

@@ -71,6 +71,19 @@
         : list.length;
     }
     var filter = makeFilter(cards, sections);
+    // Phones: the search box shrinks to ~100px, where the full
+    // placeholder reads as a truncation bug. Swap it, and keep the
+    // swap honest across rotation via the media query's own listener.
+    var searchInput = document.getElementById("pg-search-input");
+    if (searchInput && global.matchMedia) {
+      var phoneMQ = global.matchMedia("(max-width: 719px)");
+      var setPlaceholder = function () {
+        searchInput.placeholder = phoneMQ.matches ? "Search\u2026" : "Search the animations\u2026";
+      };
+      setPlaceholder();
+      if (phoneMQ.addEventListener) phoneMQ.addEventListener("change", setPlaceholder);
+      else if (phoneMQ.addListener) phoneMQ.addListener(setPlaceholder); // old Safari/Edge
+    }
     startMark();
     startHero();
     wireReveal();
@@ -90,7 +103,13 @@
     });
     var brand = document.querySelector(".pg-brand");
     if (brand) {
-      brand.addEventListener("click", function () { enterIntro(); });
+      brand.addEventListener("click", function (e) {
+        // The hamburger lives inside the brand block; its own click
+        // opens the drawer — it must not also fire the brand's "back to
+        // the intro" (which stole focus into the search box mid-drawer).
+        if (e.target.closest && e.target.closest(".pg-menu-btn")) return;
+        enterIntro();
+      });
       brand.setAttribute("title", "Back to the intro");
     }
     // The About view: a full-screen state like the intro. Esc or the
