@@ -240,6 +240,7 @@
       if (anim) anim.cancel();
       if (placeholder && placeholder.parentNode) placeholder.parentNode.removeChild(placeholder);
       if (svg.parentNode) svg.parentNode.removeChild(svg);
+      if (icon.parentNode) icon.parentNode.removeChild(icon);
     }
 
     function isRunning() { return running; }

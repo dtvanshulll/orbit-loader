@@ -189,6 +189,7 @@
       stop();
       if (anim) anim.cancel();
       if (svg.parentNode) svg.parentNode.removeChild(svg);
+      if (chevron.parentNode) chevron.parentNode.removeChild(chevron);
     }
 
     function isRunning() { return running; }

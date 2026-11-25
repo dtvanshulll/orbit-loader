@@ -56,6 +56,12 @@
     var chunk = options.chunk != null ? options.chunk : 0.18;
     var strokeWidth = options.strokeWidth != null ? options.strokeWidth : 2;
     var container = null;
+    // Tracks which branch built the <svg>: only an svg THIS call built
+    // (the container-based branch) is ours to remove on destroy() — a
+    // path-based call is handed an element the caller already owns, and
+    // must leave its svg alone on destroy(), same contract as the core.
+    var ownsSvg = false;
+    var ticks = [];
     if (pathEl && pathEl.ownerSVGElement) {
       // Path-based call: animate the given element, like the core.
       container = pathEl.parentNode;
@@ -99,6 +105,7 @@
       if (options.color != null) pathEl.style.stroke = options.color;
       svg.appendChild(pathEl);
       container.appendChild(svg);
+      ownsSvg = true;
     }
 
     var headRadius = options.headRadius != null ? options.headRadius : 3;
@@ -120,6 +127,7 @@
         if (color != null) tick.style.fill = color;
         tick.style.opacity = 0.55;
         pathEl.parentNode.appendChild(tick);
+        ticks.push(tick);
       }
     }
 
@@ -302,8 +310,17 @@
 
     function destroy() {
       stop();
-      var svg = pathEl.parentNode;
-      if (svg && svg.parentNode) svg.parentNode.removeChild(svg);
+      if (ownsSvg) {
+        var svg = pathEl.parentNode;
+        if (svg && svg.parentNode) svg.parentNode.removeChild(svg);
+      } else {
+        // A path-based call never owns pathEl's svg — only the head
+        // dot and any tick marks we injected into it are ours to undo.
+        if (head.parentNode) head.parentNode.removeChild(head);
+        for (var i = 0; i < ticks.length; i++) {
+          if (ticks[i].parentNode) ticks[i].parentNode.removeChild(ticks[i]);
+        }
+      }
     }
 
     function isRunning() { return running; }

@@ -2,7 +2,7 @@
  * TraceLoop shape helpers — text. Letter and word paths drawn from
  * hand-authored glyph skeletons, plus textBoxForElement() for wrapping
  * a live text element. See shapes-core.js for the file map and the
- * load order (core, text, outline-glyphs, outline).
+ * load order (core, text, outline, outline-glyphs).
  *
  * Registers the internals the outline file builds on (_aspect, _glyphs,
  * _rnd) — underscore keys are internal, not consumer API.

@@ -221,6 +221,7 @@
       anims = [];
       if (backdrop && backdrop.parentNode) backdrop.parentNode.removeChild(backdrop);
       if (svg.parentNode) svg.parentNode.removeChild(svg);
+      if (closeBtn.parentNode) closeBtn.parentNode.removeChild(closeBtn);
       el.classList.remove("orbit-loader-modal-host");
       el.style.zIndex = "";
     }

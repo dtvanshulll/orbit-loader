@@ -69,9 +69,10 @@
     // Optional tab labels: a row of evenly spaced spans above the rail.
     // Each is clickable and crawls the underline to that tab — the
     // demo IS the interaction. Labels inherit currentColor.
+    var row = null;
     if (labels && labels.length) {
       tabs = labels.length;
-      var row = document.createElement("div");
+      row = document.createElement("div");
       row.className = "orbit-loader-tab-labels";
       for (var li = 0; li < labels.length; li++) {
         (function (idx, text) {
@@ -243,6 +244,7 @@
       global.removeEventListener("resize", onResize);
       if (active) active.cancel();
       if (svg.parentNode) svg.parentNode.removeChild(svg);
+      if (row && row.parentNode) row.parentNode.removeChild(row);
     }
 
     function isRunning() { return running; }

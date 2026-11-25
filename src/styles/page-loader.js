@@ -323,14 +323,19 @@
       if (doneTimer != null) { global.clearTimeout(doneTimer); doneTimer = null; }
       if (restTimer != null) { global.clearTimeout(restTimer); restTimer = null; }
       if (fadeAnim) fadeAnim.cancel();
-      bar.style.opacity = 0;
+      // Only the 'bar' variant built a bar/svg — the wipe variants
+      // (bars/curtain/iris/slide) have neither, just their own panels.
+      if (bar) bar.style.opacity = 0;
       el.classList.remove("is-active");
     }
 
     function destroy() {
       stop();
       global.removeEventListener("resize", onResize);
-      if (svg.parentNode) svg.parentNode.removeChild(svg);
+      if (svg && svg.parentNode) svg.parentNode.removeChild(svg);
+      for (var i = 0; i < panels.length; i++) {
+        if (panels[i].parentNode) panels[i].parentNode.removeChild(panels[i]);
+      }
     }
 
     function isRunning() { return running; }

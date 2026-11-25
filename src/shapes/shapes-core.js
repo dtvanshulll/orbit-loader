@@ -13,7 +13,7 @@
  *   outline-glyphs.js   the hand-authored letter-outline contour data
  *   shapes-outline.js   letterOutline() + the offset/stroke math it needs
  *
- * Load order matters: core, text, outline-glyphs, outline. Everything is
+ * Load order matters: core, text, outline, outline-glyphs. Everything is
  * pure string/number math: no DOM, no browser APIs (textBoxForElement is
  * the one exception, and it only *reads* a rect from an element you hand
  * it). Files share only through the public api object — an underscore
@@ -87,6 +87,13 @@
    * than half an edge. Returns a bare `d` string like circle(), so any
    * style can chase it: triangle, pentagon, hexagon, star bases.
    */
+  // 2D vector helpers for the corner-rounding math below. Each shape
+  // file is its own closure (they share only the api object), so these
+  // are a small local copy rather than a cross-file reference — the
+  // same two one-liners shapes-outline.js keeps for its own offsetting.
+  function vSub(a, b) { return [a[0] - b[0], a[1] - b[1]]; }
+  function vLen(v) { return Math.sqrt(v[0] * v[0] + v[1] * v[1]) || 1; }
+
   function polygon(sides, size, radius) {
     sides = Math.max(3, Math.round(sides || 3));
     var R = size / 2, cx = R, cy = R;

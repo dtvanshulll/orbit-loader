@@ -165,6 +165,14 @@
 
     var controller = create(path, options);
     controller.svg = svg;
+    // wrap() owns the svg it injected; create()'s destroy only ever
+    // touches pathEl, so wrap it here rather than leaving an orphaned
+    // <svg> in the container after destroy().
+    var innerDestroy = controller.destroy;
+    controller.destroy = function () {
+      innerDestroy();
+      if (svg.parentNode) svg.parentNode.removeChild(svg);
+    };
     return controller;
   }
 
