@@ -62,9 +62,8 @@
 
     // The trigger: built here, so the component is self-contained —
     // the container just needs a position. Click toggles the menu.
-    if (global.getComputedStyle(el).position === "static") {
-      el.style.position = "relative";
-    }
+    var forcedPosition = global.getComputedStyle(el).position === "static";
+    if (forcedPosition) el.style.position = "relative";
     var trigger = document.createElement("button");
     trigger.type = "button";
     trigger.className = "orbit-loader-dropdown-trigger";
@@ -283,9 +282,10 @@
       anims = [];
       if (panel && panel.parentNode) panel.parentNode.removeChild(panel);
       if (trigger && trigger.parentNode) trigger.parentNode.removeChild(trigger);
+      if (forcedPosition) el.style.position = "";
     }
 
-    function isRunning() { return running; }
+    function isRunning() { return running || isOpen; }
 
     if (autoStart) start();
 

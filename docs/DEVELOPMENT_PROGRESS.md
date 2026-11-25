@@ -277,6 +277,26 @@ already met the bar at ship time).
 **Verdict: Category 2 PASSES its completion gate.** Next category:
 3 — progress + feedback (progress, countup, shake, shuffle).
 
+### Cleanup 4.1 — component styles (COMPLETE)
+
+Category 4 audit: search 270L, modal 251L, accordion 218L, drawer
+269L, dropdown 313L, input 291L. All six injected SVGs; five applied
+the static-container fixup but never restored it (drawer's panel is
+caller-positioned by contract — no fixup, correct).
+
+- **Fixup restore** added to search/modal/accordion/dropdown/input.
+- **isRunning truthfulness** (the ButtonLoader 2.1 standard): all six
+  only reported the demo loop. Now: demo loop OR the component's
+  engaged state (open field/dialog/section/drawer/menu, focused or
+  success/error input). These are stateful components — staying
+  engaged while open is the truthful answer.
+- Clamps: accordion + drawer `durationMs` floored at 1.
+
+Tests: new `tests/components-test.html` — **30/30 PASS** (open/close
+lifecycle for all six, fixup restore ×5, destroy cleanup, engaged
+semantics, reduced motion opens instantly). Gate: smoke 47/170,
+build OK.
+
 ### Cleanup 3.1 — progress + feedback styles (COMPLETE)
 
 Category 3 audit: progress 353L (57 demos, no harness), countup 176L

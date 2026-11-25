@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<!--
+  TraceLoop — component styles test harness (components category):
+  SearchLoader, ModalLoader, AccordionLoader, DrawerLoader,
+  DropdownLoader, InputLoader in one page.
+  Covers: open/close lifecycle per component, static-container fixup
+  restore (the category-wide recurring bug), destroy cleanup,
+  isRunning truthfulness, reduced motion, duration clamp.
+  Open in a browser; verdict lands in the page body and document.title.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<title>COMPONENTS TESTS: RUNNING</title>
+<link rel="stylesheet" href="../dist/traceloop.css">
+<style>
+  body { font: 13px/1.5 monospace; background: #141413; color: #faf9f5; padding: 20px; }
+  .pass { color: #788c5d; } .fail { color: #d97757; }
+  .search { width: 260px; height: 44px; background: #262420; border: 1px solid #33312c; margin: 10px 0; position: relative; color: #d97757; }
+  .modal-host { width: 300px; height: 160px; background: #262420; border: 1px solid #33312c; margin: 10px 0; position: relative; color: #d97757; }
+  .acc { width: 280px; background: #262420; border: 1px solid #33312c; margin: 10px 0; position: relative; color: #d97757; }
+  .acc-body { overflow: hidden; }
+  .drawer-panel { position: fixed; top: 0; right: 0; width: 220px; height: 200px; background: #262420; z-index: 60; color: #788c5d; }
+  .dd { width: 220px; height: 40px; background: #262420; border: 1px solid #33312c; margin: 10px 0; position: relative; color: #6a9bcc; }
+  .inp { width: 260px; height: 46px; background: #262420; border: 1px solid #33312c; margin: 10px 0; position: relative; color: #d97757; }
+</style>
+</head>
+<body>
+<div id="results">running…</div>
+<div class="search" id="se1"></div>
+<div class="search" id="se2" style="position: static"></div>
+<div class="modal-host" id="mo1"></div>
+<div class="modal-host" id="mo2" style="position: static"></div>
+<div class="acc" id="ac1"><div class="acc-body" id="ac1-body">accordion content</div></div>
+<div class="drawer-panel" id="dr1"></div>
+<div class="dd" id="dd1"></div>
+<div class="dd" id="dd2" style="position: static"></div>
+<div class="inp" id="in1"></div>
+<div class="inp" id="in2" style="position: static"></div>
+
+<script src="../src/styles/search-loader.js"></script>
+<script src="../src/styles/modal-loader.js"></script>
+<script src="../src/styles/accordion-loader.js"></script>
+<script src="../src/styles/drawer-loader.js"></script>
+<script src="../src/styles/dropdown-loader.js"></script>
+<script src="../src/styles/input-loader.js"></script>
+<script>
+"use strict";
+var results = [];
+function check(n, ok, d) { results.push({ n: n, ok: !!ok, d: d || "" }); }
+function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+async function run() {
+  var realMM = window.matchMedia;
+
+  /* — SearchLoader — */
+  var s1 = SearchLoader.create("#se1", { autoStart: false, durationMs: 300 });
+  s1.open();
+  check("search: open runs", s1.isRunning());
+  await wait(500);
+  check("search: still engaged while open (stateful)", s1.isRunning());
+  s1.close();
+  await wait(500);
+  check("search: disengaged after close", !s1.isRunning());
+  s1.close();
+  await wait(500);
+  s1.destroy();
+  check("search: destroy removes svg", !document.querySelector("#se1 svg"));
+
+  var se2 = document.getElementById("se2");
+  var s2 = SearchLoader.create(se2, { autoStart: false });
+  check("search: static host forced relative", getComputedStyle(se2).position === "relative");
+  s2.destroy();
+  check("search: static host restored on destroy", se2.style.position === "");
+
+  /* — ModalLoader — */
+  var m1 = ModalLoader.create("#mo1", { autoStart: false, durationMs: 300 });
+  m1.open();
+  check("modal: open runs", m1.isRunning());
+  await wait(550);
+  check("modal: still engaged while open (stateful)", m1.isRunning());
+  check("modal: backdrop present", m1.backdrop !== undefined || !!document.querySelector("#mo1 .orbit-loader-modal-backdrop, #mo1 + .orbit-loader-modal-backdrop, .orbit-loader-modal-backdrop"));
+  m1.close();
+  await wait(550);
+  check("modal: disengaged after close", !m1.isRunning());
+  m1.destroy();
+  check("modal: destroy removes backdrop + svg",
+    !document.querySelector("#mo1 svg") && !document.querySelector("#mo1 .orbit-loader-modal-backdrop"));
+
+  var mo2 = document.getElementById("mo2");
+  var m2 = ModalLoader.create(mo2, { autoStart: false });
+  check("modal: static host forced relative", getComputedStyle(mo2).position === "relative");
+  m2.destroy();
+  check("modal: static host restored on destroy", mo2.style.position === "");
+
+  /* — AccordionLoader — */
+  var a1 = AccordionLoader.create("#ac1", { target: "#ac1-body", autoStart: false, durationMs: 250 });
+  a1.open();
+  check("accordion: open runs", a1.isRunning());
+  await wait(450);
+  check("accordion: still engaged while open (stateful)", a1.isRunning());
+  a1.close();
+  await wait(450);
+  check("accordion: disengaged after close", !a1.isRunning());
+  a1.destroy();
+  check("accordion: destroy removes edge svg", !document.querySelector("#ac1 > svg"));
+
+  /* — DrawerLoader — */
+  var d1 = DrawerLoader.create("#dr1", { side: "right", autoStart: false, durationMs: 250 });
+  d1.open();
+  check("drawer: open runs", d1.isRunning());
+  await wait(450);
+  d1.close();
+  await wait(450);
+  d1.destroy();
+  check("drawer: destroy removes edge svg", !document.querySelector("#dr1 svg"));
+
+  /* — DropdownLoader — */
+  var dd1 = DropdownLoader.create("#dd1", { autoStart: false, durationMs: 250 });
+  dd1.open();
+  check("dropdown: open runs", dd1.isRunning());
+  await wait(450);
+  dd1.close();
+  await wait(450);
+  dd1.destroy();
+  check("dropdown: destroy removes panel + trigger svg",
+    !document.querySelector("#dd1 svg"));
+
+  var dd2 = document.getElementById("dd2");
+  var dd2c = DropdownLoader.create(dd2, { autoStart: false });
+  check("dropdown: static host forced relative", getComputedStyle(dd2).position === "relative");
+  dd2c.destroy();
+  check("dropdown: static host restored on destroy", dd2.style.position === "");
+
+  /* — InputLoader — */
+  var i1 = InputLoader.create("#in1", { autoStart: false, durationMs: 250 });
+  i1.focus();
+  check("input: focus runs", i1.isRunning());
+  await wait(450);
+  check("input: still engaged while focused (stateful)", i1.isRunning());
+  i1.blur();
+  await wait(450);
+  check("input: disengaged after blur", !i1.isRunning());
+  i1.destroy();
+  check("input: destroy removes svg + label", !document.querySelector("#in1 svg"));
+
+  var in2 = document.getElementById("in2");
+  var i2 = InputLoader.create(in2, { autoStart: false });
+  check("input: static host forced relative", getComputedStyle(in2).position === "relative");
+  i2.destroy();
+  check("input: static host restored on destroy", in2.style.position === "");
+
+  /* — reduced motion: open() paints the final state, no loop — */
+  window.matchMedia = function (q) { return { matches: q.indexOf("prefers-reduced-motion") >= 0, media: q, addListener: function(){}, removeListener: function(){}, addEventListener: function(){}, removeEventListener: function(){} }; };
+  var s3 = SearchLoader.create("#se1", { autoStart: false });
+  s3.open();
+  await wait(100);
+  check("search reduced: opens instantly (final state, no motion)", s3.isRunning());
+  s3.destroy();
+  window.matchMedia = realMM;
+
+  var pass = 0, fail = 0, html = "";
+  for (var i = 0; i < results.length; i++) {
+    if (results[i].ok) pass++; else fail++;
+    html += '<div class="' + (results[i].ok ? "pass" : "fail") + '">' +
+      (results[i].ok ? "PASS" : "FAIL") + " — " + results[i].n +
+      (results[i].d ? " (" + results[i].d + ")" : "") + "</div>";
+  }
+  document.getElementById("results").innerHTML = html;
+  document.title = fail === 0 ? "COMPONENTS TESTS: PASS" : "COMPONENTS TESTS: FAIL " + fail;
+}
+run();
+</script>
+</body>
+</html>

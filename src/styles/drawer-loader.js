@@ -60,7 +60,7 @@
     if (!el) throw new Error("DrawerLoader.create: container not found");
     var side = options.side || "left";
     if (!CLOSED_TRANSFORM[side]) side = "left";
-    var durationMs = options.durationMs != null ? options.durationMs : 420;
+    var durationMs = Math.max(1, options.durationMs != null ? options.durationMs : 420);
     var restMs = options.restMs != null ? options.restMs : 1600;
     var strokeWidth = options.strokeWidth != null ? options.strokeWidth : 2;
     var color = options.color != null ? options.color : null;
@@ -243,7 +243,7 @@
       el.style.zIndex = "";
     }
 
-    function isRunning() { return running; }
+    function isRunning() { return running || el.classList.contains("is-active"); }
 
     if (autoStart) start();
 

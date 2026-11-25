@@ -57,9 +57,8 @@
     var color = options.color != null ? options.color : null;
     var autoStart = options.autoStart !== false;
 
-    if (global.getComputedStyle(el).position === "static") {
-      el.style.position = "relative";
-    }
+    var forcedPosition = global.getComputedStyle(el).position === "static";
+    if (forcedPosition) el.style.position = "relative";
     // Width transitions in CSS so it stays smooth and cheap; the
     // underline draw is WAAPI on dashoffset, started at the same
     // moment so both motions land together.
@@ -241,9 +240,10 @@
       if (placeholder && placeholder.parentNode) placeholder.parentNode.removeChild(placeholder);
       if (svg.parentNode) svg.parentNode.removeChild(svg);
       if (icon.parentNode) icon.parentNode.removeChild(icon);
+      if (forcedPosition) el.style.position = "";
     }
 
-    function isRunning() { return running; }
+    function isRunning() { return running || el.classList.contains("is-active"); }
 
     if (autoStart) start();
 

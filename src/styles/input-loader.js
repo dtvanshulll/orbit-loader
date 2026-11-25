@@ -58,9 +58,8 @@
     var autoStart = options.autoStart !== false;
     var delayMs = options.delayMs != null ? options.delayMs : 0;
 
-    if (global.getComputedStyle(el).position === "static") {
-      el.style.position = "relative";
-    }
+    var forcedPosition = global.getComputedStyle(el).position === "static";
+    if (forcedPosition) el.style.position = "relative";
 
     // The underline: one path across the field's bottom, rebuilt at
     // the field's pixel width on resize (1 unit = 1px, dash math exact).
@@ -254,9 +253,10 @@
       if (valueEl && valueEl.parentNode) valueEl.parentNode.removeChild(valueEl);
       if (status.parentNode) status.parentNode.removeChild(status);
       if (svg.parentNode) svg.parentNode.removeChild(svg);
+      if (forcedPosition) el.style.position = "";
     }
 
-    function isRunning() { return running; }
+    function isRunning() { return running || state !== "idle"; }
 
     if (autoStart && delayMs > 0) {
       startTimer = global.setTimeout(function () {

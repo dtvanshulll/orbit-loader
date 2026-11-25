@@ -45,7 +45,7 @@
     options = options || {};
     if (typeof el === "string") el = document.querySelector(el);
     if (!el) throw new Error("AccordionLoader.create: container not found");
-    var durationMs = options.durationMs != null ? options.durationMs : 420;
+    var durationMs = Math.max(1, options.durationMs != null ? options.durationMs : 420);
     var restMs = options.restMs != null ? options.restMs : 1500;
     var strokeWidth = options.strokeWidth != null ? options.strokeWidth : 2;
     // How tall the panel sits when closed. 0 keeps the old behavior (a
@@ -55,9 +55,8 @@
     var color = options.color != null ? options.color : null;
     var autoStart = options.autoStart !== false;
 
-    if (global.getComputedStyle(el).position === "static") {
-      el.style.position = "relative";
-    }
+    var forcedPosition = global.getComputedStyle(el).position === "static";
+    if (forcedPosition) el.style.position = "relative";
 
     // Height animates via CSS transition; the edge draw is WAAPI on
     // dashoffset, started at the same moment.
@@ -190,9 +189,10 @@
       if (anim) anim.cancel();
       if (svg.parentNode) svg.parentNode.removeChild(svg);
       if (chevron.parentNode) chevron.parentNode.removeChild(chevron);
+      if (forcedPosition) el.style.position = "";
     }
 
-    function isRunning() { return running; }
+    function isRunning() { return running || el.classList.contains("is-active"); }
 
     if (autoStart) start();
 

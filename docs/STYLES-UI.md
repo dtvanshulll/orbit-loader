@@ -274,6 +274,10 @@ Controller also exposes: `open()`, `close()`, `toggle()`, `line`,
 `icon` (the Lucide magnifier — ring draws, then the handle),
 `placeholder`.
 
+Static hosts get the position fixup (restored on
+`destroy()`); `isRunning()` is true while the demo loop runs OR the
+field is open.
+
 ## ModalLoader — `src/styles/modal-loader.js`
 
 The dialog entrance: the backdrop fades, the panel rises and settles,
@@ -295,6 +299,10 @@ Controller also exposes: `open()`, `close()`, `frame`,
 `closeBtn` (the Lucide X — draws after the border trace; clicking it
 closes the dialog).
 
+Static hosts get the position fixup (restored on
+`destroy()`); `isRunning()` is true while the demo loop runs OR the
+dialog is open.
+
 ## AccordionLoader — `src/styles/accordion-loader.js`
 
 The expanding section: `open()` grows the panel's height and draws its
@@ -313,6 +321,10 @@ instead of jumping to the end state.
 Controller also exposes: `open()`, `close()`, `toggle()`, `edge`,
 `chevron` (Lucide chevron-down — draws on first open, rotates with
 every toggle after).
+
+Static hosts get the position fixup (restored on
+`destroy()`); `isRunning()` is true while the demo loop runs OR the
+section is open. `durationMs` is floored at 1.
 
 
 ## DrawerLoader — `src/styles/drawer-loader.js`
@@ -338,6 +350,10 @@ grab handle that draws after the edge lands).
 Controller also exposes: `open()`, `close()`, `toggle()`, `edge`,
 `backdrop`.
 
+The panel is caller-positioned by contract (fixed or
+absolute) � no position fixup is applied; `isRunning()` is true while
+the demo loop runs OR the drawer is open. `durationMs` is floored at 1.
+
 
 ## DropdownLoader — `src/styles/dropdown-loader.js`
 
@@ -360,6 +376,10 @@ for you inside the container.
 Controller also exposes: `open()`, `close()`, `toggle()`,
 `select(i)`, `value()`, `trigger`, `panel`, `frame`.
 
+Static hosts get the position fixup (restored on
+`destroy()`); `isRunning()` is true while the demo loop runs OR the
+menu is open.
+
 ## InputLoader — `src/styles/input-loader.js`
 
 The text field: `focus()` draws the underline with the label floating
@@ -379,6 +399,10 @@ right edge, `error()` hands it to red and shakes the field once,
 
 Controller also exposes: `focus()`, `blur()`, `success()`,
 `error()`, `line`, `label`, `status`.
+
+Static hosts get the position fixup (restored on
+`destroy()`); `isRunning()` is true while the demo loop runs OR the
+field is focused/in a success or error state.
 
 ## CountUpLoader — `src/styles/countup-loader.js`
 

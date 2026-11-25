@@ -64,9 +64,8 @@
     var backdropPosition = options.backdropPosition || "fixed";
     var autoStart = options.autoStart !== false;
 
-    if (global.getComputedStyle(el).position === "static") {
-      el.style.position = "relative";
-    }
+    var forcedPosition = global.getComputedStyle(el).position === "static";
+    if (forcedPosition) el.style.position = "relative";
 
     // Optional backdrop: a fixed overlay behind the panel, faded by
     // its own is-active class (toggled in open/close — sibling-order
@@ -224,9 +223,10 @@
       if (closeBtn.parentNode) closeBtn.parentNode.removeChild(closeBtn);
       el.classList.remove("orbit-loader-modal-host");
       el.style.zIndex = "";
+      if (forcedPosition) el.style.position = "";
     }
 
-    function isRunning() { return running; }
+    function isRunning() { return running || el.classList.contains("is-active"); }
 
     if (autoStart) start();
 
