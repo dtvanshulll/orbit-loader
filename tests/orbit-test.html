@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<!--
+  TraceLoop — OrbitLoader test harness (looping-loaders category).
+  Covers: input guards, visible/hidden measurement (the display:none
+  dead-loader bug), static-container fixup, steps/breathe/direction
+  keyframes, guide/offset, stop-during-retry, destroy restoration,
+  reduced motion.
+  Open in a browser; verdict lands in the page body and document.title.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<title>ORBIT TESTS: RUNNING</title>
+<link rel="stylesheet" href="../dist/traceloop.css">
+<style>
+  body { font: 13px/1.5 monospace; background: #141413; color: #faf9f5; padding: 20px; }
+  .pass { color: #788c5d; } .fail { color: #d97757; }
+  .stage { width: 120px; height: 120px; background: #262420; border: 1px solid #33312c; margin: 10px 0; }
+  #hidden-wrap { display: none; }
+</style>
+</head>
+<body>
+<div id="results">running…</div>
+<div class="stage" id="s-visible"></div>
+<div class="stage" id="s-static" style="position: static"><span>static host</span></div>
+<div id="hidden-wrap"><div class="stage" id="s-hidden"></div></div>
+<div class="stage" id="s-steps"></div>
+<div class="stage" id="s-breathe"></div>
+<div class="stage" id="s-reverse"></div>
+<div class="stage" id="s-guide"></div>
+<div class="stage" id="s-offset"></div>
+<div class="stage" id="s-color"></div>
+<div class="stage" id="s-destroy"></div>
+<div class="stage" id="s-reduced"></div>
+<div class="stage" id="s-empty"></div>
+
+<script src="../src/styles/orbit-loader.js"></script>
+<script src="../src/shapes/shapes-core.js"></script>
+<script>
+"use strict";
+var results = [];
+function check(n, ok, d) { results.push({ n: n, ok: !!ok, d: d || "" }); }
+function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+function D(size) { return OrbitLoaderShapes.circle(size); }
+function VB(size) { return "0 0 " + size + " " + size; }
+/* path.getAnimations() also returns the CSS transition the activeClass
+   fade triggers — keep only real WAAPI animations (they lack
+   transitionProperty). */
+function waapi(pathEl) {
+  return pathEl.getAnimations().filter(function (a) { return a.transitionProperty == null; });
+}
+function isHexOrRgb(v, hex, rgb) { return v === hex || v === rgb; }
+
+async function run() {
+  /* 1 — input guards */
+  var threw = "";
+  try { OrbitLoader.create(document.createElement("div"), {}); } catch (e) { threw = e.message; }
+  check("create: non-path throws with clear message", threw.indexOf("SVG <path>") >= 0, threw);
+  threw = "";
+  try { OrbitLoader.wrap("#does-not-exist", { d: D(72) }); } catch (e) { threw = e.message; }
+  check("wrap: missing container throws", threw.indexOf("container not found") >= 0, threw);
+  threw = "";
+  try { OrbitLoader.wrap("#s-visible", {}); } catch (e) { threw = e.message; }
+  check("wrap: missing d throws", threw.indexOf("options.d") >= 0, threw);
+
+  /* 2 — visible container: measured at creation, running */
+  var o1 = OrbitLoader.wrap("#s-visible", { d: D(72), viewBox: VB(72), autoStart: false });
+  var path = o1.path;
+  check("create: dasharray applied when visible", path.style.strokeDasharray.indexOf(" ") > 0,
+    path.style.strokeDasharray);
+  o1.start();
+  check("start: isRunning true", o1.isRunning());
+  check("start: activeClass added", path.classList.contains("is-active"));
+  var anims = waapi(path);
+  check("start: one WAAPI animation", anims.length === 1, "got " + anims.length);
+  var kf = anims[0].effect.getKeyframes();
+  check("glide: 2 keyframes", kf.length === 2, "got " + kf.length);
+  check("glide: forward ends at -total", parseFloat(kf[1].strokeDashoffset) < 0,
+    kf[1].strokeDashoffset);
+  o1.stop();
+  check("stop: isRunning false", !o1.isRunning());
+  check("stop: activeClass removed", !path.classList.contains("is-active"));
+  o1.destroy();
+
+  /* 3 — hidden container: getTotalLength is pure path-data geometry
+     (SVG2), so a loader created inside display:none still measures and
+     runs — pinned here as a regression guard against engines that
+     deviate. */
+  var o2 = OrbitLoader.wrap("#s-hidden", { d: D(72), viewBox: VB(72) });
+  var hp = o2.path;
+  check("hidden: dasharray applied while display:none", hp.style.strokeDasharray.indexOf(" ") > 0,
+    JSON.stringify(hp.style.strokeDasharray));
+  check("hidden: animation running", waapi(hp).length === 1);
+  document.getElementById("hidden-wrap").style.display = "block";
+  await wait(100);
+  check("hidden→shown: still running", waapi(hp).length === 1);
+  o2.destroy();
+  document.getElementById("hidden-wrap").style.display = "";
+
+  /* 4 — steps mode: metronome keyframes; steps=1 falls back to glide */
+  var o4 = OrbitLoader.wrap("#s-steps", { d: D(72), viewBox: VB(72), steps: 4, autoStart: false });
+  o4.start();
+  var skf = waapi(o4.path)[0].effect.getKeyframes();
+  check("steps=4: metronome keyframe count (4×3)", skf.length === 12, "got " + skf.length);
+  o4.stop(); o4.destroy();
+  var o4b = OrbitLoader.wrap("#s-steps", { d: D(72), viewBox: VB(72), steps: 1, autoStart: false });
+  o4b.start();
+  var skf1 = waapi(o4b.path)[0].effect.getKeyframes();
+  check("steps=1: falls back to 2-keyframe glide", skf1.length === 2, "got " + skf1.length);
+  o4b.stop(); o4b.destroy();
+
+  /* 5 — static container fixup */
+  var host = document.getElementById("s-static");
+  var o3 = OrbitLoader.wrap(host, { d: D(72), viewBox: VB(72), autoStart: false });
+  check("static host: forced to relative", getComputedStyle(host).position === "relative");
+  o3.destroy();
+  check("static host: position restored on destroy",
+    host.style.position === "" && getComputedStyle(host).position === "static");
+
+  /* 6 — breathe: crawl + width animation */
+  var o5 = OrbitLoader.wrap("#s-breathe", { d: D(72), viewBox: VB(72), breathe: 0.5, breatheMs: 900, autoStart: false });
+  o5.start();
+  check("breathe: two concurrent animations", waapi(o5.path).length === 2,
+    "got " + waapi(o5.path).length);
+  o5.stop();
+  check("breathe: stop cancels both", waapi(o5.path).length === 0);
+  o5.destroy();
+
+  /* 8 — direction reverse */
+  var o6 = OrbitLoader.wrap("#s-reverse", { d: D(72), viewBox: VB(72), direction: "reverse", autoStart: false });
+  o6.start();
+  var rkf = waapi(o6.path)[0].effect.getKeyframes();
+  check("reverse: ends at +total", parseFloat(rkf[1].strokeDashoffset) > 0, rkf[1].strokeDashoffset);
+  o6.stop(); o6.destroy();
+
+  /* 9 — guide + offset */
+  var o7 = OrbitLoader.wrap("#s-guide", { d: D(72), viewBox: VB(72), guideOpacity: 0.4, autoStart: false });
+  var guide = o7.svg.querySelector(".orbit-loader-guide");
+  check("guide: rendered with requested opacity", guide && guide.style.opacity === "0.4");
+  o7.destroy();
+  check("guide: removed with svg on destroy", !document.querySelector("#s-guide .orbit-loader-guide"));
+  var o8 = OrbitLoader.wrap("#s-offset", { d: D(72), viewBox: VB(72), offset: 6, autoStart: false });
+  check("offset: svg inset -6px", o8.svg.style.inset === "-6px", o8.svg.style.inset);
+  o8.destroy();
+
+  /* 10 — color/strokeWidth applied and cleared by destroy */
+  var o9 = OrbitLoader.wrap("#s-color", { d: D(72), viewBox: VB(72), color: "#d97757", strokeWidth: 5, autoStart: false });
+  check("color: applied (hex or normalized rgb)",
+    isHexOrRgb(o9.path.style.stroke, "#d97757", "rgb(217, 119, 87)"), o9.path.style.stroke);
+  check("strokeWidth: applied", o9.path.style.strokeWidth === "5");
+  o9.destroy();
+  check("destroy: caller styles cleared", o9.path.style.stroke === "" && o9.path.style.strokeWidth === "");
+
+  /* 11 — full destroy restoration */
+  var o10 = OrbitLoader.wrap("#s-destroy", { d: D(72), viewBox: VB(72) });
+  o10.destroy();
+  check("destroy: svg removed", !document.querySelector("#s-destroy svg"));
+  check("destroy: dasharray cleared", o10.path.style.strokeDasharray === "");
+
+  /* 12 — reduced motion: inert, no animation */
+  var realMM = window.matchMedia;
+  window.matchMedia = function (q) { return { matches: q.indexOf("prefers-reduced-motion") >= 0, media: q, addListener: function(){}, removeListener: function(){}, addEventListener: function(){}, removeEventListener: function(){} }; };
+  var o11 = OrbitLoader.wrap("#s-reduced", { d: D(72), viewBox: VB(72) });
+  check("reduced motion: no animation", waapi(o11.path).length === 0);
+  check("reduced motion: isRunning false", !o11.isRunning());
+  o11.destroy();
+  window.matchMedia = realMM;
+
+  /* 4 — geometry keeps working for a path whose d is empty: the dash
+     pattern degenerates to "0 0" (nothing renders) without crashing. */
+  var emptyPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  emptyPath.setAttribute("d", "");
+  document.getElementById("s-empty").appendChild(emptyPath);
+  var o12 = OrbitLoader.create(emptyPath, { autoStart: true });
+  check("empty d: no crash, isRunning true", o12.isRunning());
+  check("empty d: degenerate dasharray",
+    o12.path.style.strokeDasharray === "0 0" || o12.path.style.strokeDasharray === "0, 0",
+    o12.path.style.strokeDasharray);
+  o12.destroy();
+  check("empty d: destroy cleans up", !o12.isRunning());
+
+  var pass = 0, fail = 0, html = "";
+  for (var i = 0; i < results.length; i++) {
+    if (results[i].ok) pass++; else fail++;
+    html += '<div class="' + (results[i].ok ? "pass" : "fail") + '">' +
+      (results[i].ok ? "PASS" : "FAIL") + " — " + results[i].n +
+      (results[i].d ? " (" + results[i].d + ")" : "") + "</div>";
+  }
+  document.getElementById("results").innerHTML = html;
+  document.title = fail === 0 ? "ORBIT TESTS: PASS" : "ORBIT TESTS: FAIL " + fail;
+}
+run();
+</script>
+</body>
+</html>

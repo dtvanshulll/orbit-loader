@@ -103,6 +103,76 @@ render() and re-queue on failure.
 Sequence: 1) Route/Page Transition System → 2) Path-Wipe Reveal →
 3) Choreography / Sequence API.
 
+## Existing-components cleanup workstream (IN PROGRESS)
+
+Category order (by age × importance × unexamined surface — the fix
+batch already cleared the known defects in transitions/components):
+
+1. **Looping loaders** (orbit, dot, shimmer, ripple, pulse, chase,
+   typing, handshake) — the oldest code and the library's identity;
+   no dedicated test harness existed for any of them.
+2. One-shot transitions (tab, page, button, toast, swap) — route/
+   pathwipe already meet the bar.
+3. Progress + feedback (progress, countup, shake, shuffle).
+4. Component animations (search, modal, accordion, drawer, dropdown,
+   input).
+5. Cross-cutting: React adapter, `index.d.ts` LoaderOptions grab-bag
+   dissolution (backlogged — a mass refactor if done all at once).
+
+### Category 1 audit — looping loaders
+
+All eight KEEP (each genuinely distinct; documented in ARCHITECTURE).
+Shared findings across the path-based five (orbit, dot, shimmer,
+chase, handshake):
+
+- `wrap()` never fixes up a `position: static` container, though the
+  injected SVG is absolutely positioned — the component styles all do
+  this; the looping styles predate the pattern. Real visual bug.
+- No dedicated test harness (only orbit appeared incidentally in
+  other tests).
+- Verified NON-issue: `getTotalLength()` under `display:none` works
+  (pure path-data geometry per SVG2) — a deferred-measurement retry
+  was prototyped for this and removed after the harness proved the
+  hypothesis wrong; a regression test now pins the spec behavior.
+
+Orbit-specific: `create()` on a non-path threw a cryptic TypeError
+(now a clear error); the `steps` doc said "> 0" while the code needs
+"> 1" (doc fixed); STYLES.md's controller line listed `guide`/`anim`
+which the controller never exposed (doc fixed).
+
+Order: orbit (reference implementation) → dot → shimmer → chase →
+handshake (same fixup pattern) → ripple/pulse/typing verification →
+docs sync → playground verification → category gate.
+
+### Cleanup 1.1 — OrbitLoader (COMPLETE)
+
+Decision: **IMPROVE**.
+
+- `wrap()` makes a static container `position: relative` and restores
+  the caller's value on `destroy()` (matches the component styles'
+  forcedPosition pattern); `controller.container` exposed.
+- `create()` rejects a non-`<path>` element with a clear message
+  (was: cryptic `getTotalLength is not a function`).
+- Doc truth: `steps` metronome requires > 1 (1 falls back to the
+  glide — documented in the source header and STYLES.md).
+- Deferred-measurement machinery prototyped for a suspected
+  hidden-container bug was REMOVED after testing showed
+  `getTotalLength()` works under `display:none` (SVG2 geometry is
+  layout-independent); the behavior is pinned by a regression test
+  instead.
+- STYLES.md: controller shape corrected (`path` + start/stop/destroy/
+  isRunning; wrap adds `svg`/`container` — the listed `guide`/`anim`
+  never existed).
+
+Tests: new `tests/orbit-test.html` — **34/34 PASS** (guards, visible
++ hidden measurement, static-host fixup + restore, steps/breathe/
+reverse keyframe shapes via `effect.getKeyframes()`, guide, offset,
+color/strokeWidth apply+clear, destroy restoration, reduced motion,
+empty-d degenerate dasharray). Full gate: smoke 48/178 OK, build OK,
+route/regression/dist PASS, playground orbit cards live with the SVG
+anchored to the host (offset cards extend exactly `offset` px, as
+documented).
+
 ## Current component
 
 **Component 2 — PathWipeLoader (`src/styles/pathwipe-loader.js`)** — status: `COMPLETE`

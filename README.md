@@ -83,7 +83,7 @@ Most loader libraries give you a spinner: a shape rotated by CSS, blind to your 
 
 **What it doesn't do:** spinners, skeleton screens (the shimmer style is a band, not a layout skeleton), Lottie-grade character animation, or React components — it's DOM in, DOM out; wrap it yourself.
 
-## The twenty-four styles
+## The twenty-five styles
 
 | File | Global | What it does |
 |---|---|---|
@@ -118,12 +118,11 @@ Full option tables for every style: [docs/STYLES.md](docs/STYLES.md).
 ## Shapes
 
 The `src/shapes/` files (optional) generate `d` strings so you don't have to write path data: `circle`, `roundedSquare`, `roundRect`, `polygon`, `underline`, `infinity`, `letter` (a full authored alphabet, A–Z and 0–9), `letterOutline`, `text`, `textBoxForElement`. Spell words, outline boxes, trace your logo.
-```
 
 ## Try it
 
 - **Playground** — all 178 animations with live sliders and copy-paste code: clone the repo, serve the folder, open `playground/index.html`
-- **Components library** — the same playground, categories view: 19 real-world blocks (navbar, hero, login, stats, FAQ, pricing, footer, data table and more) built as mockups and animated by the styles above — the way you'd actually ship them
+- **Components library** — the same playground, categories view: 46 real-world blocks (navbar, hero, login, stats, FAQ, pricing, footer, data table and more) built as mockups and animated by the styles above — the way you'd actually ship them
 - **UI transitions in context** — `examples/ui-transitions.html`: one mock app where every trigger is wired
 - **Classic demos** — `examples/index.html`
 

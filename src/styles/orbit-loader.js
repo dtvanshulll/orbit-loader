@@ -41,14 +41,17 @@
    *                                     container's color as before
    *   strokeWidth      (default null)   stroke width in px; omit for the
    *                                     stylesheet default (2)
-   *   steps            (default 0)      when > 0, the metronome mode: the
+   *   steps            (default 0)      when > 1, the metronome mode: the
    *                                     segment doesn't glide — it sits,
    *                                     then snaps to the next of `steps`
    *                                     positions around the path, like a
    *                                     clock hand ticking. The lap still
    *                                     takes durationMs; each step holds
    *                                     ~70% of its slice and snaps in
-   *                                     the last ~30%
+   *                                     the last ~30%. (1 falls back to
+   *                                     the glide — one slice is the
+   *                                     whole lap, so there is nothing
+   *                                     to tick between.)
    *   breathe          (default 0)      when > 0, the breathing outline:
    *                                     the thread's own stroke-width
    *                                     swells and settles by this
@@ -58,6 +61,9 @@
    *   breatheMs        (default 1600)   one inhale-exhale cycle
    */
   function create(pathEl, options) {
+    if (!pathEl || typeof pathEl.getTotalLength !== "function") {
+      throw new Error("OrbitLoader.create: pathEl must be an SVG <path> element");
+    }
     options = options || {};
     var segmentFraction = options.segmentFraction != null ? options.segmentFraction : 0.18;
     var durationMs = options.durationMs != null ? options.durationMs : 2200;
@@ -70,6 +76,9 @@
     var breathe = options.breathe != null ? options.breathe : 0;
     var breatheMs = options.breatheMs != null ? options.breatheMs : 1600;
 
+    // Measured at creation: getTotalLength() is pure path-data geometry
+    // (SVG2), so it works even inside a display:none subtree — no
+    // layout dependency, no deferred-measure machinery needed.
     var total = pathEl.getTotalLength();
     var segment = total * segmentFraction;
     pathEl.style.strokeDasharray = segment + " " + (total - segment);
@@ -89,9 +98,7 @@
     var animation = null;
     var breatheAnim = null;
 
-    function start() {
-      if (reducedMotion || animation) return;
-      pathEl.classList.add(activeClass);
+    function beginAnimation() {
       if (steps > 1) {
         // Metronome: one keyframe pair per tick — hold the segment still
         // for most of its slice, then snap it to the next position. The
@@ -128,6 +135,12 @@
           { duration: breatheMs, iterations: Infinity }
         );
       }
+    }
+
+    function start() {
+      if (reducedMotion || animation) return;
+      pathEl.classList.add(activeClass);
+      beginAnimation();
     }
 
     function stop() {
@@ -205,6 +218,13 @@
     if (!container) throw new Error("OrbitLoader.wrap: container not found");
     if (!options.d) throw new Error("OrbitLoader.wrap: options.d (an SVG path 'd' string) is required");
 
+    // The injected SVG is absolutely positioned edge-to-edge; on a
+    // static container it would escape to the nearest positioned
+    // ancestor and draw in the wrong place. Every container-based
+    // style makes this fixup; restore the caller's value on destroy.
+    var forcedPosition = global.getComputedStyle(container).position === "static";
+    if (forcedPosition) container.style.position = "relative";
+
     var svg = document.createElementNS(SVG_NS, "svg");
     svg.setAttribute("viewBox", options.viewBox || "0 0 100 100");
     svg.setAttribute("class", options.svgClassName || "orbit-loader-path");
@@ -241,13 +261,16 @@
 
     var controller = create(path, options);
     controller.svg = svg;
+    controller.container = container;
     // wrap() owns the svg it injected; create()'s destroy only ever
     // touches pathEl, so wrap it here rather than leaving an orphaned
-    // <svg> in the container after destroy().
+    // <svg> in the container after destroy() — and undo the position
+    // fixup wrap() itself applied.
     var innerDestroy = controller.destroy;
     controller.destroy = function () {
       innerDestroy();
       if (svg.parentNode) svg.parentNode.removeChild(svg);
+      if (forcedPosition) container.style.position = "";
     };
     return controller;
   }

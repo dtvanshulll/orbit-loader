@@ -20,7 +20,7 @@ component styles live in [STYLES-UI.md](STYLES-UI.md).
 
 The playground's **Components library** shows these same styles doing
 real jobs inside finished blocks — navbar, hero, login, stats, FAQ,
-pricing, footer, data table and more (47 categories, 178 demos). Each
+pricing, footer, data table and more (46 categories, 178 demos). Each
 card's usage panel copies a one-call-per-element recipe; see
 `animations/scenes.js` and `animations/scenes-2.js` for the scene
 configs and `playground/js/pg-render.js` (`buildScene`) for how parts
@@ -42,7 +42,7 @@ The core crawler: a glowing segment traces the path forever.
 | `offset` | `0` | how far outside the container the SVG sits (px) |
 | `color` | `null` | stroke color; omit for `currentColor` |
 | `strokeWidth` | `null` | stroke width in px; stylesheet default is `2` |
-| `steps` | `0` | metronome mode: when > 0 the segment sits, then snaps to the next of `steps` positions — ticking, not gliding |
+| `steps` | `0` | metronome mode: when > 1 the segment sits, then snaps to the next of `steps` positions — ticking, not gliding (1 falls back to the glide — one slice is the whole lap) |
 | `breathe` | `0` | breathing outline: the stroke-width swells by this fraction (0.5 = 50%) once per cycle |
 | `breatheMs` | `1600` | one inhale-exhale cycle for `breathe` |
 | `guideOpacity` | `0` | when > 0, a faint static copy of the path stays visible — essential for letters/words |
@@ -50,7 +50,14 @@ The core crawler: a glowing segment traces the path forever.
 | `activeClass` | `"is-active"` | class added to the path while running |
 | `autoStart` | `true` | |
 
-Controller also exposes: `path`, `guide`, `svg`, `anim`.
+Controller exposes: `path`, plus `start()` / `stop()` / `destroy()` /
+`isRunning()`. `wrap()` adds `svg` and `container` (the guide, when
+enabled, is `svg.querySelector('.orbit-loader-guide')`).
+
+`wrap()` makes the container `position: relative` if it is static (the
+injected SVG is absolutely positioned and would otherwise escape to the
+nearest positioned ancestor) and restores the caller's value on
+`destroy()`.
 
 ## DotLoader — `src/styles/dot-loader.js`
 
