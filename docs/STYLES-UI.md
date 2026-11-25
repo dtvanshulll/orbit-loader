@@ -89,6 +89,58 @@ children, in swap order; give the container its final size.
 | `distance` | `5` | slide distance, % of the container |
 | `triggers` | `null` | clickable in-panel links that swap on click: `[{ sel: ".signup-link", to: 1 }]`. A click pauses the demo loop for one rest, so the click never fights the cycle |
 | `autoStart` | `true` | run the demo loop immediately |
+
+## RouteLoader — `src/styles/route-loader.js`
+
+The route/page content transition: new content arrives while the old
+content leaves, driven by your code. Where SwapLoader trades between
+panels that already exist, RouteLoader owns the content lifecycle — it
+mounts the page you hand it, animates the old one out, and unmounts
+it — which is what a route change needs. Container-based; the arriving
+page sits in normal flow (so it defines the container's height even
+when pages differ) while the leaving page is pinned as an absolute
+overlay. The container is made `position: relative` if static and gets
+`overflow: hidden` — a page transition is a closed world; override the
+overflow in your own CSS if popovers must escape mid-transition.
+
+    var route = RouteLoader.wrap('.view', { variant: 'wipe' });
+    route.to('<h2>Page two</h2>…');            // HTML string
+    route.to(element);                          // or an element (adopted)
+    route.to(1);                                // or an items index
+    route.to(x, { direction: 'right' });        // reverse
+
+Variants: `fade` (crossfade), `slide` (old exits toward `direction`,
+new enters from the opposite side), `wipe` (a cover panel sweeps
+across; the content swaps underneath at the moment of full cover, then
+the panel keeps travelling and departs — the swap is chained to the
+cover animation's own finish event, so it can never fire early or
+late; `durationMs` is the time to cover, the full crossing is twice
+that).
+
+A second `to()` while one is in flight cancels the first cleanly: the
+newer call always wins, never a torn half-state. `items` plus
+`autoStart` runs a demo loop over HTML pages (an empty container starts
+on `items[0]`).
+
+| option | default | meaning |
+|---|---|---|
+| `variant` | `'fade'` | `'fade'`, `'slide'` or `'wipe'` |
+| `direction` | `'left'` | which way the content travels: `'left'`, `'right'`, `'up'`, `'down'` — for slide, the old page exits this way; for wipe, the panel travels this way |
+| `exitMs` | `170` | the leaving page's fade/slide — exits accelerate, entrances decelerate |
+| `durationMs` | `300` | the arriving page's fade/slide; for wipe, the time to cover |
+| `distance` | `8` | slide travel, % of the container |
+| `wipeColor` | `null` | the cover panel's color; omit for `var(--tl-card)` |
+| `items` | `null` | HTML strings for the demo loop; `to(i)` indexes this list |
+| `restMs` | `2400` | the demo loop's pause on each page |
+| `onDone` | `null` | callback after each transition lands, with the mounted page; per-call `opts.onDone` wins |
+| `autoStart` | `true` | run the demo loop when `items` exist |
+
+Controller also exposes: `to(content, opts)`, `next()`, `index()`
+(last items index shown, `-1` for custom content), plus the shared
+`start()` / `stop()` / `destroy()` / `isRunning()`. Reduced motion:
+every `to()` is an instant content swap — the page still changes,
+nothing moves.
+
 ## ProgressLoader — `src/styles/progress-loader.js`
 
 Determinate progress along any path: `setProgress(p)` fills the path

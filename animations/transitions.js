@@ -223,6 +223,43 @@
       strokeWidth: 4,
       color: "#6a9bcc"
     }
+  },
+
+  {
+    name: "Route Wipe",
+    style: "route",
+    note: "A cover panel sweeps across and the page swaps underneath at the moment of full cover — the one-shot behind routers",
+    box: { width: 240, height: 150, background: "#262420", borderRadius: 8, border: "1px solid #33312c" },
+    options: {
+      variant: "wipe",
+      direction: "left",
+      durationMs: 340,
+      restMs: 2200,
+      items: [
+        "<div style='height:100%;display:flex;flex-direction:column;gap:8px;padding:16px'><div style='font:600 13px/1.2 Poppins,Arial,sans-serif;color:#faf9f5'>Workspace</div><div style='height:8px;width:70%;background:#33312c;border-radius:4px'></div><div style='height:8px;width:52%;background:#33312c;border-radius:4px'></div><div style='height:8px;width:63%;background:#33312c;border-radius:4px'></div><div style='margin-top:auto;font:400 11px/1.4 Lora,Georgia,serif;color:#8f8d84'>3 members · synced just now</div></div>",
+        "<div style='height:100%;display:flex;flex-direction:column;gap:8px;padding:16px'><div style='font:600 13px/1.2 Poppins,Arial,sans-serif;color:#faf9f5'>Invitations</div><div style='display:flex;align-items:center;gap:8px'><div style='width:22px;height:22px;border-radius:50%;background:#d97757'></div><div style='height:8px;flex:1;background:#33312c;border-radius:4px'></div></div><div style='display:flex;align-items:center;gap:8px'><div style='width:22px;height:22px;border-radius:50%;background:#6a9bcc'></div><div style='height:8px;flex:1;background:#33312c;border-radius:4px'></div></div><div style='margin-top:auto;font:400 11px/1.4 Lora,Georgia,serif;color:#8f8d84'>2 pending invites</div></div>",
+        "<div style='height:100%;display:flex;flex-direction:column;gap:8px;padding:16px'><div style='font:600 13px/1.2 Poppins,Arial,sans-serif;color:#faf9f5'>Activity</div><div style='height:8px;width:84%;background:#33312c;border-radius:4px'></div><div style='height:8px;width:41%;background:#33312c;border-radius:4px'></div><div style='margin-top:auto;font:400 11px/1.4 Lora,Georgia,serif;color:#788c5d'>All caught up</div></div>"
+      ]
+    }
+  },
+
+  {
+    name: "Route Slide",
+    style: "route",
+    note: "The old page slides out toward the direction while the new one enters from the far side — paging forward and back",
+    box: { width: 240, height: 150, background: "#262420", borderRadius: 8, border: "1px solid #33312c" },
+    options: {
+      variant: "slide",
+      direction: "left",
+      exitMs: 170,
+      durationMs: 300,
+      restMs: 2200,
+      items: [
+        "<div style='height:100%;display:flex;flex-direction:column;gap:8px;padding:16px'><div style='font:600 13px/1.2 Poppins,Arial,sans-serif;color:#6a9bcc'>Step 1 of 3</div><div style='height:8px;width:76%;background:#33312c;border-radius:4px'></div><div style='height:8px;width:58%;background:#33312c;border-radius:4px'></div><div style='margin-top:auto;font:400 11px/1.4 Lora,Georgia,serif;color:#8f8d84'>Account details</div></div>",
+        "<div style='height:100%;display:flex;flex-direction:column;gap:8px;padding:16px'><div style='font:600 13px/1.2 Poppins,Arial,sans-serif;color:#6a9bcc'>Step 2 of 3</div><div style='height:8px;width:64%;background:#33312c;border-radius:4px'></div><div style='height:8px;width:71%;background:#33312c;border-radius:4px'></div><div style='margin-top:auto;font:400 11px/1.4 Lora,Georgia,serif;color:#8f8d84'>Preferences</div></div>",
+        "<div style='height:100%;display:flex;flex-direction:column;gap:8px;padding:16px'><div style='font:600 13px/1.2 Poppins,Arial,sans-serif;color:#788c5d'>Step 3 of 3</div><div style='height:8px;width:48%;background:#33312c;border-radius:4px'></div><div style='margin-top:auto;font:400 11px/1.4 Lora,Georgia,serif;color:#8f8d84'>Review and finish</div></div>"
+      ]
+    }
   }
   );
 })(typeof window !== "undefined" ? window : this);

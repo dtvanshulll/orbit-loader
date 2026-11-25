@@ -25,9 +25,9 @@ import './styles/page-loader.js';
 import './styles/button-loader.js';
 import './styles/toast-loader.js';
 import './styles/swap-loader.js';
+import './styles/route-loader.js';
 import './styles/countup-loader.js';
 import './styles/shake-loader.js';
-import './styles/shuffle-loader.js';
 import './styles/shuffle-loader.js';
 import './styles/progress-loader.js';
 import './styles/search-loader.js';
@@ -54,9 +54,9 @@ export const PageLoader = window.PageLoader;
 export const ButtonLoader = window.ButtonLoader;
 export const ToastLoader = window.ToastLoader;
 export const SwapLoader = window.SwapLoader;
+export const RouteLoader = window.RouteLoader;
 export const CountUpLoader = window.CountUpLoader;
 export const ShakeLoader = window.ShakeLoader;
-export const ShuffleLoader = window.ShuffleLoader;
 export const ShuffleLoader = window.ShuffleLoader;
 export const ProgressLoader = window.ProgressLoader;
 export const SearchLoader = window.SearchLoader;
@@ -82,9 +82,9 @@ export const styles = {
   button: ButtonLoader,
   toast: ToastLoader,
   swap: SwapLoader,
+  route: RouteLoader,
   countup: CountUpLoader,
   shake: ShakeLoader,
-  shuffle: ShuffleLoader,
   shuffle: ShuffleLoader,
   progress: ProgressLoader,
   search: SearchLoader,

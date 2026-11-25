@@ -1,0 +1,33 @@
+/* RouteLoader — the route/page content transition. The container is a
+   closed world while a transition runs: pages swap inside it, so it
+   clips (override overflow in your own CSS if you need popovers to
+   escape during a transition). */
+.orbit-loader-route {
+  overflow: hidden;
+}
+
+/* The arriving page sits in normal flow and defines the container's
+   height, even when pages differ in size — the class exists so the
+   lifecycle can find and release pages; it needs no box of its own. */
+
+/* The leaving page is pinned over the container while it animates out,
+   so it stops sizing the layout the moment the new page mounts. */
+.orbit-loader-route-out {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* The wipe cover panel: sweeps across the container, hides the content
+   swap at full cover, keeps travelling, then removes itself. */
+.orbit-loader-route-wipe {
+  position: absolute;
+  inset: 0;
+  background: var(--tl-card, #1c1b19);
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 2;
+}

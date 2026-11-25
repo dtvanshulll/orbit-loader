@@ -28,6 +28,22 @@ change.
   the adapter build) exist only to produce `dist/`.
 - License: MIT (`LICENSE`).
 
+## Standing rules (always follow)
+
+- **Codebase audit before development.**
+  [docs/rules/CODEBASE-AUDIT.md](docs/rules/CODEBASE-AUDIT.md) is the
+  registered audit protocol: run it before any new development phase,
+  whenever the roadmap is in doubt, and whenever the codebase has
+  changed since the last audit. Its report is the source of truth for
+  what exists, what is missing, and what gets built next — never
+  assume; verify against the actual source.
+- **One component at a time.** Work the roadmap strictly
+  incrementally: select → inspect → plan → implement → test → fix →
+  polish → verify → mark complete → next. Never leave a component
+  half-finished to start another; never start a category before the
+  previous one passes its completion gate. Track progress in
+  `docs/DEVELOPMENT_PROGRESS.md`.
+
 ## Files
 
 - `src/styles/orbit-loader.js` — the core style: `create(pathEl, options)` and
@@ -86,6 +102,14 @@ change.
   widens while its underline draws out, a dialog whose border traces
   itself on arrival, a section whose left edge draws as it expands.
   All container-based; demo loops for previews.
+- `src/styles/route-loader.js` — the route style (`RouteLoader`): the
+  route/page content transition — it mounts the page you hand it
+  (HTML string, element, or `items` index), animates the old one out
+  (fade, slide, or a cover-panel wipe whose content swap is chained to
+  the cover animation's own finish event), and unmounts it. Where
+  swap-loader trades panels that already exist, this one owns the
+  content lifecycle. Container-based, one-shot per `to()` call, newer
+  calls cancel in-flight ones cleanly.
 - `src/traceloop.js` — the library entry: loads every style for side
   effects and re-exports the globals as named ESM exports (plus a
   `styles` map). This is what `import { ... } from 'traceloop'` hits.

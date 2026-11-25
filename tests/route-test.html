@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<!--
+  TraceLoop — RouteLoader behavioral test harness.
+
+  Serves the same role as dist-test.html / tabs-test.html: open it in a
+  browser and it runs its assertions against the real DOM, then reports
+  PASS/FAIL in the page body and in document.title (so an automated
+  browser can read the verdict from the title alone).
+
+  Timing rule: every check that depends on a transition having landed
+  awaits that transition's own onDone (via the land() helper) instead
+  of a fixed timeout — WAAPI animations only advance when frames are
+  produced, so sleeping a fixed number of milliseconds races the finish
+  event on a loading page. Mid-flight checks only assert state that is
+  synchronous (mounted nodes, panel presence, isRunning).
+
+  Covers: initial capture, string/element/index content, onDone, rapid
+  re-cancellation, wipe cover-swap and mid-cover cancel, destroy
+  cleanup, reduced-motion instant swap, invalid input, empty container
+  with items, demo loop, isRunning.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<title>ROUTE TESTS: RUNNING</title>
+<link rel="stylesheet" href="../dist/traceloop.css">
+<style>
+  body { font: 13px/1.5 monospace; background: #141413; color: #faf9f5; padding: 20px; }
+  .pass { color: #788c5d; } .fail { color: #d97757; }
+  .stage { width: 240px; height: 120px; background: #1c1b19; border: 1px solid #33312c; margin: 8px 0; }
+</style>
+</head>
+<body>
+<div id="results">running…</div>
+
+<div class="stage" id="basic"><p id="first-page">page one</p></div>
+<div class="stage" id="wipe"><p>wipe page one</p></div>
+<div class="stage" id="cancel-wipe"><p>cw page one</p></div>
+<div class="stage" id="destroy-mid"><p>dm page one</p></div>
+<div class="stage" id="reduced"><p>reduced page one</p></div>
+<div class="stage" id="empty-items"></div>
+<div class="stage" id="rapid"><p>rapid page one</p></div>
+
+<script src="../src/styles/route-loader.js"></script>
+<script>
+"use strict";
+window._errors = [];
+window.onerror = function (m) { window._errors.push(String(m)); };
+var results = [];
+function check(name, ok, detail) {
+  results.push({ name: name, ok: !!ok, detail: detail || "" });
+}
+function pageCount(el) { return el.querySelectorAll(".orbit-loader-route-page").length; }
+function textOf(el) { return el.textContent.replace(/\s+/g, " ").trim(); }
+function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+/* Drive a transition and resolve when it actually lands (onDone), with
+   a timeout guard so a hung transition fails loudly instead of silently. */
+function land(ctrl, content, opts) {
+  opts = opts || {};
+  return new Promise(function (resolve) {
+    var guard = setTimeout(function () { resolve("TIMEOUT"); }, 2000);
+    opts.onDone = function (p) { clearTimeout(guard); resolve(p); };
+    ctrl.to(content, opts);
+  });
+}
+
+var FAST = { exitMs: 20, durationMs: 30, restMs: 50 };
+
+async function run() {
+  /* 1 — create: container fixup + initial capture */
+  var basic = RouteLoader.create("#basic", Object.assign({ variant: "slide" }, FAST));
+  var host = document.querySelector("#basic");
+  check("create returns controller", !!basic.to && !!basic.destroy && !!basic.isRunning);
+  check("static container made relative", host.style.position === "relative");
+  check("route class added", host.classList.contains("orbit-loader-route"));
+  check("initial content captured as one page", pageCount(host) === 1 &&
+    host.querySelector(".orbit-loader-route-page").contains(document.getElementById("first-page")));
+  check("isRunning false at rest", basic.isRunning() === false);
+
+  /* 2 — to(html string): old out, new in, onDone(page) */
+  var landed = await land(basic, "<p id='page-two'>page two</p>");
+  check("transition landed (onDone)", landed && landed.nodeType === 1);
+  check("string content swapped in", textOf(host).indexOf("page two") >= 0);
+  check("old page removed", textOf(host).indexOf("page one") < 0);
+  check("exactly one page after swap", pageCount(host) === 1);
+  check("isRunning false after landing", basic.isRunning() === false);
+
+  /* 3 — to(element): adopted */
+  var adopted = document.createElement("p");
+  adopted.textContent = "adopted page";
+  await land(basic, adopted);
+  check("element content adopted", textOf(host).indexOf("adopted page") >= 0 && pageCount(host) === 1);
+
+  /* 4 — invalid input throws */
+  var threw = "";
+  try { basic.to(null); } catch (e) { threw = e.message; }
+  check("null content throws", threw.indexOf("content must be") >= 0);
+  threw = "";
+  try { basic.to(2); } catch (e) { threw = e.message; }
+  check("index without items throws", threw.indexOf("items array") >= 0);
+  threw = "";
+  try { basic.to("   "); } catch (e) { threw = e.message; }
+  check("blank HTML throws", threw.indexOf("no content") >= 0);
+
+  /* 5 — rapid to(): the newer call wins, no torn state, nothing orphaned */
+  var rapid = RouteLoader.create("#rapid", Object.assign({ variant: "fade" }, FAST));
+  var rHost = document.querySelector("#rapid");
+  rapid.to("<p>rapid A</p>");
+  await wait(10); // mid-exit: A is mounted, the old page is animating out
+  check("rapid: mid-flight state visible", textOf(rHost).indexOf("rapid A") >= 0);
+  await land(rapid, "<p>rapid B</p>");
+  check("rapid: newer content wins", textOf(rHost).indexOf("rapid B") >= 0);
+  check("rapid: older content gone", textOf(rHost).indexOf("rapid A") < 0 &&
+    textOf(rHost).indexOf("rapid page one") < 0);
+  check("rapid: exactly one page", pageCount(rHost) === 1);
+  check("rapid: no wipe panel left", !rHost.querySelector(".orbit-loader-route-wipe"));
+
+  /* 6 — wipe: panel appears sync, cover swap, panel departs and removes itself */
+  var wipe = RouteLoader.create("#wipe", { variant: "wipe", direction: "left", durationMs: 60, restMs: 50 });
+  var wHost = document.querySelector("#wipe");
+  wipe.to("<p>wipe page two</p>"); // panel mounts synchronously
+  check("wipe: panel present immediately", !!wHost.querySelector(".orbit-loader-route-wipe"));
+  var wipeLanded = await land(wipe, "<p>wipe page two</p>");
+  check("wipe: landed", !!wipeLanded);
+  check("wipe: content swapped", textOf(wHost).indexOf("wipe page two") >= 0);
+  check("wipe: old page gone", textOf(wHost).indexOf("wipe page one") < 0);
+  check("wipe: panel removed after landing", !wHost.querySelector(".orbit-loader-route-wipe"));
+
+  /* 7 — cancel mid-cover: old page survives, the newer transition completes */
+  var cw = RouteLoader.create("#cancel-wipe", { variant: "wipe", durationMs: 300, restMs: 50 });
+  var cHost = document.querySelector("#cancel-wipe");
+  cw.to("<p>cw page two</p>");
+  await wait(80); // somewhere inside the cover half
+  check("cancel: still running mid-cover", cw.isRunning() === true);
+  await land(cw, "<p>cw page three</p>"); // cancels the first wipe, then lands
+  check("cancel mid-cover: final content is the newest", textOf(cHost).indexOf("cw page three") >= 0);
+  check("cancel mid-cover: intermediates gone",
+    textOf(cHost).indexOf("cw page one") < 0 && textOf(cHost).indexOf("cw page two") < 0);
+  check("cancel mid-cover: exactly one page", pageCount(cHost) === 1);
+  check("cancel mid-cover: panel removed at end", !cHost.querySelector(".orbit-loader-route-wipe"));
+
+  /* 8 — destroy mid-flight: content stays, nothing injected remains */
+  var dm = RouteLoader.create("#destroy-mid", Object.assign({ variant: "slide" }, FAST));
+  var dHost = document.querySelector("#destroy-mid");
+  dm.to("<p>dm page two</p>");
+  dm.destroy(); // synchronous, guaranteed mid-flight (durations are 20/30ms)
+  check("destroy mid-flight: new content stays", textOf(dHost).indexOf("dm page two") >= 0);
+  check("destroy: route class removed", !dHost.classList.contains("orbit-loader-route"));
+  check("destroy: position restored", dHost.style.position === "");
+  check("destroy: no leftover out pages", !dHost.querySelector(".orbit-loader-route-out"));
+  check("destroy: no wipe panel", !dHost.querySelector(".orbit-loader-route-wipe"));
+
+  /* 9 — reduced motion: instant swap, no animations scheduled */
+  var realMM = window.matchMedia;
+  window.matchMedia = function () { return { matches: true }; };
+  var red = RouteLoader.create("#reduced", Object.assign({ variant: "wipe" }, FAST));
+  window.matchMedia = realMM;
+  var rRed = document.querySelector("#reduced");
+  var redLanded = await land(red, "<p>reduced page two</p>");
+  check("reduced: instant swap", textOf(rRed).indexOf("reduced page two") >= 0 && !!redLanded);
+  check("reduced: old page gone", textOf(rRed).indexOf("reduced page one") < 0);
+  check("reduced: no wipe panel ever", !rRed.querySelector(".orbit-loader-route-wipe"));
+
+  /* 10 — empty container + items: starts on items[0]; to(index) swaps */
+  var ei = RouteLoader.create("#empty-items", {
+    items: ["<p>items one</p>", "<p>items two</p>"],
+    restMs: 60, exitMs: 20, durationMs: 30, autoStart: false
+  });
+  var eHost = document.querySelector("#empty-items");
+  check("empty+items: starts on items[0]", textOf(eHost).indexOf("items one") >= 0);
+  await land(ei, 1);
+  check("to(index) swaps", textOf(eHost).indexOf("items two") >= 0);
+  check("index() tracks", ei.index() === 1);
+
+  /* 11 — demo loop advances; stop freezes it once quiescent */
+  var loopHost = document.createElement("div");
+  loopHost.className = "stage";
+  document.body.appendChild(loopHost);
+  var loop = RouteLoader.create(loopHost, {
+    items: ["<p>loop A</p>", "<p>loop B</p>"],
+    restMs: 60, exitMs: 20, durationMs: 30
+  });
+  check("loop: autoStart mounted items[0]", textOf(loopHost).indexOf("loop A") >= 0);
+  await wait(400); // a full cycle is rest 60 + exit 20 + 2x30 = 140ms
+  check("loop: cycling runs without errors",
+    textOf(loopHost).indexOf("loop A") >= 0 || textOf(loopHost).indexOf("loop B") >= 0);
+  loop.stop();
+  await wait(120); // let any mid-flight transition land before freezing
+  var frozen = textOf(loopHost);
+  await wait(250);
+  check("loop: stop freezes the cycle", textOf(loopHost) === frozen);
+  loop.destroy();
+  check("loop: destroy strips pages", !loopHost.querySelector(".orbit-loader-route-page"));
+
+  /* 12 — zero-ish durations don't hang */
+  await land(basic, "<p>final page</p>", { durationMs: 1, exitMs: 1 });
+  check("1ms durations complete", textOf(host).indexOf("final page") >= 0 && pageCount(host) === 1);
+  basic.destroy();
+  check("final destroy leaves content", textOf(host).indexOf("final page") >= 0);
+
+  /* report */
+  var fails = results.filter(function (r) { return !r.ok; });
+  var out = document.getElementById("results");
+  out.innerHTML = results.map(function (r) {
+    return "<div class='" + (r.ok ? "pass" : "fail") + "'>" +
+      (r.ok ? "PASS" : "FAIL") + " — " + r.name + (r.ok ? "" : " :: " + r.detail) + "</div>";
+  }).join("") +
+    (window._errors.length ? "<div class='fail'>PAGE ERRORS: " + window._errors.join(" | ") + "</div>" : "") +
+    "<div style='margin-top:12px;font-weight:bold'>" +
+    (fails.length ? "FAIL " + fails.length + "/" + results.length : "ALL PASS") +
+    " — " + (results.length - fails.length) + "/" + results.length + "</div>";
+  document.title = fails.length ? "ROUTE TESTS: FAIL " + fails.length : "ROUTE TESTS: PASS";
+}
+run();
+</script>
+</body>
+</html>

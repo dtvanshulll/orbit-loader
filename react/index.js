@@ -20,14 +20,19 @@ import {
   ChaseLoader, TypingLoader,
   HandshakeLoader, TabLoader, PageLoader, ButtonLoader, ToastLoader,
   ProgressLoader, SearchLoader, ModalLoader, AccordionLoader, DrawerLoader,
-  DropdownLoader, InputLoader, SwapLoader, CountUpLoader, ShakeLoader, ShuffleLoader, shapes
+  DropdownLoader, InputLoader, SwapLoader, RouteLoader, CountUpLoader,
+  ShakeLoader, ShuffleLoader, shapes
 } from '../src/traceloop.js';
 
 // Resolve the `d` prop: a raw path string passes through; a
 // { shape, args } object calls the generator. Returns { d, viewBox }.
 function resolveD(d, defaultViewBox) {
   if (!d || typeof d === 'string') return { d: d, viewBox: defaultViewBox };
-  var out = shapes[d.shape].apply(null, d.args || []);
+  var fn = shapes[d.shape];
+  if (typeof fn !== 'function') {
+    throw new Error('Unknown shape: ' + d.shape);
+  }
+  var out = fn.apply(null, d.args || []);
   return { d: out, viewBox: d.viewBox || defaultViewBox };
 }
 
@@ -60,6 +65,13 @@ function makeComponent(Style, name, containerBased) {
       for (var key in options) opts[key] = options[key];
       var ctrl;
       if (containerBased) {
+        // `d` is a real option for container styles that ride a path
+        // (Page/Tab/Toast take a custom curve); `width` is one for
+        // ProgressLoader's injected SVG. Both are layout props here —
+        // sized the host div AND forwarded as style options.
+        if (d != null) opts.d = d;
+        if (viewBox != null) opts.viewBox = viewBox;
+        if (width != null) opts.width = width;
         ctrl = Style.create(ref.current, opts);
       } else {
         var r = resolveD(d, viewBox || '0 0 100 100');
@@ -106,6 +118,7 @@ export const Page = makeComponent(PageLoader, 'Page', true);
 export const Button = makeComponent(ButtonLoader, 'Button', true);
 export const Toast = makeComponent(ToastLoader, 'Toast', true);
 export const Swap = makeComponent(SwapLoader, 'Swap', true);
+export const Route = makeComponent(RouteLoader, 'Route', true);
 export const CountUp = makeComponent(CountUpLoader, 'CountUp', true);
 export const Shake = makeComponent(ShakeLoader, 'Shake', true);
 export const Shuffle = makeComponent(ShuffleLoader, 'Shuffle', true);

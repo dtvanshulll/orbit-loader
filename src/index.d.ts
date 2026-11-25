@@ -254,6 +254,7 @@ export interface TabsProps {
 }
 export declare function Tabs(props: TabsProps): React.ReactElement;
 export declare const Input: React.FC<ComponentProps>;
+export declare const Route: React.FC<ComponentProps>;
 
 export interface CountUpOptions {
   from?: number;
@@ -329,5 +330,45 @@ export const ShuffleLoader: {
     stop(): void;
     destroy(): void;
     isRunning(): boolean;
+  };
+};
+
+export interface RouteOptions {
+  variant?: 'fade' | 'slide' | 'wipe';
+  direction?: 'left' | 'right' | 'up' | 'down';
+  exitMs?: number;
+  durationMs?: number;
+  distance?: number;
+  wipeColor?: string | null;
+  items?: string[];
+  restMs?: number;
+  onDone?: (page?: HTMLElement) => void;
+  autoStart?: boolean;
+}
+export interface RouteCallOptions {
+  direction?: 'left' | 'right' | 'up' | 'down';
+  variant?: 'fade' | 'slide' | 'wipe';
+  onDone?: (page?: HTMLElement) => void;
+}
+export const RouteLoader: {
+  create(container: HTMLElement | string, options?: RouteOptions): {
+    el: HTMLElement;
+    to(content: string | HTMLElement | number, opts?: RouteCallOptions): void;
+    next(): void;
+    start(): void;
+    stop(): void;
+    destroy(): void;
+    isRunning(): boolean;
+    index(): number;
+  };
+  wrap(container: HTMLElement | string, options?: RouteOptions): {
+    el: HTMLElement;
+    to(content: string | HTMLElement | number, opts?: RouteCallOptions): void;
+    next(): void;
+    start(): void;
+    stop(): void;
+    destroy(): void;
+    isRunning(): boolean;
+    index(): number;
   };
 };
