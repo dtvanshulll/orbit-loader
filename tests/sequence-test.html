@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<!--
+  TraceLoop — SequenceLoader test harness (choreography API).
+  Covers: normalization (at/after/sort/tie order), play/stop/restart,
+  loop mode, onDone, isRunning truthfulness, validation throws,
+  wall-clock ordering under coarse timers, destroy.
+  Open in a browser; verdict lands in the page body and document.title.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<title>SEQUENCE TESTS: RUNNING</title>
+<link rel="stylesheet" href="../dist/traceloop.css">
+<style>
+  body { font: 13px/1.5 monospace; background: #141413; color: #faf9f5; padding: 20px; }
+  .pass { color: #788c5d; } .fail { color: #d97757; }
+</style>
+</head>
+<body>
+<div id="results">running…</div>
+<script src="../src/styles/sequence-loader.js"></script>
+<script>
+"use strict";
+var results = [];
+function check(n, ok, d) { results.push({ n: n, ok: !!ok, d: d || "" }); }
+function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+async function run() {
+  /* 1 — validation */
+  var threw = "";
+  try { SequenceLoader.create([], {}); } catch (e) { threw = e.message; }
+  check("empty steps: throws", threw.indexOf("non-empty") >= 0, threw);
+  threw = "";
+  try { SequenceLoader.create([{ at: 0 }]); } catch (e) { threw = e.message; }
+  check("step without do: throws", threw.indexOf("do function") >= 0, threw);
+  threw = "";
+  try { SequenceLoader.create([{ at: 0, after: 5, do: function(){} }]); } catch (e) { threw = e.message; }
+  check("at AND after: throws", threw.indexOf("at OR after") >= 0, threw);
+  threw = "";
+  try { SequenceLoader.create([{ do: function(){} }]); } catch (e) { threw = e.message; }
+  check("step without timing: throws", threw.indexOf("at or after") >= 0, threw);
+
+  /* 2 — basic timeline: absolute + relative, in order */
+  var log = [];
+  var s1 = SequenceLoader.create([
+    { at: 0, do: function () { log.push("a@" + Math.round(elapsed())); } },
+    { after: 150, do: function () { log.push("b"); } },
+    { after: 150, do: function () { log.push("c"); } },
+    { at: 500, do: function () { log.push("d"); } }
+  ]);
+  check("duration: total is the last step's time", s1.duration() === 500, s1.duration());
+  check("isRunning: false before play", !s1.isRunning());
+  var t0 = null;
+  function elapsed() { return performance.now() - t0; }
+  t0 = performance.now();
+  s1.play();
+  check("isRunning: true during run", s1.isRunning());
+  await wait(750);
+  check("timeline: all steps fired in order",
+    log.length === 4 && log[0].indexOf("a") === 0 && log[1] === "b" && log[2] === "c" && log[3] === "d",
+    log.join(","));
+  check("timeline: a fired at ~0", parseInt(log[0].slice(2), 10) < 60, log[0]);
+  check("isRunning: false after done", !s1.isRunning());
+  check("firedSteps: [0,1,2,3]", s1.firedSteps().join(",") === "0,1,2,3", s1.firedSteps().join(","));
+
+  /* 3 — normalization: out-of-order at/after sorted, ties keep order */
+  var log2 = [];
+  var s2 = SequenceLoader.create([
+    { at: 300, do: function () { log2.push("late"); } },
+    { at: 100, do: function () { log2.push("early"); } },
+    { at: 100, do: function () { log2.push("early2"); } }
+  ]);
+  s2.play();
+  await wait(500);
+  check("sort: out-of-order steps fire by time", log2.join(",") === "early,early2,late", log2.join(","));
+
+  /* 4 — stop mid-flight: pending steps never run, fired stay fired */
+  var log3 = [];
+  var s3 = SequenceLoader.create([
+    { at: 50, do: function () { log3.push("one"); } },
+    { after: 100, do: function () { log3.push("two"); } },
+    { after: 100, do: function () { log3.push("three"); } }
+  ]);
+  s3.play();
+  await wait(200); // one + two fired, three pending at 250
+  s3.stop();
+  await wait(300);
+  check("stop: fired steps stay fired", log3.join(",") === "one,two", log3.join(","));
+  check("stop: pending step never runs", log3.indexOf("three") < 0);
+  check("stop: isRunning false", !s3.isRunning());
+
+  /* 5 — restart: play() again reruns from the first step */
+  log3 = [];
+  s3.play();
+  await wait(500);
+  check("restart: full timeline reruns", log3.join(",") === "one,two,three", log3.join(","));
+
+  /* 6 — onDone fires once on natural completion, not on stop() */
+  var doneCount = 0;
+  var s4 = SequenceLoader.create([{ at: 50, do: function(){} }], { onDone: function () { doneCount++; } });
+  s4.play();
+  await wait(200);
+  check("onDone: fires on completion", doneCount === 1, doneCount);
+  var s5 = SequenceLoader.create([
+    { at: 50, do: function(){} }, { after: 100, do: function(){} }
+  ], { onDone: function () { doneCount += 10; } });
+  s5.play();
+  await wait(80);
+  s5.stop();
+  await wait(200);
+  check("onDone: NOT fired on stop", doneCount === 1, doneCount);
+
+  /* 7 — loop mode: replays after loopRestMs */
+  var runs = 0;
+  var s6 = SequenceLoader.create([{ at: 40, do: function () { runs++; } }],
+    { loop: true, loopRestMs: 100 });
+  s6.play();
+  await wait(650); // ~4 cycles: 40 + 100 rest ≈ 140ms each
+  check("loop: replays", runs >= 3, runs + " runs");
+  check("loop: still running", s6.isRunning());
+  s6.stop();
+  var atStop = runs;
+  await wait(250);
+  check("loop: stop ends it", runs === atStop);
+
+  /* 8 — destroy: stops and clears state */
+  var s7 = SequenceLoader.create([{ at: 30, do: function(){} }]);
+  s7.play();
+  s7.destroy();
+  check("destroy: isRunning false", !s7.isRunning());
+
+  /* 9 — autoPlay */
+  var ran = false;
+  var s8 = SequenceLoader.create([{ at: 30, do: function () { ran = true; } }], { autoPlay: true });
+  await wait(150);
+  check("autoPlay: runs at creation", ran);
+
+  var pass = 0, fail = 0, html = "";
+  for (var i = 0; i < results.length; i++) {
+    if (results[i].ok) pass++; else fail++;
+    html += '<div class="' + (results[i].ok ? "pass" : "fail") + '">' +
+      (results[i].ok ? "PASS" : "FAIL") + " — " + results[i].n +
+      (results[i].d ? " (" + results[i].d + ")" : "") + "</div>";
+  }
+  document.getElementById("results").innerHTML = html;
+  document.title = fail === 0 ? "SEQUENCE TESTS: PASS" : "SEQUENCE TESTS: FAIL " + fail;
+}
+run();
+</script>
+</body>
+</html>

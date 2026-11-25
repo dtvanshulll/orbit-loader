@@ -36,6 +36,7 @@ import './styles/accordion-loader.js';
 import './styles/drawer-loader.js';
 import './styles/dropdown-loader.js';
 import './styles/input-loader.js';
+import './styles/sequence-loader.js';
 import './shapes/shapes-core.js';
 import './shapes/shapes-text.js';
 import './shapes/shapes-outline.js';
@@ -65,6 +66,7 @@ export const AccordionLoader = window.AccordionLoader;
 export const DrawerLoader = window.DrawerLoader;
 export const DropdownLoader = window.DropdownLoader;
 export const InputLoader = window.InputLoader;
+export const SequenceLoader = window.SequenceLoader;
 export const shapes = window.OrbitLoaderShapes;
 
 /** Every style keyed by name — handy for config-driven UIs. */
@@ -92,5 +94,6 @@ export const styles = {
   accordion: AccordionLoader,
   drawer: DrawerLoader,
   dropdown: DropdownLoader,
-  input: InputLoader
+  input: InputLoader,
+  sequence: SequenceLoader
 };

@@ -192,6 +192,41 @@ export const InputLoader: {
   };
 };
 
+export interface SequenceStep {
+  at?: number;
+  after?: number;
+  do(): void;
+}
+
+export const SequenceLoader: {
+  create(steps: SequenceStep[], options?: {
+    loop?: boolean;
+    loopRestMs?: number;
+    onDone?: () => void;
+    autoPlay?: boolean;
+  }): {
+    play(): void;
+    stop(): void;
+    destroy(): void;
+    isRunning(): boolean;
+    duration(): number;
+    firedSteps(): number[];
+  };
+  wrap(steps: SequenceStep[], options?: {
+    loop?: boolean;
+    loopRestMs?: number;
+    onDone?: () => void;
+    autoPlay?: boolean;
+  }): {
+    play(): void;
+    stop(): void;
+    destroy(): void;
+    isRunning(): boolean;
+    duration(): number;
+    firedSteps(): number[];
+  };
+};
+
 export const PulseLoader: {
   create(el: HTMLElement | string, options?: LoaderOptions): LoaderController;
   wrap(el: HTMLElement | string, options?: LoaderOptions): LoaderController;

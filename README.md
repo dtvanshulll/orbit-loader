@@ -111,6 +111,7 @@ Most loader libraries give you a spinner: a shape rotated by CSS, blind to your 
 | `src/styles/drawer-loader.js` | `DrawerLoader` | a panel that slides in while its leading edge draws — one-shot |
 | `src/styles/dropdown-loader.js` | `DropdownLoader` | a menu that unfolds under its trigger with a drawn edge — one-shot |
 | `src/styles/input-loader.js` | `InputLoader` | a text field that types itself, then focuses — one-shot |
+| `src/styles/sequence-loader.js` | `SequenceLoader` | the choreography API — a timeline of one-shot style calls, timed `at`/`after`, loopable — no visuals of its own |
 
 Full option tables for every style: [docs/STYLES.md](docs/STYLES.md).
 

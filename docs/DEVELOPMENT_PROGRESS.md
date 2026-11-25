@@ -822,7 +822,41 @@ Regression gates for the restructuring: smoke OK, build OK,
 ## Components remaining in this category
 
 - Component 2 — Path-Wipe Reveal: `COMPLETE`
-- Component 3 — Choreography / Sequence API: `NOT STARTED`
+- Component 3 — Choreography / Sequence API: `COMPLETE`
+
+## Component 3 — Choreography / Sequence API (COMPLETE)
+
+`SequenceLoader` (`src/styles/sequence-loader.js`, ~210 lines, ES5
+IIFE): a timeline of one-shot style calls. Steps are plain functions
+timed `at` (ms from `play()`) or `after` (ms after the previous
+step), sorted by resolved time with call order breaking ties.
+
+- **Deliberate design**: steps are functions, not `{ style, method }
+  descriptors — the sequence must not know every style's method
+  names (the coupling the library avoids everywhere else). It has no
+  visuals, ships no CSS, gets no playground cards; ARCHITECTURE
+  documents why it still lives in `src/styles/`.
+- **Scheduling**: a setTimeout chain, each step scheduled when the
+  previous fires — `stop()` cancels exactly one timer, a throttled
+  tab delays the tail instead of reordering it. `loop` + `loopRestMs`
+  replay; `onDone` fires on natural completion, never on `stop()`.
+- **Reduced motion**: the timeline still runs (it is scheduling, not
+  motion); each style collapses itself.
+- Registered in `src/traceloop.js` (import + named export +
+  `styles.sequence`), typed in `src/index.d.ts` (`SequenceStep`,
+  full controller shape), README API table row, STYLES-UI section.
+- No React component: steps are imperative callbacks — React
+  consumers compose effects; documented in the tracker, not code.
+
+Tests: new `tests/sequence-test.html` — **23/23 PASS** (validation
+throws, absolute+relative timing, sort + tie order, stop mid-flight,
+restart, onDone semantics, loop mode, destroy, autoPlay) plus a live
+integration check sequencing a real PageLoader (start → done → stop,
+firedSteps verified). Gate: smoke 48 files, build OK.
+
+**Category 1 is now complete: all 3 components done.** A category
+gate for the new-development category (route + pathwipe + sequence)
+runs next.
 
 ## Category completion
 

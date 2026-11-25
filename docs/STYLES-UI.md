@@ -252,6 +252,40 @@ never touches the caller's positioning. Under reduced motion
 `setProgress()` still paints (a static fill is fine — it's not
 motion); `steps` is floored at 1 so a zero count can't NaN the fill.
 
+## SequenceLoader — `src/styles/sequence-loader.js`
+
+The choreography API: a timeline of one-shot style calls. Each step
+is a plain function (usually a call into a controller you already
+built), timed `at` (ms from `play()`) or `after` (ms after the
+previous step); steps are sorted by resolved time and ties keep call
+order. No visuals of its own — it schedules.
+
+```js
+var seq = SequenceLoader.create([
+  { at: 0,      do: function () { wipe.show(); } },
+  { after: 350, do: function () { search.open(); } },
+  { after: 500, do: function () { countup.start(); } }
+], { onDone: function () {} });
+seq.play();
+```
+
+| option | default | meaning |
+|---|---|---|
+| `loop` | `false` | replay the whole timeline after `loopRestMs` |
+| `loopRestMs` | `800` | the pause between loop replays |
+| `onDone` | `null` | called when the timeline finishes (not on `stop()`) |
+| `autoPlay` | `false` | `play()` at creation |
+
+Controller: `play()` (restarts a running sequence), `stop()` (fired
+steps stay fired; pending steps never run), `destroy()`,
+`isRunning()`, `duration()` (the last step's time), `firedSteps()`
+(indices fired in the current run). The timeline is a setTimeout
+chain — each step is scheduled when the previous one fires — so
+`stop()` is exact and a throttled tab delays the tail instead of
+reordering it. Under reduced motion the timeline still runs: it is
+scheduling, not motion, and every style collapses itself to its
+final state on its own.
+
 ## SearchLoader — `src/styles/search-loader.js`
 
 The search bar: `open()` widens the field and draws its underline out
@@ -351,7 +385,7 @@ Controller also exposes: `open()`, `close()`, `toggle()`, `edge`,
 `backdrop`.
 
 The panel is caller-positioned by contract (fixed or
-absolute) � no position fixup is applied; `isRunning()` is true while
+absolute) � no position fixup is applied; `isRunning()` is true while
 the demo loop runs OR the drawer is open. `durationMs` is floored at 1.
 
 

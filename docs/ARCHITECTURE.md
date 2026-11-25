@@ -141,6 +141,14 @@ playground) can show them without wiring real interactions.
 infinite WAAPI loops. Two container-based siblings now prove the
 sibling-file rule scales past the path styles without touching the core.
 
+`sequence-loader.js` is the fourth kind: it has no visuals at all. It
+is the choreography API — a timeline that schedules calls into
+controllers the caller already built (steps are plain functions, timed
+`at`/`after`), so the library stays decoupled from every style's method
+names. It lives in `src/styles/` to keep one home for `create()`-shaped
+modules, ships no CSS, has no playground cards (there is nothing to
+render), and the smoke gate counts it like any other source file.
+
 ## Reduced motion
 
 Checked once, at `create()`-time, via
