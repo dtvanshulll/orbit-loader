@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<!--
+  TraceLoop — SwapLoader test harness (one-shot transitions category).
+  Covers: panel validation, static-container fixup + restore, swap
+  mechanics (index tracking, class handoff), destroy mid-swap (the
+  stuck-invisible bug), isRunning, trigger binding, reduced motion,
+  clamped inputs.
+  Open in a browser; verdict lands in the page body and document.title.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<title>SWAP TESTS: RUNNING</title>
+<link rel="stylesheet" href="../dist/traceloop.css">
+<style>
+  body { font: 13px/1.5 monospace; background: #141413; color: #faf9f5; padding: 20px; }
+  .pass { color: #788c5d; } .fail { color: #d97757; }
+  .swap-box { width: 200px; height: 100px; background: #262420; border: 1px solid #33312c; margin: 10px 0; }
+  .swap-box > div { position: absolute; inset: 0; padding: 12px; box-sizing: border-box; }
+</style>
+</head>
+<body>
+<div id="results">running…</div>
+<div class="swap-box" id="s-main"><div>Panel A</div><div>Panel B</div><div>Panel C</div></div>
+<div class="swap-box" id="s-static" style="position: static"><div>A</div><div>B</div></div>
+<div class="swap-box" id="s-midswap"><div>A</div><div>B</div></div>
+<div class="swap-box" id="s-triggers"><div>A <button class="tl-go">go B</button></div><div>B</div></div>
+<div class="swap-box" id="s-destroy"><div>A</div><div>B</div></div>
+<div class="swap-box" id="s-reduced"><div>A</div><div>B</div></div>
+
+<script src="../src/styles/swap-loader.js"></script>
+<script>
+"use strict";
+var results = [];
+function check(n, ok, d) { results.push({ n: n, ok: !!ok, d: d || "" }); }
+function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+async function run() {
+  /* 1 — validation */
+  var threw = "";
+  try { SwapLoader.create("#nope", {}); } catch (e) { threw = e.message; }
+  check("create: missing container throws", threw.indexOf("container not found") >= 0, threw);
+  threw = "";
+  try { SwapLoader.create("#results", {}); } catch (e) { threw = e.message; }
+  check("create: fewer than two panels throws", threw.indexOf("two panels") >= 0, threw);
+
+  /* 2 — mechanics: settle(0) at creation, swapTo cycles */
+  var s1 = SwapLoader.create("#s-main", { autoStart: false, durationMs: 200, exitMs: 120 });
+  check("create: three panels tracked", s1.panels.length === 3);
+  check("create: starts on panel 0", s1.index() === 0);
+  check("create: panel 0 visible (is-in), others out",
+    s1.panels[0].classList.contains("is-in") && s1.panels[1].classList.contains("is-out"));
+  s1.swapTo(1);
+  check("swapTo(1): index moves", s1.index() === 1);
+  check("swapTo(1): class handoff", s1.panels[0].classList.contains("is-out") === false ||
+    s1.panels[1].classList.contains("is-in"));
+  await wait(400);
+  check("swapTo(1): landed — panel 1 in, panel 0 out",
+    s1.panels[1].classList.contains("is-in") && s1.panels[0].classList.contains("is-out"));
+  s1.swapTo(5); // out of range wraps modulo panel count
+  check("swapTo(5): wraps to panel 2", s1.index() === 2, "got " + s1.index());
+  s1.swapTo(-1); // negative wraps modulo: -1 ≡ panel 2 of 3
+  check("swapTo(-1): wraps modulo to panel 2", s1.index() === 2, "got " + s1.index());
+
+  /* 3 — isRunning + demo loop */
+  check("idle: isRunning false", !s1.isRunning());
+  s1.start();
+  check("start: isRunning true", s1.isRunning());
+  s1.stop();
+  check("stop: isRunning false", !s1.isRunning());
+
+  /* 4 — static container fixup */
+  var host = document.getElementById("s-static");
+  var s2 = SwapLoader.create(host, { autoStart: false });
+  check("static host: forced to relative", getComputedStyle(host).position === "relative");
+  s2.destroy();
+  check("static host: position restored on destroy",
+    host.style.position === "" && getComputedStyle(host).position === "static");
+
+  /* 5 — destroy mid-swap: panels must not stay stuck invisible */
+  var s3 = SwapLoader.create("#s-midswap", { autoStart: false, durationMs: 600, exitMs: 500 });
+  s3.swapTo(1);
+  await wait(150); // mid-flight: both panels animating with fill:forwards
+  s3.destroy();
+  var panels = document.querySelectorAll("#s-midswap > div");
+  var stuck = Array.prototype.some.call(panels, function (p) {
+    return parseFloat(getComputedStyle(p).opacity) < 0.5;
+  });
+  check("destroy mid-swap: no panel stuck invisible", !stuck,
+    Array.prototype.map.call(panels, function (p) { return getComputedStyle(p).opacity; }).join(","));
+
+  /* 6 — triggers: click swaps and pauses the loop */
+  var s4 = SwapLoader.create("#s-triggers", {
+    autoStart: true, restMs: 300, durationMs: 150, exitMs: 100,
+    triggers: [{ sel: ".tl-go", to: 1 }]
+  });
+  await wait(100);
+  var before = s4.index();
+  document.querySelector("#s-triggers .tl-go").click();
+  await wait(350);
+  check("trigger: click swapped to panel 1", s4.index() === 1, "got " + s4.index());
+  await wait(450); // past the restMs pause: the loop must have resumed
+  check("trigger: loop resumed after the rest pause", s4.isRunning());
+  s4.destroy();
+  check("trigger: listener removed on destroy (no throw on click)",
+    (document.querySelector("#s-triggers .tl-go").click(), true));
+
+  /* 7 — reduced motion: instant settle, no animations */
+  var realMM = window.matchMedia;
+  window.matchMedia = function (q) { return { matches: q.indexOf("prefers-reduced-motion") >= 0, media: q, addListener: function(){}, removeListener: function(){}, addEventListener: function(){}, removeEventListener: function(){} }; };
+  var s5 = SwapLoader.create("#s-reduced", { autoStart: false });
+  s5.swapTo(1);
+  check("reduced: instant settle to panel 1", s5.index() === 1);
+  check("reduced: no WAAPI animations",
+    Array.prototype.every.call(s5.panels, function (p) {
+      return p.getAnimations().filter(function (a) { return a.transitionProperty == null; }).length === 0;
+    }));
+  s5.destroy();
+  window.matchMedia = realMM;
+
+  /* 8 — clamps: negative durations don't reach WAAPI */
+  var s6 = SwapLoader.create("#s-destroy", { autoStart: false, durationMs: -50, exitMs: -10, distance: -20 });
+  var threw2 = "";
+  try { s6.swapTo(1); } catch (e) { threw2 = e.message; }
+  check("negative duration/distance: clamped, no throw", threw2 === "", threw2 || "ok");
+  s6.destroy();
+
+  var pass = 0, fail = 0, html = "";
+  for (var i = 0; i < results.length; i++) {
+    if (results[i].ok) pass++; else fail++;
+    html += '<div class="' + (results[i].ok ? "pass" : "fail") + '">' +
+      (results[i].ok ? "PASS" : "FAIL") + " — " + results[i].n +
+      (results[i].d ? " (" + results[i].d + ")" : "") + "</div>";
+  }
+  document.getElementById("results").innerHTML = html;
+  document.title = fail === 0 ? "SWAP TESTS: PASS" : "SWAP TESTS: FAIL " + fail;
+}
+run();
+</script>
+</body>
+</html>

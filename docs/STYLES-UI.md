@@ -101,6 +101,13 @@ children, in swap order; give the container its final size.
 | `triggers` | `null` | clickable in-panel links that swap on click: `[{ sel: ".signup-link", to: 1 }]`. A click pauses the demo loop for one rest, so the click never fights the cycle |
 | `autoStart` | `true` | run the demo loop immediately |
 
+Controller exposes: `el`, `panels`, `index()`, `swapTo(i)` (wraps
+modulo the panel count), `next()`, `start()`, `stop()`, `destroy()`,
+`isRunning()` (the demo loop, including its one-rest click pause).
+The container is made `position: relative` if static and restored on
+`destroy()`; an in-flight trade is canceled on `destroy()` so no panel
+is left stuck invisible.
+
 ## RouteLoader — `src/styles/route-loader.js`
 
 The route/page content transition: new content arrives while the old

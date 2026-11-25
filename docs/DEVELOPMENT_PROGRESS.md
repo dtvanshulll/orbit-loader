@@ -241,6 +241,60 @@ All 7 components through the full lifecycle. Gate checks:
 2 — one-shot transitions (tab, page, button, toast, swap; route and
 pathwipe already meet the bar).
 
+## Category 2 audit — one-shot transitions
+
+Evidence scan (lines, guards, fixups, clamps, harness existence,
+docs): tab 272L (has React tabs-test coverage; its SVG is in-flow —
+no escape bug), page 367L (fixup + clamps present, no harness),
+button 400L (trace SVG absolutely positioned INSIDE the button —
+escape bug, no harness), toast 320L (1 clamp, no harness), swap
+196L (fixup never restored, no isRunning, untracked swap animations,
+no controller docs, no harness). Order: button → swap → page →
+toast → tab → gate.
+
+### Cleanup 2.2 — SwapLoader (COMPLETE)
+
+Decision: **IMPROVE**.
+
+- `destroy()` mid-swap left panels stuck invisible: the trade's two
+  WAAPI animations hold `fill: forwards` (opacity 0 on the leaving
+  panel) and were never tracked or canceled. Now tracked and canceled
+  in `destroy()`.
+- `isRunning()` was missing entirely — every other style exposes it.
+  Returns the demo loop's engaged state (including the one-rest click
+  pause, truthfully).
+- The static-position fixup was applied but never restored on
+  `destroy()`; now saved/restored like the looping loaders.
+- Input clamps: `exitMs`/`durationMs` ≥ 1 (negatives reach WAAPI,
+  which throws), `restMs`/`distance` ≥ 0.
+- STYLES-UI: controller shape documented (was absent).
+
+Tests: new `tests/swap-test.html` — **22/22 PASS** (validation,
+swap mechanics incl. modulo wrap of out-of-range/negative indices,
+static host, destroy-mid-swap opacity check, trigger swap + resume,
+reduced-motion instant settle, clamps).
+
+### Cleanup 2.1 — ButtonLoader (COMPLETE)
+
+Decision: **IMPROVE**.
+
+- The trace SVG is absolutely positioned INSIDE the button; a static
+  button (the common case) let it escape to the nearest positioned
+  ancestor. All three variants force `position: relative` and restore
+  on `destroy()`; verified anchored to the button box.
+- `isRunning()` only reflected the demo loop; a manual `begin()` left
+  it false. Now returns demo-loop OR pending begin.
+- The harness caught a real flaw in `fail()`: the danger color was
+  swapped in and synchronously restored, so it never showed. The fill
+  variant now rides the danger color IN the drain keyframes and
+  restores the caller's fill on finish.
+
+Tests: new `tests/button-test.html` — **28/28 PASS** (guards,
+static-host anchoring, trace/fill/ripple lifecycles, `fail()` on all
+three variants, demo loop, destroy restoration, reduced motion).
+STYLES-UI ButtonLoader section expanded (variants, fail, dangerColor,
+isRunning semantics).
+
 ### Cleanup 1.7 — HandshakeLoader (COMPLETE)
 
 Decision: **IMPROVE**.

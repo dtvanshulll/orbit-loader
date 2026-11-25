@@ -44,15 +44,16 @@
     if (!el) throw new Error("SwapLoader.create: container not found");
 
     var axis = options.axis === "y" ? "y" : "x";
-    var exitMs = options.exitMs != null ? options.exitMs : 170;
-    var durationMs = options.durationMs != null ? options.durationMs : 300;
-    var restMs = options.restMs != null ? options.restMs : 2600;
-    var distance = options.distance != null ? options.distance : 5;
+    var exitMs = Math.max(1, options.exitMs != null ? options.exitMs : 170);
+    var durationMs = Math.max(1, options.durationMs != null ? options.durationMs : 300);
+    var restMs = Math.max(0, options.restMs != null ? options.restMs : 2600);
+    var distance = Math.max(0, options.distance != null ? options.distance : 5);
     var autoStart = options.autoStart !== false;
 
-    if (global.getComputedStyle(el).position === "static") {
-      el.style.position = "relative";
-    }
+    // Panels stack absolutely over the container; a static host would
+    // let them escape. Undone on destroy.
+    var forcedPosition = global.getComputedStyle(el).position === "static";
+    if (forcedPosition) el.style.position = "relative";
 
     // Panels: the container's element children, stacked over it.
     var panels = [];
@@ -74,6 +75,7 @@
     var timer = null;
     var resumeTimer = null;
     var bound = [];
+    var swapAnims = []; // the in-flight trade; canceled on destroy
 
     /** Mark `i` as the only visible panel, no motion. */
     function settle(i) {
@@ -112,16 +114,19 @@
       from.style.zIndex = 1;
       to.classList.remove("is-out");
       to.classList.add("is-in");
-      from.animate(
-        [{ opacity: 1, transform: move + "(0)" },
-         { opacity: 0, transform: move + "(-" + distance + "%)" }],
-        { duration: exitMs, easing: "cubic-bezier(0.3, 0, 1, 1)", fill: "forwards" }
-      );
-      to.animate(
-        [{ opacity: 0, transform: move + "(" + distance + "%)" },
-         { opacity: 1, transform: move + "(0)" }],
-        { duration: durationMs, easing: "cubic-bezier(0.23, 1, 0.32, 1)", fill: "forwards" }
-      ).onfinish = function () {
+      swapAnims = [
+        from.animate(
+          [{ opacity: 1, transform: move + "(0)" },
+           { opacity: 0, transform: move + "(-" + distance + "%)" }],
+          { duration: exitMs, easing: "cubic-bezier(0.3, 0, 1, 1)", fill: "forwards" }
+        ),
+        to.animate(
+          [{ opacity: 0, transform: move + "(" + distance + "%)" },
+           { opacity: 1, transform: move + "(0)" }],
+          { duration: durationMs, easing: "cubic-bezier(0.23, 1, 0.32, 1)", fill: "forwards" }
+        )
+      ];
+      swapAnims[1].onfinish = function () {
         // Best-effort cleanup when the finish event fires; the sanitize
         // at the next swapTo heals the classes when it doesn't.
         from.classList.remove("is-in");
@@ -141,6 +146,8 @@
       if (timer != null) { global.clearInterval(timer); timer = null; }
       if (resumeTimer != null) { global.clearTimeout(resumeTimer); resumeTimer = null; }
     }
+
+    function isRunning() { return timer != null || resumeTimer != null; }
 
     // Clickable in-panel triggers: a link inside a panel that swaps to
     // a given index. The demo loop pauses for one rest after a click,
@@ -167,6 +174,13 @@
     }
     function destroy() {
       stop();
+      // An in-flight trade holds fill:forwards on both panels — cancel
+      // it or the leaving panel stays stuck at opacity 0 after the
+      // classes are removed.
+      for (var s = 0; s < swapAnims.length; s++) {
+        try { swapAnims[s].cancel(); } catch (e) { /* already finished */ }
+      }
+      swapAnims = [];
       for (var b = 0; b < bound.length; b++) {
         bound[b][0].removeEventListener("click", bound[b][1]);
       }
@@ -175,6 +189,7 @@
         panels[k].classList.remove("orbit-loader-swap-panel", "is-in", "is-out");
         panels[k].style.zIndex = "";
       }
+      if (forcedPosition) el.style.position = "";
     }
 
     settle(0);
@@ -188,7 +203,8 @@
       next: step,
       start: start,
       stop: stop,
-      destroy: destroy
+      destroy: destroy,
+      isRunning: isRunning
     };
   }
 
