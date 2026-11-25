@@ -42,6 +42,8 @@
    *                                   other way
    *   color            (default null) dash color; omit for currentColor
    *   strokeWidth      (default null) dash thickness, px
+   *   svgClassName     (default "orbit-loader-path")   wrap() only
+   *   pathClassName    (default "orbit-loader-thread")  wrap() only
    *   activeClass      (default "is-active") toggled on the path while
    *                                   running, for stylesheet hooks
    *   autoStart        (default true)
@@ -50,6 +52,9 @@
    * set, start() is a no-op and the dashes sit still on the path.
    */
   function create(pathEl, options) {
+    if (!pathEl || typeof pathEl.getTotalLength !== "function") {
+      throw new Error("ChaseLoader.create: pathEl must be an SVG <path> element");
+    }
     options = options || {};
     var segments = Math.max(1, Math.round(options.segments != null ? options.segments : 3));
     var segmentFraction = options.segmentFraction != null ? options.segmentFraction : 0.12;
@@ -68,6 +73,7 @@
     // what was asked for, and the clamp keeps every caller's geometry sane.
     var maxFraction = 0.9 / segments;
     if (segmentFraction > maxFraction) segmentFraction = maxFraction;
+    if (segmentFraction < 0) segmentFraction = 0;
     var seg = total * segmentFraction;
     var gap = total / segments - seg;
 
@@ -112,6 +118,7 @@
 
     return {
       el: pathEl,
+      path: pathEl,
       start: start,
       stop: stop,
       destroy: destroy,
@@ -131,6 +138,11 @@
     if (typeof container === "string") container = document.querySelector(container);
     if (!container) throw new Error("ChaseLoader.wrap: container not found");
 
+    // Same static-container fixup as OrbitLoader.wrap(): the injected
+    // SVG is absolutely positioned and would escape a static host.
+    var forcedPosition = global.getComputedStyle(container).position === "static";
+    if (forcedPosition) container.style.position = "relative";
+
     var d = options.d;
     if (d && typeof d === "object" && global.OrbitLoaderShapes &&
         global.OrbitLoaderShapes[d.shape]) {
@@ -142,7 +154,7 @@
 
     var svg = document.createElementNS(SVG_NS, "svg");
     svg.setAttribute("viewBox", options.viewBox || "0 0 100 100");
-    svg.setAttribute("class", "orbit-loader-path");
+    svg.setAttribute("class", options.svgClassName || "orbit-loader-path");
     svg.setAttribute("aria-hidden", "true");
 
     // Optional faint guide, appended first so the dashes render on top —
@@ -159,19 +171,22 @@
 
     var path = document.createElementNS(SVG_NS, "path");
     path.setAttribute("d", d);
-    path.setAttribute("class", "orbit-loader-thread");
+    path.setAttribute("class", options.pathClassName || "orbit-loader-thread");
     svg.appendChild(path);
     container.appendChild(svg);
 
     var controller = create(path, options);
     controller.svg = svg;
+    controller.container = container;
     // wrap() owns the svg it injected; create()'s destroy only ever
     // touches pathEl, so wrap it here rather than leaving an orphaned
-    // <svg> in the container after destroy().
+    // <svg> in the container after destroy() — and undo the position
+    // fixup wrap() itself applied.
     var innerDestroy = controller.destroy;
     controller.destroy = function () {
       innerDestroy();
       if (svg.parentNode) svg.parentNode.removeChild(svg);
+      if (forcedPosition) container.style.position = "";
     };
     return controller;
   }

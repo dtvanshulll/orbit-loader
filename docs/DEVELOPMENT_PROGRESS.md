@@ -211,6 +211,27 @@ parts), all six harnesses PASS (orbit 34, dot 26, route 44, pathwipe
 returns 0 for shimmer/skeleton/blog/shell toast, fail() danger color
 verified in-browser, mobile 375px layout intact (no overflow).
 
+### Cleanup 1.5 — ChaseLoader (COMPLETE)
+
+Decision: **IMPROVE**.
+
+- `wrap()` static-container fixup + restore; `controller.container`
+  exposed (the shared path-based defect).
+- `create()` rejects a non-`<path>` element with a clear error.
+- `segmentFraction` floored at 0 (negative fractions built a nonsense
+  dasharray); the existing upper clamp (0.9/segments, documented) is
+  now covered by a test.
+- Controller gains `path` as an alias of `el` — orbit and dot expose
+  `path`; chase was the odd one out.
+- `wrap()` gains `svgClassName`/`pathClassName` (orbit/dot parity;
+  were hardcoded).
+
+Tests: new `tests/chase-test.html` — **28/28 PASS** (guards,
+formation math: 4 dash/gap pairs summing to the period, upper+lower
+fraction clamps, direction keyframes, shape-spec resolution, guide,
+class overrides, container exposure, color/strokeWidth apply+clear,
+destroy restoration, reduced motion). Gate: smoke 47/170, build OK.
+
 ### Cleanup 1.4 — PulseLoader (COMPLETE)
 
 Decision: **IMPROVE** (same pattern as ripple — the two container-based

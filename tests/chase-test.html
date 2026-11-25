@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<!--
+  TraceLoop — ChaseLoader test harness (looping-loaders category).
+  Covers: input guards, dasharray formation math (N dashes, clamped
+  fraction), static-container fixup, direction, activeClass, guide,
+  shape-spec resolution, destroy restoration, reduced motion.
+  Open in a browser; verdict lands in the page body and document.title.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<title>CHASE TESTS: RUNNING</title>
+<link rel="stylesheet" href="../dist/traceloop.css">
+<style>
+  body { font: 13px/1.5 monospace; background: #141413; color: #faf9f5; padding: 20px; }
+  .pass { color: #788c5d; } .fail { color: #d97757; }
+  .stage { width: 100px; height: 100px; background: #262420; border: 1px solid #33312c; margin: 10px 0; color: #6a9bcc; }
+</style>
+</head>
+<body>
+<div id="results">running…</div>
+<div class="stage" id="s-main"></div>
+<div class="stage" id="s-static" style="position: static"><span>static host</span></div>
+<div class="stage" id="s-clamp"></div>
+<div class="stage" id="s-reverse"></div>
+<div class="stage" id="s-guide"></div>
+<div class="stage" id="s-shape"></div>
+<div class="stage" id="s-color"></div>
+<div class="stage" id="s-destroy"></div>
+<div class="stage" id="s-reduced"></div>
+
+<script src="../src/styles/chase-loader.js"></script>
+<script src="../src/shapes/shapes-core.js"></script>
+<script>
+"use strict";
+var results = [];
+function check(n, ok, d) { results.push({ n: n, ok: !!ok, d: d || "" }); }
+function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+function D(size) { return OrbitLoaderShapes.circle(size); }
+function VB(size) { return "0 0 " + size + " " + size; }
+
+async function run() {
+  /* 1 — input guards */
+  var threw = "";
+  try { ChaseLoader.create(document.createElement("div"), {}); } catch (e) { threw = e.message; }
+  check("create: non-path throws with clear message", threw.indexOf("SVG <path>") >= 0, threw);
+  threw = "";
+  try { ChaseLoader.wrap("#nope", { d: D(72) }); } catch (e) { threw = e.message; }
+  check("wrap: missing container throws", threw.indexOf("container not found") >= 0, threw);
+  threw = "";
+  try { ChaseLoader.wrap("#s-main", {}); } catch (e) { threw = e.message; }
+  check("wrap: missing d throws", threw.indexOf("options.d") >= 0, threw);
+
+  /* 2 — formation math: N dashes, clamped fraction, gaps preserved */
+  var c1 = ChaseLoader.wrap("#s-main", { d: D(72), viewBox: VB(72), segments: 4, autoStart: false });
+  var dash = c1.path.style.strokeDasharray;
+  var pairs = dash.trim().split(/\s+/);
+  check("formation: 4 dash/gap pairs (8 numbers)", pairs.length === 8, "got " + pairs.length);
+  var total = c1.path.getTotalLength();
+  var seg = parseFloat(pairs[0]), gap = parseFloat(pairs[1]);
+  check("formation: dash = requested fraction of total (no clamp needed at 0.12)",
+    Math.abs(seg - total * 0.12) < 0.5, seg.toFixed(1) + " vs " + (total * 0.12).toFixed(1));
+  check("formation: gaps preserved (4*(seg+gap) ≈ total)",
+    Math.abs(4 * (seg + gap) - total) < 1, (4 * (seg + gap)).toFixed(1) + " vs " + total.toFixed(1));
+  c1.start();
+  check("running: isRunning true", c1.isRunning());
+  check("running: activeClass added", c1.path.classList.contains("is-active"));
+  var anims = c1.path.getAnimations().filter(function (a) { return a.transitionProperty == null; });
+  check("running: one WAAPI animation", anims.length === 1, "got " + anims.length);
+  var kf = anims[0].effect.getKeyframes();
+  check("lap: forward ends at -total", parseFloat(kf[1].strokeDashoffset) < 0, kf[1].strokeDashoffset);
+  c1.stop();
+  check("stop: activeClass removed", !c1.path.classList.contains("is-active"));
+
+  /* 3 — static container fixup */
+  var host = document.getElementById("s-static");
+  var c2 = ChaseLoader.wrap(host, { d: D(72), viewBox: VB(72), autoStart: false });
+  check("static host: forced to relative", getComputedStyle(host).position === "relative");
+  c2.destroy();
+  check("static host: position restored on destroy",
+    host.style.position === "" && getComputedStyle(host).position === "static");
+
+  /* 4 — fraction clamps: big fraction can't merge the formation */
+  var c3 = ChaseLoader.wrap("#s-clamp", { d: D(72), viewBox: VB(72), segments: 4, segmentFraction: 0.5, autoStart: false });
+  var p3 = c3.path.style.strokeDasharray.trim().split(/\s+/);
+  var s3 = parseFloat(p3[0]);
+  check("fraction 0.5: clamped below merge threshold", s3 < total * 0.25, s3.toFixed(1));
+  c3.destroy();
+  var c3b = ChaseLoader.wrap("#s-clamp", { d: D(72), viewBox: VB(72), segmentFraction: -0.2, autoStart: false });
+  var s3b = parseFloat(c3b.path.style.strokeDasharray.trim().split(/\s+/)[0]);
+  check("fraction -0.2: floored at 0", s3b === 0, "" + s3b);
+  c3b.destroy();
+
+  /* 5 — direction reverse */
+  var c4 = ChaseLoader.wrap("#s-reverse", { d: D(72), viewBox: VB(72), direction: "reverse", autoStart: false });
+  c4.start();
+  var rkf = c4.path.getAnimations().filter(function (a) { return a.transitionProperty == null; })[0].effect.getKeyframes();
+  check("reverse: ends at +total", parseFloat(rkf[1].strokeDashoffset) > 0, rkf[1].strokeDashoffset);
+  c4.stop(); c4.destroy();
+
+  /* 6 — guide + shape-spec resolution + class overrides */
+  var c5 = ChaseLoader.wrap("#s-guide", {
+    d: { shape: "circle", args: [72] }, guideOpacity: 0.4,
+    svgClassName: "my-svg", pathClassName: "my-path", autoStart: false
+  });
+  check("shape spec: resolved to a d string", typeof c5.path.getAttribute("d") === "string" && c5.path.getAttribute("d").length > 10);
+  check("guide: rendered with requested opacity",
+    !!c5.svg.querySelector(".orbit-loader-guide") &&
+    c5.svg.querySelector(".orbit-loader-guide").style.opacity === "0.4");
+  check("class overrides: honored",
+    c5.svg.getAttribute("class") === "my-svg" && c5.path.getAttribute("class") === "my-path");
+  check("container: exposed on controller", c5.container === document.getElementById("s-guide"));
+  c5.destroy();
+  check("destroy: svg removed", !document.querySelector("#s-guide svg"));
+
+  /* 7 — color/strokeWidth applied and cleared by destroy */
+  var c6 = ChaseLoader.wrap("#s-color", { d: D(72), viewBox: VB(72), color: "#6a9bcc", strokeWidth: 5, autoStart: false });
+  check("color: applied",
+    c6.path.style.stroke === "#6a9bcc" || c6.path.style.stroke === "rgb(106, 155, 204)");
+  check("strokeWidth: applied", c6.path.style.strokeWidth === "5");
+  c6.destroy();
+  check("destroy: caller styles cleared",
+    c6.path.style.stroke === "" && c6.path.style.strokeWidth === "" && c6.path.style.strokeDasharray === "");
+
+  /* 8 — full destroy restoration */
+  var c7 = ChaseLoader.wrap("#s-destroy", { d: D(72), viewBox: VB(72) });
+  await wait(100);
+  c7.destroy();
+  check("destroy: no animations left",
+    c7.path.getAnimations().filter(function (a) { return a.transitionProperty == null; }).length === 0);
+  check("destroy: dasharray cleared", c7.path.style.strokeDasharray === "");
+
+  /* 9 — reduced motion: dashes sit still */
+  var realMM = window.matchMedia;
+  window.matchMedia = function (q) { return { matches: q.indexOf("prefers-reduced-motion") >= 0, media: q, addListener: function(){}, removeListener: function(){}, addEventListener: function(){}, removeEventListener: function(){} }; };
+  var c8 = ChaseLoader.wrap("#s-reduced", { d: D(72), viewBox: VB(72) });
+  check("reduced motion: no animation",
+    c8.path.getAnimations().filter(function (a) { return a.transitionProperty == null; }).length === 0);
+  check("reduced motion: isRunning false", !c8.isRunning());
+  c8.destroy();
+  window.matchMedia = realMM;
+
+  var pass = 0, fail = 0, html = "";
+  for (var i = 0; i < results.length; i++) {
+    if (results[i].ok) pass++; else fail++;
+    html += '<div class="' + (results[i].ok ? "pass" : "fail") + '">' +
+      (results[i].ok ? "PASS" : "FAIL") + " — " + results[i].n +
+      (results[i].d ? " (" + results[i].d + ")" : "") + "</div>";
+  }
+  document.getElementById("results").innerHTML = html;
+  document.title = fail === 0 ? "CHASE TESTS: PASS" : "CHASE TESTS: FAIL " + fail;
+}
+run();
+</script>
+</body>
+</html>

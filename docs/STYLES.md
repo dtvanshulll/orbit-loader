@@ -142,7 +142,13 @@ core: `create()` takes a path element, `wrap()` takes a container plus
 | `durationMs` | `1600` | one full lap of the formation |
 | `direction` | `'forward'` | `'reverse'` runs the lap the other way |
 | `guideOpacity` | `0` | faint static copy of the path under the dashes (wrap only) |
-| `color`, `strokeWidth`, `activeClass`, `autoStart` | as OrbitLoader | |
+| `color`, `strokeWidth`, `activeClass`, `autoStart` | as OrbitLoader |
+| `svgClassName`, `pathClassName` | core defaults | override the injected classes (wrap only) |
+
+Controller exposes: `el` (the path; `path` is an alias), plus `start()`
+/ `stop()` / `destroy()` / `isRunning()`; `wrap()` adds `svg` and
+`container`. `wrap()` makes the container `position: relative` if it is
+static and restores the caller's value on `destroy()`. |
 
 ## TypingLoader — `src/styles/typing-loader.js`
 
