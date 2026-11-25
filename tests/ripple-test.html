@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<!--
+  TraceLoop — RippleLoader test harness (looping-loaders category).
+  Covers: container-based create/wrap duality, static-container fixup,
+  ring count + stagger, activeClass wiring, clamped inputs, stop/destroy
+  restoration, reduced motion.
+  Open in a browser; verdict lands in the page body and document.title.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<title>RIPPLE TESTS: RUNNING</title>
+<link rel="stylesheet" href="../dist/traceloop.css">
+<style>
+  body { font: 13px/1.5 monospace; background: #141413; color: #faf9f5; padding: 20px; }
+  .pass { color: #788c5d; } .fail { color: #d97757; }
+  .stage { width: 96px; height: 96px; background: #262420; border: 1px solid #33312c; margin: 10px 0; color: #d97757; }
+</style>
+</head>
+<body>
+<div id="results">running…</div>
+<div class="stage" id="s-main"></div>
+<div class="stage" id="s-static" style="position: static"><span>static host</span></div>
+<div class="stage" id="s-rings"></div>
+<div class="stage" id="s-clamp"></div>
+<div class="stage" id="s-color"></div>
+<div class="stage" id="s-destroy"></div>
+<div class="stage" id="s-reduced"></div>
+
+<script src="../src/styles/ripple-loader.js"></script>
+<script>
+"use strict";
+var results = [];
+function check(n, ok, d) { results.push({ n: n, ok: !!ok, d: d || "" }); }
+function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+async function run() {
+  /* 1 — create/wrap duality + running state */
+  var r1 = RippleLoader.create("#s-main", { rings: 3, durationMs: 1200 });
+  check("create: svg injected, aria-hidden",
+    !!r1.svg && r1.svg.getAttribute("aria-hidden") === "true");
+  check("create: 3 rings built", r1.circles.length === 3, "got " + r1.circles.length);
+  check("running: isRunning true", r1.isRunning());
+  await wait(200);
+  check("running: each ring has one WAAPI animation",
+    r1.circles.every(function (c) { return c.getAnimations().length === 1; }));
+
+  /* 2 — stagger: ring delays differ by duration/rings */
+  var d0 = r1.circles[0].getAnimations()[0].effect.getTiming().delay;
+  var d1 = r1.circles[1].getAnimations()[0].effect.getTiming().delay;
+  check("stagger: ring delays differ", d1 > d0, d0 + " vs " + d1);
+  check("stagger: delay = i/rings of a period", Math.abs((d1 - d0) - 1200 / 3) < 1,
+    (d1 - d0).toFixed(1));
+
+  /* 3 — activeClass is wired (was a dead option) */
+  check("activeClass: added while running", r1.el.classList.contains("is-active"));
+  r1.stop();
+  check("stop: isRunning false", !r1.isRunning());
+  check("stop: activeClass removed", !r1.el.classList.contains("is-active"));
+  check("stop: rings invisible (CSS opacity 0)",
+    r1.circles.every(function (c) { return getComputedStyle(c).opacity === "0"; }));
+
+  /* 4 — static container fixup */
+  var host = document.getElementById("s-static");
+  var r2 = RippleLoader.wrap(host, { autoStart: false });
+  check("static host: forced to relative", getComputedStyle(host).position === "relative");
+  r2.destroy();
+  check("static host: position restored on destroy",
+    host.style.position === "" && getComputedStyle(host).position === "static");
+
+  /* 5 — clamped inputs: rings >= 1, startScale within bounds */
+  var r3 = RippleLoader.create("#s-rings", { rings: 0, autoStart: false });
+  check("rings=0: clamped to 1", r3.circles.length === 1, "got " + r3.circles.length);
+  r3.destroy();
+  var r3b = RippleLoader.create("#s-rings", { rings: 2.7, autoStart: false });
+  check("rings=2.7: rounded to 3", r3b.circles.length === 3, "got " + r3b.circles.length);
+  r3b.destroy();
+  var r3c = RippleLoader.create("#s-clamp", { startScale: 5, autoStart: false });
+  var kf = r3c.circles[0];
+  r3c.start();
+  var kfs = kf.getAnimations()[0].effect.getKeyframes();
+  var s0 = kfs[0].transform;
+  check("startScale=5: clamped (no scale above 1 in keyframes)", s0.indexOf("1)") < 0 || s0.indexOf("5") < 0, s0);
+  r3c.stop(); r3c.destroy();
+
+  /* 6 — color applied and gone after destroy */
+  var r4 = RippleLoader.create("#s-color", { color: "#6a9bcc", autoStart: false });
+  check("color: applied to rings",
+    r4.circles.every(function (c) { return c.style.stroke === "#6a9bcc" || c.style.stroke === "rgb(106, 155, 204)"; }));
+  r4.destroy();
+  check("destroy: svg removed", !document.querySelector("#s-color svg"));
+
+  /* 7 — full destroy restoration */
+  var r5 = RippleLoader.create("#s-destroy", { rings: 2 });
+  await wait(100);
+  r5.destroy();
+  check("destroy: no animations left", r5.circles.every(function (c) { return c.getAnimations().length === 0; }));
+  check("destroy: isRunning false", !r5.isRunning());
+
+  /* 8 — reduced motion: nothing runs, nothing visible */
+  var realMM = window.matchMedia;
+  window.matchMedia = function (q) { return { matches: q.indexOf("prefers-reduced-motion") >= 0, media: q, addListener: function(){}, removeListener: function(){}, addEventListener: function(){}, removeEventListener: function(){} }; };
+  var r6 = RippleLoader.create("#s-reduced", {});
+  check("reduced motion: no animations", r6.circles.every(function (c) { return c.getAnimations().length === 0; }));
+  check("reduced motion: isRunning false", !r6.isRunning());
+  check("reduced motion: rings invisible", r6.circles.every(function (c) { return getComputedStyle(c).opacity === "0"; }));
+  r6.destroy();
+  window.matchMedia = realMM;
+
+  /* 9 — missing container throws */
+  var threw = "";
+  try { RippleLoader.create("#nope", {}); } catch (e) { threw = e.message; }
+  check("missing container: throws", threw.indexOf("container not found") >= 0, threw);
+
+  var pass = 0, fail = 0, html = "";
+  for (var i = 0; i < results.length; i++) {
+    if (results[i].ok) pass++; else fail++;
+    html += '<div class="' + (results[i].ok ? "pass" : "fail") + '">' +
+      (results[i].ok ? "PASS" : "FAIL") + " — " + results[i].n +
+      (results[i].d ? " (" + results[i].d + ")" : "") + "</div>";
+  }
+  document.getElementById("results").innerHTML = html;
+  document.title = fail === 0 ? "RIPPLE TESTS: PASS" : "RIPPLE TESTS: FAIL " + fail;
+}
+run();
+</script>
+</body>
+</html>

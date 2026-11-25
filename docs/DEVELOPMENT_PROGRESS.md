@@ -211,6 +211,24 @@ parts), all six harnesses PASS (orbit 34, dot 26, route 44, pathwipe
 returns 0 for shimmer/skeleton/blog/shell toast, fail() danger color
 verified in-browser, mobile 375px layout intact (no overflow).
 
+### Cleanup 1.3 — RippleLoader (COMPLETE)
+
+Decision: **IMPROVE**.
+
+- `wrap()`/`create()` static-container fixup + restore (the category's
+  shared defect; ripple is container-based so it applied directly).
+- `activeClass` was a dead option — documented, never wired. Now added
+  to the container on `start()` and removed on `stop()`, matching the
+  other styles' contract.
+- Input clamps: `rings` rounded and floored at 1 (0/negative built zero
+  rings and a permanently idle loader), `startScale` clamped to
+  0.01–1, `strokeWidth` floored at 0.
+
+Tests: new `tests/ripple-test.html` — **23/23 PASS** (duality, ring
+build, stagger timing via `effect.getTiming()`, activeClass wiring,
+clamps, color serialization, destroy restoration, reduced motion,
+missing container). Gate: smoke 47/170, build OK.
+
 ### Cleanup 1.2 — DotLoader (COMPLETE)
 
 Decision: **IMPROVE**.

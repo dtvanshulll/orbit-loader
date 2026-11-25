@@ -45,9 +45,9 @@
    *   strokeWidth  (default 3)    ring stroke width, in the SVG's 100-
    *                               unit space (3 ≈ 3% of the box)
    *   color        (default null) ring color; omit for currentColor
-   *   activeClass  (default "is-active") reserved for symmetry with the
-   *                               other styles; rings are invisible via
-   *                               CSS until their animation runs
+   *   activeClass  (default "is-active") added to the container while
+   *                               running, so CSS can fade the whole
+   *                               loader in/out like the other styles
    *   autoStart    (default true)
    *
    * Reduced motion is checked once at creation, like every style: if
@@ -57,12 +57,19 @@
     options = options || {};
     if (typeof el === "string") el = document.querySelector(el);
     if (!el) throw new Error("RippleLoader.create: container not found");
-    var rings = options.rings != null ? options.rings : 3;
+    var rings = Math.max(1, Math.round(options.rings != null ? options.rings : 3));
     var durationMs = options.durationMs != null ? options.durationMs : 1800;
-    var startScale = options.startScale != null ? options.startScale : 0.15;
-    var strokeWidth = options.strokeWidth != null ? options.strokeWidth : 3;
+    var startScale = Math.min(1, Math.max(0.01, options.startScale != null ? options.startScale : 0.15));
+    var strokeWidth = Math.max(0, options.strokeWidth != null ? options.strokeWidth : 3);
     var color = options.color != null ? options.color : null;
+    var activeClass = options.activeClass || "is-active";
     var autoStart = options.autoStart !== false;
+
+    // The injected SVG is absolutely positioned; on a static container
+    // it would escape to the nearest positioned ancestor. Same fixup
+    // every container-based style applies; undone on destroy.
+    var forcedPosition = global.getComputedStyle(el).position === "static";
+    if (forcedPosition) el.style.position = "relative";
 
     var svg = document.createElementNS(SVG_NS, "svg");
     svg.setAttribute("viewBox", "0 0 100 100");
@@ -91,6 +98,7 @@
 
     function start() {
       if (reducedMotion || anims.length) return;
+      el.classList.add(activeClass);
       for (var i = 0; i < circles.length; i++) {
         anims.push(circles[i].animate(
           [
@@ -113,11 +121,13 @@
     function stop() {
       for (var i = 0; i < anims.length; i++) anims[i].cancel();
       anims = [];
+      el.classList.remove(activeClass);
     }
 
     function destroy() {
       stop();
       if (svg.parentNode) svg.parentNode.removeChild(svg);
+      if (forcedPosition) el.style.position = "";
     }
 
     if (autoStart) start();

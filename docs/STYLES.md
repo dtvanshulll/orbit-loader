@@ -97,6 +97,13 @@ Rings radiate from the container's center. Container-based:
 | `startScale` | `0.15` | the fraction of the box a ring spans when it's born |
 | `strokeWidth` | `3` | ring stroke width, in the SVG's 100-unit space |
 | `color` | `null` | ring color |
+| `activeClass` | `"is-active"` | added to the container while running |
+| `autoStart` | `true` | |
+
+Controller exposes: `el`, `svg`, `circles`, plus `start()` / `stop()` /
+`destroy()` / `isRunning()`. The container is made `position: relative`
+if static and restored on `destroy()`. Reduced motion: nothing runs,
+rings stay invisible.
 
 ## PulseLoader — `src/styles/pulse-loader.js`
 
