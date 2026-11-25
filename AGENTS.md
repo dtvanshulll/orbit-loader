@@ -110,6 +110,18 @@ change.
   swap-loader trades panels that already exist, this one owns the
   content lifecycle. Container-based, one-shot per `to()` call, newer
   calls cancel in-flight ones cleanly.
+- `src/styles/swap-loader.js` — the swap style (`SwapLoader`): trades
+  between panels that already exist in the DOM (log-in/sign-up flips,
+  wizard steps) — panels you mount yourself, it only animates the
+  trade.
+- `src/styles/countup-loader.js` — the count-up style
+  (`CountUpLoader`): a number that counts from 0 to its target with a
+  rolling-digit odometer effect.
+- `src/styles/shake-loader.js` — the shake style (`ShakeLoader`):
+  error/attention shake — a short horizontal wobble on the element.
+- `src/styles/shuffle-loader.js` — the shuffle style (`ShuffleLoader`):
+  text shuffle/scramble — characters cycle through random glyphs
+  before settling into the real text.
 - `src/traceloop.js` — the library entry: loads every style for side
   effects and re-exports the globals as named ESM exports (plus a
   `styles` map). This is what `import { ... } from 'traceloop'` hits.
@@ -126,7 +138,8 @@ change.
   `shapes-outline.js` letterOutline + the stroke-offset math). No style
   file imports these; they only animate whatever path they're given.
 - `src/css/` — every style's injected-DOM styles, one small file per
-  style plus `base.css` (tokens, typography, crawler base); the build
+  style plus `base.css` (tokens, typography, crawler base) and
+  `page-variants.css` (PageLoader's wipe-variant panels); the build
   concatenates them into `dist/traceloop.css` in a fixed order.
 - `package.json` — metadata, files whitelist, `exports` map and the
   esbuild build scripts. No runtime dependencies; dev dependencies
