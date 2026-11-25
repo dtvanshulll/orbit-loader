@@ -59,9 +59,9 @@
    *                               the pulse; false for rings only
    *   color        (default null) ring and dot color; omit for
    *                               currentColor
-   *   activeClass  (default "is-active") reserved for symmetry with
-   *                               the other styles; rings are invisible
-   *                               via CSS until their animation runs
+   *   activeClass  (default "is-active") added to the container while
+   *                               running, so CSS can fade the whole
+   *                               loader in/out like the other styles
    *   autoStart    (default true)
    *
    * Reduced motion is checked once at creation, like every style: if
@@ -71,14 +71,21 @@
     options = options || {};
     if (typeof el === "string") el = document.querySelector(el);
     if (!el) throw new Error("PulseLoader.create: container not found");
-    var rings = options.rings != null ? options.rings : 2;
+    var rings = Math.max(1, Math.round(options.rings != null ? options.rings : 2));
     var durationMs = options.durationMs != null ? options.durationMs : 2000;
-    var minScale = options.minScale != null ? options.minScale : 0.82;
-    var maxOpacity = options.maxOpacity != null ? options.maxOpacity : 0.7;
-    var strokeWidth = options.strokeWidth != null ? options.strokeWidth : 4;
+    var minScale = Math.min(1, Math.max(0.05, options.minScale != null ? options.minScale : 0.82));
+    var maxOpacity = Math.min(1, Math.max(0.05, options.maxOpacity != null ? options.maxOpacity : 0.7));
+    var strokeWidth = Math.max(0, options.strokeWidth != null ? options.strokeWidth : 4);
     var withDot = options.dot !== false;
     var color = options.color != null ? options.color : null;
+    var activeClass = options.activeClass || "is-active";
     var autoStart = options.autoStart !== false;
+
+    // The injected SVG is absolutely positioned; on a static container
+    // it would escape to the nearest positioned ancestor. Same fixup
+    // every container-based style applies; undone on destroy.
+    var forcedPosition = global.getComputedStyle(el).position === "static";
+    if (forcedPosition) el.style.position = "relative";
 
     var svg = document.createElementNS(SVG_NS, "svg");
     svg.setAttribute("viewBox", "0 0 100 100");
@@ -121,6 +128,7 @@
 
     function start() {
       if (reducedMotion || anims.length) return;
+      el.classList.add(activeClass);
       for (var i = 0; i < circles.length; i++) {
         // Sine-eased in-out both ways: the breath has no start or end
         // to accent, so symmetric easing keeps it seamless. Ring i is
@@ -161,11 +169,13 @@
     function stop() {
       for (var i = 0; i < anims.length; i++) anims[i].cancel();
       anims = [];
+      el.classList.remove(activeClass);
     }
 
     function destroy() {
       stop();
       if (svg.parentNode) svg.parentNode.removeChild(svg);
+      if (forcedPosition) el.style.position = "";
     }
 
     if (autoStart) start();

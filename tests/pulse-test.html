@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<!--
+  TraceLoop — PulseLoader test harness (looping-loaders category).
+  Covers: container-based duality, static-container fixup, ring/dot
+  build and stagger, activeClass wiring, clamped inputs, dot toggle,
+  stop/destroy restoration, reduced motion.
+  Open in a browser; verdict lands in the page body and document.title.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<title>PULSE TESTS: RUNNING</title>
+<link rel="stylesheet" href="../dist/traceloop.css">
+<style>
+  body { font: 13px/1.5 monospace; background: #141413; color: #faf9f5; padding: 20px; }
+  .pass { color: #788c5d; } .fail { color: #d97757; }
+  .stage { width: 96px; height: 96px; background: #262420; border: 1px solid #33312c; margin: 10px 0; color: #d97757; }
+</style>
+</head>
+<body>
+<div id="results">running…</div>
+<div class="stage" id="s-main"></div>
+<div class="stage" id="s-static" style="position: static"><span>static host</span></div>
+<div class="stage" id="s-rings"></div>
+<div class="stage" id="s-nodot"></div>
+<div class="stage" id="s-clamp"></div>
+<div class="stage" id="s-color"></div>
+<div class="stage" id="s-destroy"></div>
+<div class="stage" id="s-reduced"></div>
+
+<script src="../src/styles/pulse-loader.js"></script>
+<script>
+"use strict";
+var results = [];
+function check(n, ok, d) { results.push({ n: n, ok: !!ok, d: d || "" }); }
+function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+async function run() {
+  /* 1 — duality + running state */
+  var p1 = PulseLoader.create("#s-main", { rings: 2, durationMs: 1600 });
+  check("create: svg injected, aria-hidden",
+    !!p1.svg && p1.svg.getAttribute("aria-hidden") === "true");
+  check("create: 2 rings + center dot", p1.circles.length === 2 && !!p1.dot,
+    p1.circles.length + "/" + !!p1.dot);
+  check("running: isRunning true", p1.isRunning());
+  await wait(150);
+  check("running: every element has one WAAPI animation",
+    p1.circles.concat([p1.dot]).every(function (c) { return c.getAnimations().length === 1; }));
+
+  /* 2 — stagger: rings run half a period apart */
+  var d0 = p1.circles[0].getAnimations()[0].effect.getTiming().delay;
+  var d1 = p1.circles[1].getAnimations()[0].effect.getTiming().delay;
+  check("stagger: half a period between rings", Math.abs((d1 - d0) - 1600 / 4) < 1, (d1 - d0).toFixed(1));
+  var dotDelay = p1.dot.getAnimations()[0].effect.getTiming().delay;
+  check("stagger: dot runs on the base clock", dotDelay === 0, "" + dotDelay);
+
+  /* 3 — activeClass wired (was a dead option) */
+  check("activeClass: added while running", p1.el.classList.contains("is-active"));
+  p1.stop();
+  check("stop: isRunning false", !p1.isRunning());
+  check("stop: activeClass removed", !p1.el.classList.contains("is-active"));
+  check("stop: rings invisible (CSS opacity 0)",
+    p1.circles.every(function (c) { return getComputedStyle(c).opacity === "0"; }));
+
+  /* 4 — static container fixup */
+  var host = document.getElementById("s-static");
+  var p2 = PulseLoader.wrap(host, { autoStart: false });
+  check("static host: forced to relative", getComputedStyle(host).position === "relative");
+  p2.destroy();
+  check("static host: position restored on destroy",
+    host.style.position === "" && getComputedStyle(host).position === "static");
+
+  /* 5 — dot: false removes it; clamps hold */
+  var p3 = PulseLoader.create("#s-nodot", { dot: false, autoStart: false });
+  check("dot=false: no dot element", p3.dot === null && !p3.svg.querySelector(".orbit-loader-pulse-dot"));
+  p3.destroy();
+  var p3b = PulseLoader.create("#s-rings", { rings: 0, autoStart: false });
+  check("rings=0: clamped to 1", p3b.circles.length === 1, "got " + p3b.circles.length);
+  p3b.destroy();
+  var p3c = PulseLoader.create("#s-rings", { rings: 3.6, autoStart: false });
+  check("rings=3.6: rounded to 4", p3c.circles.length === 4, "got " + p3c.circles.length);
+  p3c.destroy();
+  var p3d = PulseLoader.create("#s-clamp", { minScale: 9, maxOpacity: -2, autoStart: false });
+  p3d.start();
+  var kfs = p3d.circles[0].getAnimations()[0].effect.getKeyframes();
+  check("minScale=9: clamped to 1 (rest scale in keyframes)",
+    kfs[0].transform === "scale(1)", kfs[0].transform);
+  check("maxOpacity=-2: clamped to 0.05 floor",
+    parseFloat(kfs[0].opacity) === 0.05 / 3 || parseFloat(kfs[0].opacity) > 0, kfs[0].opacity);
+  p3d.stop(); p3d.destroy();
+
+  /* 6 — color applied and gone after destroy */
+  var p4 = PulseLoader.create("#s-color", { color: "#788c5d", autoStart: false });
+  check("color: applied to rings and dot",
+    p4.circles.every(function (c) { return c.style.stroke === "#788c5d" || c.style.stroke === "rgb(120, 140, 93)"; }) &&
+    (p4.dot.style.fill === "#788c5d" || p4.dot.style.fill === "rgb(120, 140, 93)"));
+  p4.destroy();
+  check("destroy: svg removed", !document.querySelector("#s-color svg"));
+
+  /* 7 — full destroy restoration */
+  var p5 = PulseLoader.create("#s-destroy", { rings: 2 });
+  await wait(100);
+  p5.destroy();
+  check("destroy: no animations left",
+    p5.circles.every(function (c) { return c.getAnimations().length === 0; }));
+  check("destroy: isRunning false", !p5.isRunning());
+
+  /* 8 — reduced motion: nothing runs, nothing visible */
+  var realMM = window.matchMedia;
+  window.matchMedia = function (q) { return { matches: q.indexOf("prefers-reduced-motion") >= 0, media: q, addListener: function(){}, removeListener: function(){}, addEventListener: function(){}, removeEventListener: function(){} }; };
+  var p6 = PulseLoader.create("#s-reduced", {});
+  check("reduced motion: no animations",
+    p6.circles.every(function (c) { return c.getAnimations().length === 0; }));
+  check("reduced motion: isRunning false", !p6.isRunning());
+  check("reduced motion: rings invisible",
+    p6.circles.every(function (c) { return getComputedStyle(c).opacity === "0"; }));
+  p6.destroy();
+  window.matchMedia = realMM;
+
+  /* 9 — missing container throws */
+  var threw = "";
+  try { PulseLoader.create("#nope", {}); } catch (e) { threw = e.message; }
+  check("missing container: throws", threw.indexOf("container not found") >= 0, threw);
+
+  var pass = 0, fail = 0, html = "";
+  for (var i = 0; i < results.length; i++) {
+    if (results[i].ok) pass++; else fail++;
+    html += '<div class="' + (results[i].ok ? "pass" : "fail") + '">' +
+      (results[i].ok ? "PASS" : "FAIL") + " — " + results[i].n +
+      (results[i].d ? " (" + results[i].d + ")" : "") + "</div>";
+  }
+  document.getElementById("results").innerHTML = html;
+  document.title = fail === 0 ? "PULSE TESTS: PASS" : "PULSE TESTS: FAIL " + fail;
+}
+run();
+</script>
+</body>
+</html>

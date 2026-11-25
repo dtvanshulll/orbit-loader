@@ -211,6 +211,22 @@ parts), all six harnesses PASS (orbit 34, dot 26, route 44, pathwipe
 returns 0 for shimmer/skeleton/blog/shell toast, fail() danger color
 verified in-browser, mobile 375px layout intact (no overflow).
 
+### Cleanup 1.4 — PulseLoader (COMPLETE)
+
+Decision: **IMPROVE** (same pattern as ripple — the two container-based
+styles shared the same gaps).
+
+- Static-container fixup + restore; `activeClass` was a dead option
+  (documented, never wired) — now added on `start()`/removed on
+  `stop()`; input clamps (`rings` floored at 1 + rounded, `minScale`
+  0.05–1, `maxOpacity` 0.05–1, `strokeWidth` ≥ 0).
+
+Tests: new `tests/pulse-test.html` — **25/25 PASS** (duality, ring+dot
+build, half-period stagger via `effect.getTiming()`, dot base clock,
+activeClass wiring, dot toggle, clamps incl. minScale/maxOpacity
+keyframe inspection, color serialization, destroy restoration,
+reduced motion, missing container). Gate: smoke 47/170, build OK.
+
 ### Cleanup 1.3 — RippleLoader (COMPLETE)
 
 Decision: **IMPROVE**.

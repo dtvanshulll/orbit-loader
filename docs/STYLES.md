@@ -120,6 +120,13 @@ sending a segment around a path. Container-based: `create()` and
 | `strokeWidth` | `4` | ring stroke width, in the SVG's 100-unit space |
 | `dot` | `true` | the steady center dot anchoring the pulse; `false` for rings only |
 | `color` | `null` | ring and dot color |
+| `activeClass` | `"is-active"` | added to the container while running |
+| `autoStart` | `true` | |
+
+Controller exposes: `el`, `svg`, `circles`, `dot`, plus `start()` /
+`stop()` / `destroy()` / `isRunning()`. The container is made
+`position: relative` if static and restored on `destroy()`. Reduced
+motion: nothing runs, rings and dot stay invisible.
 
 ## ChaseLoader — `src/styles/chase-loader.js`
 
