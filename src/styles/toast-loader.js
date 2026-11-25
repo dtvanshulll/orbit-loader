@@ -49,16 +49,17 @@
     var variant = options.variant != null ? options.variant : "edge";
     var enter = options.enter != null ? options.enter : "none";
     var pauseOnHover = options.pauseOnHover !== false;
-    var thickness = options.thickness != null ? options.thickness : (variant === "bar" ? 4 : 3);
-    var ringSize = options.ringSize != null ? options.ringSize : 22;
-    var durationMs = options.durationMs != null ? options.durationMs : 3200;
-    var restMs = options.restMs != null ? options.restMs : 1200;
+    var thickness = Math.max(1, options.thickness != null ? options.thickness : (variant === "bar" ? 4 : 3));
+    var ringSize = Math.max(thickness * 3, options.ringSize != null ? options.ringSize : 22);
+    var durationMs = Math.max(1, options.durationMs != null ? options.durationMs : 3200);
+    var restMs = Math.max(0, options.restMs != null ? options.restMs : 1200);
     var color = options.color != null ? options.color : null;
     var autoStart = options.autoStart !== false;
 
-    if (global.getComputedStyle(el).position === "static") {
-      el.style.position = "relative";
-    }
+    // The rail pins to the container's bottom edge; a static host
+    // would let it escape. Undone on destroy.
+    var forcedPosition = global.getComputedStyle(el).position === "static";
+    if (forcedPosition) el.style.position = "relative";
 
     // The rail hugs the bottom edge, same trick as page-loader but
     // pinned bottom instead of top. ViewBox in real pixels (re-measured
@@ -253,7 +254,9 @@
      */
     function begin(ms) {
       if (reducedMotion) return;
-      lifetime = ms != null ? ms : durationMs;
+      // A zero/negative lifetime would divide the per-frame drain by
+      // zero (NaN dasharray) — floor it at one frame's worth.
+      lifetime = Math.max(16, ms != null ? ms : durationMs);
       if (raf != null) { global.cancelAnimationFrame(raf); raf = null; }
       if (endTimer != null) { global.clearTimeout(endTimer); endTimer = null; }
       running = true;
@@ -293,6 +296,7 @@
       el.removeEventListener("mouseenter", onEnter);
       el.removeEventListener("mouseleave", onLeave);
       if (svg.parentNode) svg.parentNode.removeChild(svg);
+      if (forcedPosition) el.style.position = "";
     }
 
     function isRunning() { return running || demo; }

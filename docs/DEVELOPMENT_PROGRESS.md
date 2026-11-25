@@ -252,6 +252,24 @@ escape bug, no harness), toast 320L (1 clamp, no harness), swap
 no controller docs, no harness). Order: button → swap → page →
 toast → tab → gate.
 
+### Cleanup 2.4 — ToastLoader (COMPLETE)
+
+Decision: **IMPROVE**.
+
+- Static-position fixup applied but never restored on `destroy()`;
+  now saved/restored.
+- `begin(0)` divided the per-frame drain by a zero lifetime (NaN
+  dasharray) — floored at one frame's worth (16ms).
+- Clamps: `thickness` ≥ 1, `ringSize` ≥ 3× thickness (a ring smaller
+  than its own stroke broke the corner geometry), `durationMs` ≥ 1,
+  `restMs` ≥ 0.
+- STYLES-UI: variants, `pauseOnHover`, wall-clock behavior, and the
+  full controller shape documented (was a 2-line stub).
+
+Tests: new `tests/toast-test.html` — **19/19 PASS** (edge/bar/ring
+variants, wall-clock drain, dismiss-in-place, hover pause + resume,
+begin(0) NaN guard, static host, destroy, reduced motion).
+
 ### Cleanup 2.3 — PageLoader (COMPLETE)
 
 Decision: **IMPROVE**.

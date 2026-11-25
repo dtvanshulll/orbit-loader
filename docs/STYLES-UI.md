@@ -74,17 +74,25 @@ pending `begin()`). Reduced motion: every call is a no-op.
 ## ToastLoader — `src/styles/toast-loader.js`
 
 The toast's countdown: `begin(ms)` drains a bar along the bottom edge
-over `ms`, then stops. `dismiss()` stops early. Container-based.
+over `ms` (wall-clock accurate at any refresh rate; hover pauses the
+clock without losing position), then stops. `dismiss()` stops early,
+leaving the bar where it is. Container-based; the container is made
+`position: relative` if static and restored on `destroy()`.
 
 | option | default | meaning |
 |---|---|---|
+| `variant` | `'edge'` | `'edge'` (bottom rail), `'bar'` (inset track) or `'ring'` (corner timer circle) |
 | `thickness` | `3` | bar thickness, px |
+| `ringSize` | `22` | the ring variant's corner circle size, px |
 | `durationMs` | `3200` | the demo loop's countdown length |
 | `restMs` | `1200` | the demo loop's pause between toasts |
 | `color` | `null` | bar color |
 | `d` | `null` | optional path `d` — a curved bottom edge |
+| `pauseOnHover` | `true` | hover pauses the countdown |
 
-Controller also exposes: `bar`, `begin(ms)`, `dismiss()`.
+Controller also exposes: `svg`, `bar`, `begin(ms)`, `dismiss()`,
+`start()`, `stop()`, `destroy()`, `isRunning()`. `begin(0)` is floored
+to one frame's worth so a zero lifetime can't NaN the bar.
 
 ## SwapLoader — `src/styles/swap-loader.js`
 

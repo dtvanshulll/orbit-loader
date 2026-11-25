@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<!--
+  TraceLoop — ToastLoader test harness (one-shot transitions category).
+  Covers: variants (edge/bar/ring), begin/dismiss lifecycle, wall-clock
+  accuracy, hover pause, begin(ms) clamp, static-container fixup,
+  destroy restoration, reduced motion.
+  Open in a browser; verdict lands in the page body and document.title.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<title>TOAST TESTS: RUNNING</title>
+<link rel="stylesheet" href="../dist/traceloop.css">
+<style>
+  body { font: 13px/1.5 monospace; background: #141413; color: #faf9f5; padding: 20px; }
+  .pass { color: #788c5d; } .fail { color: #d97757; }
+  .toast { width: 260px; height: 64px; background: #262420; border: 1px solid #33312c; border-radius: 8px;
+           margin: 10px 0; position: relative; color: #788c5d; }
+</style>
+</head>
+<body>
+<div id="results">running…</div>
+<div class="toast" id="t-edge"></div>
+<div class="toast" id="t-bar"></div>
+<div class="toast" id="t-ring"></div>
+<div class="toast" id="t-hover"></div>
+<div class="toast" id="t-clamp"></div>
+<div class="toast" id="t-static" style="position: static"></div>
+<div class="toast" id="t-destroy"></div>
+<div class="toast" id="t-reduced"></div>
+
+<script src="../src/styles/toast-loader.js"></script>
+<script>
+"use strict";
+var results = [];
+function check(n, ok, d) { results.push({ n: n, ok: !!ok, d: d || "" }); }
+function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+async function run() {
+  /* 1 — input guards */
+  var threw = "";
+  try { ToastLoader.create("#nope", {}); } catch (e) { threw = e.message; }
+  check("create: missing container throws", threw.indexOf("container not found") >= 0, threw);
+
+  /* 2 — edge variant: begin drains wall-clock, ends clean */
+  var t1 = ToastLoader.create("#t-edge", { autoStart: false, color: "#788c5d" });
+  t1.begin(1000);
+  check("begin: isRunning true", t1.isRunning());
+  check("begin: activeClass added", t1.el.classList.contains("is-active"));
+  await wait(400);
+  var mid = parseFloat(t1.bar.style.strokeDasharray);
+  check("begin: bar draining (segment < full)", mid > 0 && mid < 260, mid.toFixed(1));
+  await wait(800); // 1000ms lifetime elapsed
+  check("countdown: ends clean (isRunning false)", !t1.isRunning());
+  check("countdown: activeClass removed", !t1.el.classList.contains("is-active"));
+
+  /* 3 — dismiss stops early, bar stays where it was */
+  var t2 = ToastLoader.create("#t-bar", { variant: "bar", autoStart: false, color: "#6a9bcc" });
+  t2.begin(2000);
+  await wait(300);
+  var at = parseFloat(t2.bar.style.strokeDasharray);
+  t2.dismiss();
+  check("dismiss: stops early", !t2.isRunning());
+  check("dismiss: bar frozen in place", Math.abs(parseFloat(t2.bar.style.strokeDasharray) - at) < 1);
+  check("bar variant: guide track present", !!t2.svg.querySelector(".orbit-loader-toast-guide, circle, path"));
+  t2.stop();
+
+  /* 4 — ring variant: circular countdown in the corner */
+  var t3 = ToastLoader.create("#t-ring", { variant: "ring", autoStart: false, ringSize: 22 });
+  check("ring: small square svg in the corner",
+    t3.svg.style.width === "22px" && t3.svg.style.right === "10px");
+  t3.begin(600);
+  await wait(200);
+  check("ring: draining", parseFloat(t3.bar.style.strokeDasharray) > 0);
+  t3.stop(); t3.destroy();
+
+  /* 5 — hover pause: the clock stops but position is kept */
+  var t4 = ToastLoader.create("#t-hover", { autoStart: false, pauseOnHover: true });
+  t4.begin(1000);
+  await wait(300);
+  var before = parseFloat(t4.bar.style.strokeDasharray);
+  t4.el.dispatchEvent(new Event("mouseenter"));
+  await wait(400);
+  var during = parseFloat(t4.bar.style.strokeDasharray);
+  check("hover: countdown paused (bar unmoved)", Math.abs(during - before) < 1,
+    before.toFixed(1) + " vs " + during.toFixed(1));
+  t4.el.dispatchEvent(new Event("mouseleave"));
+  await wait(300);
+  var after = parseFloat(t4.bar.style.strokeDasharray);
+  check("hover: resumes on leave (bar moved)", after < during, after.toFixed(1));
+  t4.stop();
+
+  /* 6 — begin(ms) clamp: zero/negative doesn't NaN the bar */
+  var t5 = ToastLoader.create("#t-clamp", { autoStart: false });
+  var threw2 = "";
+  try { t5.begin(0); } catch (e) { threw2 = e.message; }
+  check("begin(0): no throw", threw2 === "", threw2);
+  await wait(80);
+  var d = t5.bar.style.strokeDasharray;
+  check("begin(0): no NaN in the dasharray", d.indexOf("NaN") < 0, d);
+  t5.stop();
+
+  /* 7 — static container fixup */
+  var host = document.getElementById("t-static");
+  var t6 = ToastLoader.create(host, { autoStart: false });
+  check("static host: forced to relative", getComputedStyle(host).position === "relative");
+  t6.destroy();
+  check("static host: inline position restored on destroy", host.style.position === "");
+
+  /* 8 — destroy removes svg + listeners */
+  var t7 = ToastLoader.create("#t-destroy", { color: "#788c5d" });
+  await wait(100);
+  t7.destroy();
+  check("destroy: svg removed", !document.querySelector("#t-destroy svg"));
+
+  /* 9 — reduced motion: begin is a no-op */
+  var realMM = window.matchMedia;
+  window.matchMedia = function (q) { return { matches: q.indexOf("prefers-reduced-motion") >= 0, media: q, addListener: function(){}, removeListener: function(){}, addEventListener: function(){}, removeEventListener: function(){} }; };
+  var t8 = ToastLoader.create("#t-reduced", { autoStart: false });
+  t8.begin(1000);
+  check("reduced: begin is a no-op", !t8.isRunning());
+  t8.destroy();
+  window.matchMedia = realMM;
+
+  var pass = 0, fail = 0, html = "";
+  for (var i = 0; i < results.length; i++) {
+    if (results[i].ok) pass++; else fail++;
+    html += '<div class="' + (results[i].ok ? "pass" : "fail") + '">' +
+      (results[i].ok ? "PASS" : "FAIL") + " — " + results[i].n +
+      (results[i].d ? " (" + results[i].d + ")" : "") + "</div>";
+  }
+  document.getElementById("results").innerHTML = html;
+  document.title = fail === 0 ? "TOAST TESTS: PASS" : "TOAST TESTS: FAIL " + fail;
+}
+run();
+</script>
+</body>
+</html>
