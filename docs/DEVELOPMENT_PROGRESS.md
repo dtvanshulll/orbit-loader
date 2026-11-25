@@ -211,6 +211,26 @@ parts), all six harnesses PASS (orbit 34, dot 26, route 44, pathwipe
 returns 0 for shimmer/skeleton/blog/shell toast, fail() danger color
 verified in-browser, mobile 375px layout intact (no overflow).
 
+### Cleanup 1.7 — HandshakeLoader (COMPLETE)
+
+Decision: **IMPROVE**.
+
+- `wrap()` static-container fixup + restore; `controller.container`
+  exposed; `svgClassName`/`pathClassName` options (parity).
+- `create()` rejects a non-`<path>` element with a clear error.
+- Clamps: `meetAt` to 0.01–0.99 (values outside built dashes past the
+  path end — negative dasharray gaps), `overlap` to 0–0.5.
+- `destroy()` now preserves a caller-set inline opacity on the path:
+  the 0.8 flash opacity is set UNCONDITIONALLY (it is the mechanism),
+  so the old unconditional clear wiped the caller's own value — the
+  one style where "clear what we set" needed a saved prior value.
+
+Tests: new `tests/handshake-test.html` — **23/23 PASS** (guards,
+two-segment choreography: mirrored keyframe anchors A-at-start /
+B-at-end, peak-past-midpoint overlap, clamps, static host, guide,
+class overrides, caller-opacity preservation, clone removal, reduced
+motion). Gate: smoke 47/170, build OK.
+
 ### Cleanup 1.6 — TypingLoader (COMPLETE)
 
 Decision: **IMPROVE** (same container-based pattern as ripple/pulse).

@@ -179,5 +179,13 @@ OrbitLoader (plus `paths`, the two segment elements), plus:
 | option | default | meaning |
 |---|---|---|
 | `durationMs` | `2400` | one full cycle: converge, flash, retract, rest |
-| `meetAt` | `0.5` | where along the path the fronts meet, as a fraction of total length |
-| `overlap` | `0.12` | how far past each other the fronts push during the flash |
+| `meetAt` | `0.5` | where along the path the fronts meet, as a fraction of total length (clamped to 0.01–0.99) |
+| `overlap` | `0.12` | how far past each other the fronts push during the flash (clamped to 0–0.5) |
+| `svgClassName`, `pathClassName` | core defaults | override the injected classes (wrap only) |
+
+Controller exposes: `path` (the caller's path element), `paths` (both
+segments — the second is the clone handshake creates), plus `start()` /
+`stop()` / `destroy()` / `isRunning()`; `wrap()` adds `svg` and
+`container`. The container is made `position: relative` if static and
+restored on `destroy()`; a caller-set inline opacity on the path is
+preserved across `destroy()` (the flash opacity is handshake's own).

@@ -46,16 +46,21 @@
    *                               of the path — this is the handshake
    *   color       (default null)  stroke color; omit for currentColor
    *   strokeWidth (default null)  stroke width in px
+   *   svgClassName (default "orbit-loader-path")   wrap() only
+   *   pathClassName (default "orbit-loader-thread") wrap() only
    *   activeClass (default "is-active")
    *   autoStart   (default true)
    *
    * Reduced motion is checked once at creation, like every style.
    */
   function create(pathEl, options) {
+    if (!pathEl || typeof pathEl.getTotalLength !== "function") {
+      throw new Error("HandshakeLoader.create: pathEl must be an SVG <path> element");
+    }
     options = options || {};
     var durationMs = options.durationMs != null ? options.durationMs : 2400;
-    var meetAt = options.meetAt != null ? options.meetAt : 0.5;
-    var overlap = options.overlap != null ? options.overlap : 0.12;
+    var meetAt = Math.min(0.99, Math.max(0.01, options.meetAt != null ? options.meetAt : 0.5));
+    var overlap = Math.min(0.5, Math.max(0, options.overlap != null ? options.overlap : 0.12));
     var color = options.color != null ? options.color : null;
     var strokeWidth = options.strokeWidth != null ? options.strokeWidth : null;
     var activeClass = options.activeClass || "is-active";
@@ -70,6 +75,11 @@
     pathB.setAttribute("d", pathEl.getAttribute("d"));
     pathB.setAttribute("class", pathEl.getAttribute("class") || "");
     if (pathEl.parentNode) pathEl.parentNode.appendChild(pathB);
+    // The reduced opacity IS the flash mechanism (overlapping paints
+    // double). Saved and restored on destroy — unlike stroke/strokeWidth
+    // this is set unconditionally, so a caller's own inline opacity
+    // would otherwise be lost.
+    var prevOpacity = pathEl.style.opacity;
     pathA.style.opacity = 0.8;
     pathB.style.opacity = 0.8;
     if (color != null) {
@@ -129,7 +139,7 @@
 
     function destroy() {
       stop();
-      pathA.style.opacity = "";
+      pathA.style.opacity = prevOpacity;
       if (color != null) pathA.style.stroke = "";
       if (strokeWidth != null) pathA.style.strokeWidth = "";
       if (pathB.parentNode) pathB.parentNode.removeChild(pathB);
@@ -160,9 +170,14 @@
     if (!container) throw new Error("HandshakeLoader.wrap: container not found");
     if (!options.d) throw new Error("HandshakeLoader.wrap: options.d (an SVG path 'd' string) is required");
 
+    // Same static-container fixup as OrbitLoader.wrap(): the injected
+    // SVG is absolutely positioned and would escape a static host.
+    var forcedPosition = global.getComputedStyle(container).position === "static";
+    if (forcedPosition) container.style.position = "relative";
+
     var svg = document.createElementNS(SVG_NS, "svg");
     svg.setAttribute("viewBox", options.viewBox || "0 0 100 100");
-    svg.setAttribute("class", "orbit-loader-path");
+    svg.setAttribute("class", options.svgClassName || "orbit-loader-path");
     svg.setAttribute("aria-hidden", "true");
 
     var offset = options.offset != null ? options.offset : 0;
@@ -183,19 +198,22 @@
 
     var path = document.createElementNS(SVG_NS, "path");
     path.setAttribute("d", options.d);
-    path.setAttribute("class", "orbit-loader-thread");
+    path.setAttribute("class", options.pathClassName || "orbit-loader-thread");
     svg.appendChild(path);
     container.appendChild(svg);
 
     var controller = create(path, options);
     controller.svg = svg;
+    controller.container = container;
     // wrap() owns the svg it injected; create()'s destroy only ever
     // touches pathA/pathB, so wrap it here rather than leaving an
-    // orphaned <svg> in the container after destroy().
+    // orphaned <svg> in the container after destroy() — and undo the
+    // position fixup wrap() itself applied.
     var innerDestroy = controller.destroy;
     controller.destroy = function () {
       innerDestroy();
       if (svg.parentNode) svg.parentNode.removeChild(svg);
+      if (forcedPosition) container.style.position = "";
     };
     return controller;
   }
