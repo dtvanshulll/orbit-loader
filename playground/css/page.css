@@ -74,6 +74,26 @@ body.pg-arriving .pg-cards { animation: pg-catalog-in var(--pg-dur-panel) var(--
   padding: 1px 6px;
 }
 .pg-search:focus-within .pg-search-kbd { display: none; }
+/* Clear button: appears only while the box holds text; one job —
+   empty the box and hand focus back. */
+.pg-search-clear {
+  display: none;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  background: transparent;
+  color: var(--pg-muted);
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: color 0.12s ease, background 0.12s ease;
+}
+.pg-search.has-value .pg-search-clear { display: inline-flex; }
+.pg-search-clear:hover { color: var(--pg-text); background: rgba(250, 249, 245, 0.06); }
+.pg-search-clear:focus-visible { outline: 2px solid var(--pg-accent); outline-offset: 1px; }
 
 /* The header is one row on phones; the drawer carries navigation there,
    and a 300px search would crowd it out. */
@@ -142,12 +162,51 @@ body.pg-arriving .pg-cards { animation: pg-catalog-in var(--pg-dur-panel) var(--
   font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
   font-size: 11px;
   color: var(--pg-muted);
+  letter-spacing: 0.04em;
 }
+/* Code actions cluster on the toolbar's right end: expand (only when
+   the code overflows the cap) then copy — one consistent row on every
+   card, no matter how long the snippet is. */
+.pg-code-actions { display: flex; align-items: center; gap: 6px; }
+/* Long code never expands the card: the panel caps at ~7 lines and
+   scrolls inside itself. Expand lifts the cap to a viewport-bound
+   maximum so even the longest scene recipe stays contained. */
 .pg-code .pg-snippet {
   border-top: 0;
   padding: 12px 14px;
   white-space: pre-wrap;
   word-break: break-word;
+  max-height: 176px;
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #3a3831 transparent;
+}
+.pg-code .pg-snippet::-webkit-scrollbar { width: 8px; height: 8px; }
+.pg-code .pg-snippet::-webkit-scrollbar-thumb { background: #3a3831; border-radius: 4px; }
+.pg-code .pg-snippet::-webkit-scrollbar-thumb:hover { background: #4a473e; }
+.pg-code.is-expanded .pg-snippet { max-height: 72vh; }
+/* The expand toggle only renders when the code actually overflows the
+   cap; it flips the chevron and the aria state with the panel. */
+.pg-expand {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 9px;
+  background: transparent;
+  color: var(--pg-secondary);
+  border: 1px solid var(--pg-border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.pg-code.can-expand .pg-expand { display: inline-flex; }
+.pg-expand:hover { color: var(--pg-text); border-color: var(--pg-muted); }
+.pg-expand:active { transform: scale(0.97); }
+.pg-expand:focus-visible { outline: 2px solid var(--pg-accent); outline-offset: 2px; }
+.pg-expand svg { transition: transform var(--pg-dur-fast) var(--pg-ease-out); }
+.pg-code.is-expanded .pg-expand svg { transform: rotate(180deg); }
+@media (prefers-reduced-motion: reduce) {
+  .pg-expand svg { transition: none; }
 }
 /* Phones: wrapping splits tokens mid-number ("120" across lines).
    Scroll instead — the way the base .pg-snippet already behaves. This

@@ -48,7 +48,8 @@
     el.appendChild(stage);
 
     // The code block: a labeled panel, not a bare <pre>. The label names
-    // what the code is; Copy sits at the opposite end of the same row.
+    // what the code is; Copy and the expand toggle sit at the opposite
+    // end of the same row, right above the code they act on.
     var code = document.createElement("div");
     code.className = "pg-code";
     var codeHead = document.createElement("div");
@@ -57,6 +58,24 @@
     codeLabel.className = "pg-code-label";
     codeLabel.textContent = "Usage";
     codeHead.appendChild(codeLabel);
+    var codeActions = document.createElement("div");
+    codeActions.className = "pg-code-actions";
+    // Expand toggle: only rendered once the code actually overflows the
+    // panel's cap (see refreshCodePanel); expands to a viewport-bound
+    // maximum so even the longest scene recipe stays contained.
+    var expand = document.createElement("button");
+    expand.className = "pg-expand";
+    expand.innerHTML = PG.ICON_CHEVRON;
+    expand.setAttribute("aria-label", "Expand code");
+    expand.setAttribute("aria-expanded", "false");
+    expand.title = "Expand code";
+    expand.addEventListener("click", function () {
+      var isOpen = code.classList.toggle("is-expanded");
+      expand.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      expand.setAttribute("aria-label", isOpen ? "Collapse code" : "Expand code");
+      expand.title = isOpen ? "Collapse code" : "Expand code";
+    });
+    codeActions.appendChild(expand);
     var copyCode = document.createElement("button");
     copyCode.className = "pg-copy";
     copyCode.innerHTML = PG.ICON_COPY;
@@ -64,7 +83,8 @@
     copyCode.title = "Copy code";
     copyCode.dataset.label = "Copy code";
     copyCode.addEventListener("click", function () { copy(buildSnippet(card), copyCode); });
-    codeHead.appendChild(copyCode);
+    codeActions.appendChild(copyCode);
+    codeHead.appendChild(codeActions);
     code.appendChild(codeHead);
 
     // The small usage snippet — this is a library, so the card shows
@@ -75,6 +95,19 @@
     card.snippet = snippet;
     code.appendChild(snippet);
     el.appendChild(code);
+
+    // Measure whether the code overflows the compact cap and wire the
+    // expand toggle accordingly. Re-run after every snippet update —
+    // tuning changes the code, so the toggle must track it.
+    card.refreshCodePanel = function () {
+      var overflows = snippet.scrollHeight > snippet.clientHeight + 1;
+      code.classList.toggle("can-expand", overflows);
+      if (!overflows && code.classList.contains("is-expanded")) {
+        code.classList.remove("is-expanded");
+        expand.setAttribute("aria-expanded", "false");
+      }
+    };
+    card.refreshCodePanel();
 
     var controls = buildControls(card);
     if (controls.childNodes.length) {
@@ -99,6 +132,7 @@
         controls = fresh;
         if (card.live) render(card);
         if (card.snippet) card.snippet.textContent = PG.buildSnippet(card);
+        if (card.refreshCodePanel) card.refreshCodePanel();
       });
       var tuneRow = document.createElement("div");
       tuneRow.className = "pg-tune-row";

@@ -121,7 +121,17 @@
         a.href = "#";
         a.className = "pg-nav-item";
         a.setAttribute("data-style", style);
-        a.textContent = label;
+        a.appendChild(document.createTextNode(label));
+        // Per-style demo count, derived from the loaded cards — the same
+        // number the section header shows, as a quiet pill on the row.
+        var n = 0;
+        for (var ci = 0; ci < cards.length; ci++) {
+          if (cards[ci].cfg.style === style) n++;
+        }
+        var badge = document.createElement("span");
+        badge.className = "pg-nav-n";
+        badge.textContent = n;
+        a.appendChild(badge);
         a.addEventListener("click", function (e) {
           e.preventDefault();
           filter.applyFilter(style);
@@ -148,7 +158,16 @@
       a.href = "#";
       a.className = "pg-nav-item";
       a.setAttribute("data-style", "cat:" + label.toLowerCase());
-      a.textContent = label;
+      a.appendChild(document.createTextNode(label));
+      var want = label.toLowerCase();
+      var n = 0;
+      for (var ci = 0; ci < cards.length; ci++) {
+        if ((cards[ci].cfg.category || "").toLowerCase() === want) n++;
+      }
+      var badge = document.createElement("span");
+      badge.className = "pg-nav-n";
+      badge.textContent = n;
+      a.appendChild(badge);
       a.addEventListener("click", function (e) {
         e.preventDefault();
         filter.applyFilter("cat:" + label.toLowerCase());

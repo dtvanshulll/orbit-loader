@@ -104,8 +104,11 @@
   align-items: baseline;
   justify-content: space-between;
   gap: 8px;
-  font-size: 12px;
+  font-family: var(--pg-font-head, system-ui, sans-serif);
+  font-size: 11px;
   font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: var(--pg-muted);
   margin: 20px 0 8px;
   transition: color 0.12s ease;
@@ -133,8 +136,11 @@
 }
 .pg-nav-list { display: block; }
 .pg-nav-item {
-  display: block;
-  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 7px 12px;
   border-radius: 8px;
   color: var(--pg-secondary);
   text-decoration: none;
@@ -146,10 +152,30 @@
   background: rgba(250, 249, 245, 0.04);
 }
 .pg-nav-item:focus-visible { outline: 2px solid var(--pg-accent); outline-offset: 2px; }
+/* Per-item demo count: a quiet tabular pill on the row's right end —
+   the same number the section header shows, derived from the loaded
+   cards, never hardcoded. */
+.pg-nav-n {
+  flex: none;
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 10.5px;
+  line-height: 1;
+  color: var(--pg-muted);
+  background: rgba(250, 249, 245, 0.05);
+  border-radius: 9px;
+  padding: 3px 6px;
+  font-variant-numeric: tabular-nums;
+}
+.pg-nav-item:hover .pg-nav-n { color: var(--pg-secondary); }
 /* Active filter: accent bar + full-contrast text on the rail itself —
    no raised pill. The rail is flat chrome; a filled row would read as a
    floating widget bolted onto it. */
 .pg-nav-item.is-on {
   color: var(--pg-text);
+  background: rgba(250, 249, 245, 0.05);
   box-shadow: inset 2px 0 0 var(--pg-accent);
+}
+.pg-nav-item.is-on .pg-nav-n {
+  color: var(--pg-accent);
+  background: rgba(217, 119, 87, 0.12);
 }

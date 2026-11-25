@@ -117,6 +117,9 @@
       card.controller = GLOBALS[cfg.style] && window[GLOBALS[cfg.style]].wrap(boxEl, opts);
     }
     card.live = true;
+    // The code cap depends on the rendered stage's height budget —
+    // re-measure the expand toggle whenever the card is (re)drawn.
+    if (card.refreshCodePanel) card.refreshCodePanel();
   }
 
   /*

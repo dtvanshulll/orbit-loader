@@ -60,12 +60,16 @@
           (isCat ? (cfg.category || "").toLowerCase() === want : cfg.style === style);
         cards[k].el.style.display = hit ? "" : "none";
       }
-      // Mirror the state onto the sidebar entries.
+      // Mirror the state onto the sidebar entries and keep the active
+      // one in view inside the rail (block:nearest never scrolls the
+      // page itself).
       var items = document.querySelectorAll(".pg-nav-item");
       for (var n = 0; n < items.length; n++) {
         items[n].classList.toggle("is-on",
           items[n].getAttribute("data-style") === style);
       }
+      var active = document.querySelector(".pg-nav-item.is-on");
+      if (active && active.scrollIntoView) active.scrollIntoView({ block: "nearest" });
       syncSections();
       fadeGrids();
     }
@@ -103,6 +107,12 @@
       var input = document.getElementById("pg-search-input");
       if (input && input.value) input.value = "";
       searchState.query = "";
+      // Keep the clear button in sync with a programmatically emptied
+      // box (the input listener only fires on real user input).
+      var form = document.getElementById("pg-search");
+      if (form) form.classList.remove("has-value");
+      var clearBtn = document.querySelector(".pg-search-clear");
+      if (clearBtn) clearBtn.hidden = true;
       var results = document.getElementById("pg-results");
       if (results) results.hidden = true;
       // Clearing the query also clears what it filtered — the catalog
@@ -159,6 +169,24 @@
   // goes home; "/" from anywhere jumps into the box.
   function wireSearch(cards, filter) {
     var form = document.getElementById("pg-search");
+    var input = document.getElementById("pg-search-input");
+    if (!form || !input) return;
+    // Clear button: appears only while the box holds text; one job —
+    // empty the box, reset the filter, hand focus back.
+    var clearBtn = form.querySelector(".pg-search-clear");
+    function syncClear() {
+      form.classList.toggle("has-value", !!input.value);
+      if (clearBtn) clearBtn.hidden = !input.value;
+    }
+    if (clearBtn) {
+      clearBtn.addEventListener("click", function () {
+        input.value = "";
+        syncClear();
+        filter.clearSearch();
+        filter.syncSections();
+        input.focus({ preventScroll: true });
+      });
+    }
     // The row is the target: a tap on its padding or icon still lands
     // in the input instead of dying on dead space.
     form.addEventListener("click", function (e) {
@@ -166,8 +194,6 @@
         document.getElementById("pg-search-input").focus();
       }
     });
-    var input = document.getElementById("pg-search-input");
-    if (!form || !input) return;
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       if (!input.value.trim()) { exitIntro(); filter.syncSections(); return; }
@@ -175,6 +201,7 @@
       exitIntro();
     });
     input.addEventListener("input", function () {
+      syncClear();
       if (!input.value.trim()) {
         if (!isIntro()) { filter.clearSearch(); filter.syncSections(); }
         return;

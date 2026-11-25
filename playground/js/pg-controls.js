@@ -53,6 +53,7 @@
     var redraw = function () {
       render(card);
       if (card.snippet) card.snippet.textContent = PG.buildSnippet(card);
+      if (card.refreshCodePanel) card.refreshCodePanel();
     };
 
     for (var key in opts) {
