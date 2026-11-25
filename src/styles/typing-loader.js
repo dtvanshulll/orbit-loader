@@ -37,6 +37,9 @@
    *   dotRadius   (default 7)     dot radius, in the SVG's 100-unit
    *                               space
    *   color       (default null)  dot color; omit for currentColor
+   *   activeClass (default "is-active") added to the container while
+   *                               running, so CSS can fade the whole
+   *                               loader in/out like the other styles
    *   autoStart   (default true)
    *
    * Reduced motion is checked once at creation, like every style: if
@@ -46,13 +49,20 @@
     options = options || {};
     if (typeof el === "string") el = document.querySelector(el);
     if (!el) throw new Error("TypingLoader.create: container not found");
-    var dots = Math.max(1, options.dots != null ? options.dots : 3);
+    var dots = Math.max(1, Math.round(options.dots != null ? options.dots : 3));
     var durationMs = options.durationMs != null ? options.durationMs : 1000;
-    var staggerMs = options.staggerMs != null ? options.staggerMs : 180;
-    var lift = options.lift != null ? options.lift : 0.3;
-    var dotRadius = options.dotRadius != null ? options.dotRadius : 7;
+    var staggerMs = Math.max(0, options.staggerMs != null ? options.staggerMs : 180);
+    var lift = Math.min(1, Math.max(0, options.lift != null ? options.lift : 0.3));
+    var dotRadius = Math.max(0, options.dotRadius != null ? options.dotRadius : 7);
     var color = options.color != null ? options.color : null;
+    var activeClass = options.activeClass || "is-active";
     var autoStart = options.autoStart !== false;
+
+    // The injected SVG is absolutely positioned; on a static container
+    // it would escape to the nearest positioned ancestor. Same fixup
+    // every container-based style applies; undone on destroy.
+    var forcedPosition = global.getComputedStyle(el).position === "static";
+    if (forcedPosition) el.style.position = "relative";
 
     // Dots sit on a shared baseline in a 100×40 viewBox; lift is a
     // fraction of that height so the bounce scales with the box.
@@ -83,6 +93,7 @@
 
     function start() {
       if (reducedMotion || anims.length) return;
+      el.classList.add(activeClass);
       var rise = -40 * lift;
       for (var i = 0; i < circles.length; i++) {
         anims.push(circles[i].animate(
@@ -107,11 +118,13 @@
     function stop() {
       for (var i = 0; i < anims.length; i++) anims[i].cancel();
       anims = [];
+      el.classList.remove(activeClass);
     }
 
     function destroy() {
       stop();
       if (svg.parentNode) svg.parentNode.removeChild(svg);
+      if (forcedPosition) el.style.position = "";
     }
 
     if (autoStart) start();

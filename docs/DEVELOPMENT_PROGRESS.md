@@ -211,6 +211,22 @@ parts), all six harnesses PASS (orbit 34, dot 26, route 44, pathwipe
 returns 0 for shimmer/skeleton/blog/shell toast, fail() danger color
 verified in-browser, mobile 375px layout intact (no overflow).
 
+### Cleanup 1.6 — TypingLoader (COMPLETE)
+
+Decision: **IMPROVE** (same container-based pattern as ripple/pulse).
+
+- Static-container fixup + restore; `activeClass` added (typing didn't
+  even have the option — now documented and wired like the others);
+  input clamps (`dots` rounded + floored at 1, `staggerMs` ≥ 0 so
+  negative values can't produce negative delays, `lift` 0–1 so dots
+  can't sink or fly out of the viewBox, `dotRadius` ≥ 0).
+
+Tests: new `tests/typing-test.html` — **25/25 PASS** (duality, even
+spacing, wave stagger via `effect.getTiming()`, activeClass wiring,
+clamps incl. keyframe-level lift and negative-delay/dotRadius checks,
+color serialization, destroy restoration, reduced motion, missing
+container). Gate: smoke 47/170, build OK.
+
 ### Cleanup 1.5 — ChaseLoader (COMPLETE)
 
 Decision: **IMPROVE**.

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<!--
+  TraceLoop — TypingLoader test harness (looping-loaders category).
+  Covers: container-based duality, static-container fixup, dot build
+  and wave stagger, activeClass wiring, clamped inputs, stop/destroy
+  restoration, reduced motion.
+  Open in a browser; verdict lands in the page body and document.title.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<title>TYPING TESTS: RUNNING</title>
+<link rel="stylesheet" href="../dist/traceloop.css">
+<style>
+  body { font: 13px/1.5 monospace; background: #141413; color: #faf9f5; padding: 20px; }
+  .pass { color: #788c5d; } .fail { color: #d97757; }
+  .stage { width: 90px; height: 44px; background: #262420; border: 1px solid #33312c; margin: 10px 0; color: #d97757; }
+</style>
+</head>
+<body>
+<div id="results">running…</div>
+<div class="stage" id="s-main"></div>
+<div class="stage" id="s-static" style="position: static"><span>static host</span></div>
+<div class="stage" id="s-clamp"></div>
+<div class="stage" id="s-color"></div>
+<div class="stage" id="s-destroy"></div>
+<div class="stage" id="s-reduced"></div>
+
+<script src="../src/styles/typing-loader.js"></script>
+<script>
+"use strict";
+var results = [];
+function check(n, ok, d) { results.push({ n: n, ok: !!ok, d: d || "" }); }
+function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+async function run() {
+  /* 1 — duality + running state */
+  var t1 = TypingLoader.create("#s-main", { dots: 3, durationMs: 900, staggerMs: 150 });
+  check("create: svg injected, aria-hidden",
+    !!t1.svg && t1.svg.getAttribute("aria-hidden") === "true");
+  check("create: 3 dots built", t1.dots.length === 3, "got " + t1.dots.length);
+  check("create: dots evenly spaced (step = 100/(n+1))",
+    t1.dots.every(function (c, i) {
+      return Math.abs(parseFloat(c.getAttribute("cx")) - 100 / 4 * (i + 1)) < 0.01;
+    }));
+  check("running: isRunning true", t1.isRunning());
+  await wait(150);
+  check("running: every dot has one WAAPI animation",
+    t1.dots.every(function (c) { return c.getAnimations().length === 1; }));
+
+  /* 2 — wave stagger: dot delays differ by staggerMs */
+  var d0 = t1.dots[0].getAnimations()[0].effect.getTiming().delay;
+  var d1 = t1.dots[1].getAnimations()[0].effect.getTiming().delay;
+  check("stagger: neighboring dots differ by staggerMs", Math.abs((d1 - d0) - 150) < 1, (d1 - d0).toFixed(1));
+
+  /* 3 — activeClass wired */
+  check("activeClass: added while running", t1.el.classList.contains("is-active"));
+  t1.stop();
+  check("stop: isRunning false", !t1.isRunning());
+  check("stop: activeClass removed", !t1.el.classList.contains("is-active"));
+  check("stop: dots invisible (CSS opacity 0)",
+    t1.dots.every(function (c) { return getComputedStyle(c).opacity === "0"; }));
+
+  /* 4 — static container fixup */
+  var host = document.getElementById("s-static");
+  var t2 = TypingLoader.wrap(host, { autoStart: false });
+  check("static host: forced to relative", getComputedStyle(host).position === "relative");
+  t2.destroy();
+  check("static host: position restored on destroy",
+    host.style.position === "" && getComputedStyle(host).position === "static");
+
+  /* 5 — clamped inputs */
+  var t3 = TypingLoader.create("#s-clamp", { dots: 0, autoStart: false });
+  check("dots=0: clamped to 1", t3.dots.length === 1, "got " + t3.dots.length);
+  t3.destroy();
+  var t3b = TypingLoader.create("#s-clamp", { dots: 2.7, autoStart: false });
+  check("dots=2.7: rounded to 3", t3b.dots.length === 3, "got " + t3b.dots.length);
+  t3b.destroy();
+  var t3c = TypingLoader.create("#s-clamp", { lift: 5, staggerMs: -100, dotRadius: -3, autoStart: false });
+  t3c.start();
+  var kfs = t3c.dots[0].getAnimations()[0].effect.getKeyframes();
+  check("lift=5: clamped to 1 (rise ≤ -40)", parseFloat(kfs[1].transform.match(/-?[\d.]+/)[0]) <= -40,
+    kfs[1].transform);
+  var delay = t3c.dots[1].getAnimations()[0].effect.getTiming().delay;
+  check("staggerMs=-100: floored at 0 (no negative delays)", delay === 0, "" + delay);
+  check("dotRadius=-3: floored at 0", parseFloat(t3c.dots[0].getAttribute("r")) === 0,
+    t3c.dots[0].getAttribute("r"));
+  t3c.stop(); t3c.destroy();
+
+  /* 6 — color applied and gone after destroy */
+  var t4 = TypingLoader.create("#s-color", { color: "#d97757", autoStart: false });
+  check("color: applied to dots",
+    t4.dots.every(function (c) { return c.style.fill === "#d97757" || c.style.fill === "rgb(217, 119, 87)"; }));
+  t4.destroy();
+  check("destroy: svg removed", !document.querySelector("#s-color svg"));
+
+  /* 7 — full destroy restoration */
+  var t5 = TypingLoader.create("#s-destroy", { dots: 4 });
+  await wait(100);
+  t5.destroy();
+  check("destroy: no animations left",
+    t5.dots.every(function (c) { return c.getAnimations().length === 0; }));
+  check("destroy: isRunning false", !t5.isRunning());
+
+  /* 8 — reduced motion: nothing runs, nothing visible */
+  var realMM = window.matchMedia;
+  window.matchMedia = function (q) { return { matches: q.indexOf("prefers-reduced-motion") >= 0, media: q, addListener: function(){}, removeListener: function(){}, addEventListener: function(){}, removeEventListener: function(){} }; };
+  var t6 = TypingLoader.create("#s-reduced", {});
+  check("reduced motion: no animations",
+    t6.dots.every(function (c) { return c.getAnimations().length === 0; }));
+  check("reduced motion: isRunning false", !t6.isRunning());
+  check("reduced motion: dots invisible",
+    t6.dots.every(function (c) { return getComputedStyle(c).opacity === "0"; }));
+  t6.destroy();
+  window.matchMedia = realMM;
+
+  /* 9 — missing container throws */
+  var threw = "";
+  try { TypingLoader.create("#nope", {}); } catch (e) { threw = e.message; }
+  check("missing container: throws", threw.indexOf("container not found") >= 0, threw);
+
+  var pass = 0, fail = 0, html = "";
+  for (var i = 0; i < results.length; i++) {
+    if (results[i].ok) pass++; else fail++;
+    html += '<div class="' + (results[i].ok ? "pass" : "fail") + '">' +
+      (results[i].ok ? "PASS" : "FAIL") + " — " + results[i].n +
+      (results[i].d ? " (" + results[i].d + ")" : "") + "</div>";
+  }
+  document.getElementById("results").innerHTML = html;
+  document.title = fail === 0 ? "TYPING TESTS: PASS" : "TYPING TESTS: FAIL " + fail;
+}
+run();
+</script>
+</body>
+</html>

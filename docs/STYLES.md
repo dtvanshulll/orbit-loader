@@ -162,8 +162,13 @@ The chat "typing…" wave. Container-based.
 | `lift` | `0.3` | how high a dot rises, as a fraction of the SVG's height |
 | `dotRadius` | `7` | dot radius, in the SVG's 100-unit space |
 | `color` | `null` | dot color |
+| `activeClass` | `"is-active"` | added to the container while running |
+| `autoStart` | `true` | |
 
-Controller also exposes: `dots` (the elements).
+Controller exposes: `el`, `svg`, `dots` (the elements), plus `start()`
+/ `stop()` / `destroy()` / `isRunning()`. The container is made
+`position: relative` if static and restored on `destroy()`. Reduced
+motion: nothing runs, dots stay invisible.
 
 ## HandshakeLoader — `src/styles/handshake-loader.js`
 
