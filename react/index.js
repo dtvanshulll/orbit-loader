@@ -21,7 +21,7 @@ import {
   HandshakeLoader, TabLoader, PageLoader, ButtonLoader, ToastLoader,
   ProgressLoader, SearchLoader, ModalLoader, AccordionLoader, DrawerLoader,
   DropdownLoader, InputLoader, SwapLoader, RouteLoader, CountUpLoader,
-  ShakeLoader, ShuffleLoader, shapes
+  PathWipeLoader, ShakeLoader, ShuffleLoader, shapes
 } from '../src/traceloop.js';
 
 // Resolve the `d` prop: a raw path string passes through; a
@@ -119,6 +119,7 @@ export const Button = makeComponent(ButtonLoader, 'Button', true);
 export const Toast = makeComponent(ToastLoader, 'Toast', true);
 export const Swap = makeComponent(SwapLoader, 'Swap', true);
 export const Route = makeComponent(RouteLoader, 'Route', true);
+export const PathWipe = makeComponent(PathWipeLoader, 'PathWipe', true);
 export const CountUp = makeComponent(CountUpLoader, 'CountUp', true);
 export const Shake = makeComponent(ShakeLoader, 'Shake', true);
 export const Shuffle = makeComponent(ShuffleLoader, 'Shuffle', true);

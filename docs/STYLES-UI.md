@@ -141,6 +141,57 @@ Controller also exposes: `to(content, opts)`, `next()`, `index()`
 every `to()` is an instant content swap — the page still changes,
 nothing moves.
 
+## PathWipeLoader — `src/styles/pathwipe-loader.js`
+
+The path-wipe reveal: content is unmasked (or masked) by a traveling
+shaped edge — a wave, a zigzag, a diagonal, an arc, or your own path
+profile — sweeping across the container as an SVG clip-path. Where
+RouteLoader's wipe swaps CONTENT under a rectangular cover panel,
+PathWipe reveals or conceals the content that is already there, and
+the edge is an actual SVG path, not a straight rectangular edge.
+Container-based (the container IS the stage); the container is made
+`position: relative` if static.
+
+Mechanism: an SVG `<clipPath>` (userSpaceOnUse) holds the closed
+reveal region — the edge profile closed toward the reveal side — and
+the container is clipped with `clip-path: url(#id)`. The region
+travels as one WAAPI transform on the path inside the clipPath, so the
+browser composites the wipe; there is no per-frame JS. An optional
+`edgeColor` line draws the open edge profile in an overlay SVG running
+the same transform, so the front reads as a drawn stroke.
+
+    var pw = PathWipeLoader.wrap('.reveal', { shape: 'wave', edgeColor: '#d97757' });
+    pw.reveal();                    // edge sweeps across, content appears
+    pw.conceal();                   // edge sweeps back, content hides
+    pw.reveal({ direction: 'down' }); // per-call override
+
+`reveal()` snaps the clip fully closed before animating open — a
+re-reveal replays the wipe from the start. `conceal()` animates from
+the edge's current position (read from the in-flight animation's
+computed transform), so concealing mid-reveal never snaps or flashes;
+a direction change mid-flight snaps to the new region's open end
+instead, because the old region's coordinates mean nothing to the new
+one. `show()` / `hide()` are the instant paths (and the reduced-motion
+path — checked once at creation: reveal/conceal become show/hide, the
+content still appears/hides, nothing moves).
+
+| option | default | meaning |
+|---|---|---|
+| `shape` | `'wave'` | `'diagonal'`, `'wave'`, `'zigzag'`, `'arc'` or `'custom'` |
+| `d` | `null` | custom edge profile (`'custom'`, or an override of a built-in): drawn across the container on the travel cross-axis; the library closes it toward the reveal side |
+| `direction` | `'right'` | edge travel: `'left'`, `'right'`, `'up'`, `'down'` — `'right'` reveals from the left edge rightward; per-call override |
+| `durationMs` | `700` | one reveal or conceal |
+| `amplitude` | `0.12` | edge excursion, fraction of the travel span |
+| `detail` | `4` | hump/tooth count for wave/zigzag |
+| `edgeColor` | `null` | visible edge line on the reveal front |
+| `restMs` | `1600` | demo loop pause between reveal/conceal |
+| `autoStart` | `true` | run the demo loop at creation |
+| `onDone` | `null` | callback after each reveal or conceal lands, with `'reveal'` or `'conceal'`; per-call `opts.onDone` wins |
+
+Controller also exposes: `reveal(opts)`, `conceal(opts)`, `show()`,
+`hide()`, plus the shared `start()` / `stop()` / `destroy()` /
+`isRunning()`. Per-call opts: `direction`, `durationMs`, `onDone`.
+
 ## ProgressLoader — `src/styles/progress-loader.js`
 
 Determinate progress along any path: `setProgress(p)` fills the path

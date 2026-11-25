@@ -11,7 +11,8 @@ audit protocol lives in [docs/rules/CODEBASE-AUDIT.md](rules/CODEBASE-AUDIT.md).
 
 **Interrupted:** Component 2 — Path-Wipe Reveal was inspected (PRD/ROADMAP
 read, RouteLoader template studied) but never started — no files written.
-Resume it after the website workstream.
+Resume it after the website workstream. **(Resolved: Component 2 is now
+COMPLETE — see its record under Category 1.)**
 
 The website is `playground/` (index.html + 10 `pg-*` plain-script modules
 sharing `window.PG` + 8 CSS partials) and `examples/` (3 static pages).
@@ -103,6 +104,77 @@ Sequence: 1) Route/Page Transition System → 2) Path-Wipe Reveal →
 3) Choreography / Sequence API.
 
 ## Current component
+
+**Component 2 — PathWipeLoader (`src/styles/pathwipe-loader.js`)** — status: `COMPLETE`
+(verified; see test log below).
+
+### Completed work
+
+- Sibling style module, container-based, ES5 IIFE — the container IS
+  the stage; `create()` and `wrap()` are the same call.
+- Mechanism: an SVG `<clipPath>` (userSpaceOnUse) holds the closed
+  reveal region; the container is clipped with `clip-path: url(#id)`;
+  the region travels as ONE WAAPI transform on the path inside the
+  clipPath (browser-composited, no per-frame JS). Optional `edgeColor`
+  overlay SVG draws the open edge profile with the same transform.
+- Shapes: `diagonal`, `wave`, `zigzag`, `arc`, `custom` (consumer `d`
+  sampled once via an offscreen SVG for its bounding box, closed
+  toward the reveal side).
+- Directions: `left/right/up/down`, per-call override.
+- `reveal()` snaps fully closed then sweeps open (re-reveal replays);
+  `conceal()` resumes from the in-flight animation's computed
+  transform — no snap flash mid-reveal; a direction change mid-flight
+  snaps to the new region's open end (old coordinates are meaningless
+  to the new region).
+- `show()`/`hide()` instant (also the reduced-motion path, checked
+  once at creation). `hide()` closes along `lastDir || direction` so
+  it never parks a foreign region.
+- Demo loop (`conceal → rest → reveal → rest`) with a `looping` flag:
+  every continuation re-checks it, so `stop()` during any phase ends
+  the loop instead of letting the in-flight step's onDone restart it
+  (bug found by the harness, fixed).
+- `ensureDefs` re-applies the clip style on every call — `hide()`
+  after `show()` used to leave the content visible because the early
+  return skipped the style re-application (bug found by the harness,
+  fixed).
+- `canAnimate` = `!reducedMotion && el.animate` — the original draft
+  had an `&&`/`||` precedence bug that would have animated under
+  reduced motion.
+
+### Files created
+
+- `src/styles/pathwipe-loader.js` (400 lines — at the ceiling),
+  `src/css/pathwipe.css`, `tests/pathwipe-test.html`.
+
+### Files modified
+
+- `scripts/build-css.js` (pathwipe in CSS order, 18 parts),
+  `src/traceloop.js` (import/export/styles map), `src/index.d.ts`
+  (PathWipeOptions, PathWipeCallOptions, PathWipeLoader, React
+  `PathWipe` declare), `react/index.js` (PathWipe component),
+  `playground/index.html` (script tag), `playground/js/pg-data.js`
+  (GLOBALS + CONTAINER_STYLES), `playground/js/pg-sections.js` (UI
+  transitions list), `animations/transitions.js` (2 demo cards),
+  `README.md` (style table row + counts 24→25 styles, 176→178),
+  `docs/STYLES-UI.md` (reference section).
+
+### Tests performed
+
+- `npm test` (smoke): PASS — 48 files, 178 animations registered.
+- `npm run build`: PASS — ESM/UMD/React bundles + CSS (18 parts),
+  PathWipeLoader present in all three bundles.
+- `tests/pathwipe-test.html` in a real browser (agent-browser/CDP):
+  **31/31 PASS** after fixing the two bugs above. Covers: create
+  fixups, reveal/conceal lifecycle + onDone, conceal idempotence when
+  closed, show/hide instant, all four built-in shapes, all four
+  directions, custom `d`, `d`-without-shape forcing custom, edgeColor
+  overlay presence, demo loop start/stop (incl. stop-during-flight),
+  per-call direction override, invalid shape fallback, missing
+  container throws, destroy restoration, reduced-motion instant path.
+- Visual: playground PathWipe Wave Reveal + Zigzag cards render live
+  (clip-path applied, edge overlay present, demo loop running, region
+  transform verified moving across samples), code contained in the
+  card.
 
 **Component 1 — RouteLoader (`src/styles/route-loader.js`)** — status: `COMPLETE`
 (verified; see test log below).
@@ -259,10 +331,10 @@ Regression gates for the restructuring: smoke OK, build OK,
 
 ## Components remaining in this category
 
-- Component 2 — Path-Wipe Reveal: `NOT STARTED`
+- Component 2 — Path-Wipe Reveal: `COMPLETE`
 - Component 3 — Choreography / Sequence API: `NOT STARTED`
 
 ## Category completion
 
-Not complete — 1 of 3 components done. Category gate runs after all
+Not complete — 2 of 3 components done. Category gate runs after all
 three.

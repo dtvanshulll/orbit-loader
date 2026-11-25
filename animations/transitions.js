@@ -260,6 +260,36 @@
         "<div style='height:100%;display:flex;flex-direction:column;gap:8px;padding:16px'><div style='font:600 13px/1.2 Poppins,Arial,sans-serif;color:#788c5d'>Step 3 of 3</div><div style='height:8px;width:48%;background:#33312c;border-radius:4px'></div><div style='margin-top:auto;font:400 11px/1.4 Lora,Georgia,serif;color:#8f8d84'>Review and finish</div></div>"
       ]
     }
+  },
+
+  {
+    name: "PathWipe Wave Reveal",
+    style: "pathwipe",
+    note: "A shaped edge (a wave) sweeps across and unmasks content that is already there — reveal and conceal, no content swap",
+    box: { width: 240, height: 150, background: "#262420", borderRadius: 8, border: "1px solid #33312c" },
+    options: {
+      shape: "wave",
+      direction: "right",
+      durationMs: 700,
+      detail: 4,
+      edgeColor: "#d97757",
+      restMs: 2200
+    }
+  },
+
+  {
+    name: "PathWipe Zigzag",
+    style: "pathwipe",
+    note: "A zigzag edge sweeps down the panel — same mechanism, different profile",
+    box: { width: 240, height: 150, background: "#262420", borderRadius: 8, border: "1px solid #33312c" },
+    options: {
+      shape: "zigzag",
+      direction: "down",
+      durationMs: 800,
+      detail: 6,
+      edgeColor: "#6a9bcc",
+      restMs: 2200
+    }
   }
   );
 })(typeof window !== "undefined" ? window : this);

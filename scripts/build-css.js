@@ -8,7 +8,7 @@ const fs = require("fs");
 const order = [
   "base", "dot", "shimmer", "ripple", "pulse", "dot-ghosts", "typing",
   "transitions", "search", "modal", "drawer", "accordion",
-  "dropdown", "input", "swap", "route", "page-variants"
+  "dropdown", "input", "swap", "route", "page-variants", "pathwipe"
 ];
 fs.writeFileSync(
   "dist/traceloop.css",

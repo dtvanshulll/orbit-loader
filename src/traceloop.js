@@ -26,6 +26,7 @@ import './styles/button-loader.js';
 import './styles/toast-loader.js';
 import './styles/swap-loader.js';
 import './styles/route-loader.js';
+import './styles/pathwipe-loader.js';
 import './styles/countup-loader.js';
 import './styles/shake-loader.js';
 import './styles/shuffle-loader.js';
@@ -55,6 +56,7 @@ export const ButtonLoader = window.ButtonLoader;
 export const ToastLoader = window.ToastLoader;
 export const SwapLoader = window.SwapLoader;
 export const RouteLoader = window.RouteLoader;
+export const PathWipeLoader = window.PathWipeLoader;
 export const CountUpLoader = window.CountUpLoader;
 export const ShakeLoader = window.ShakeLoader;
 export const ShuffleLoader = window.ShuffleLoader;
@@ -83,6 +85,7 @@ export const styles = {
   toast: ToastLoader,
   swap: SwapLoader,
   route: RouteLoader,
+  pathwipe: PathWipeLoader,
   countup: CountUpLoader,
   shake: ShakeLoader,
   shuffle: ShuffleLoader,

@@ -1,0 +1,22 @@
+/* PathWipeLoader — the path-wipe reveal. The masking itself is the SVG
+   clip-path the style builds at runtime; the container only needs to
+   hold the two helper SVGs (defs + edge overlay) without them showing
+   through or catching pointers. */
+
+/* The helper SVGs sit inside the container: the defs hold the clipPath
+   (zero-size, invisible), the edge overlay draws the reveal front.
+   Both float above the content without ever intercepting it. */
+.orbit-loader-pathwipe-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.orbit-loader-pathwipe-edge {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 2;
+}

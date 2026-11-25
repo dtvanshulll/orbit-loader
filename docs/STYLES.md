@@ -20,7 +20,7 @@ component styles live in [STYLES-UI.md](STYLES-UI.md).
 
 The playground's **Components library** shows these same styles doing
 real jobs inside finished blocks — navbar, hero, login, stats, FAQ,
-pricing, footer, data table and more (46 categories, 176 demos). Each
+pricing, footer, data table and more (47 categories, 178 demos). Each
 card's usage panel copies a one-call-per-element recipe; see
 `animations/scenes.js` and `animations/scenes-2.js` for the scene
 configs and `playground/js/pg-render.js` (`buildScene`) for how parts

@@ -237,6 +237,7 @@ export declare const Button: React.FC<ComponentProps>;
 export declare const Toast: React.FC<ComponentProps>;
 export declare const Swap: React.FC<ComponentProps>;
 export declare const Route: React.FC<ComponentProps>;
+export declare const PathWipe: React.FC<ComponentProps>;
 export declare const CountUp: React.FC<ComponentProps>;
 export declare const Shake: React.FC<ComponentProps>;
 export declare const Shuffle: React.FC<ComponentProps>;
@@ -374,5 +375,47 @@ export const RouteLoader: {
     destroy(): void;
     isRunning(): boolean;
     index(): number;
+  };
+};
+
+export interface PathWipeOptions {
+  shape?: 'diagonal' | 'wave' | 'zigzag' | 'arc' | 'custom';
+  d?: string | null;
+  direction?: 'left' | 'right' | 'up' | 'down';
+  durationMs?: number;
+  amplitude?: number;
+  detail?: number;
+  edgeColor?: string | null;
+  restMs?: number;
+  onDone?: (mode?: 'reveal' | 'conceal') => void;
+  autoStart?: boolean;
+}
+export interface PathWipeCallOptions {
+  direction?: 'left' | 'right' | 'up' | 'down';
+  durationMs?: number;
+  onDone?: (mode?: 'reveal' | 'conceal') => void;
+}
+export const PathWipeLoader: {
+  create(container: HTMLElement | string, options?: PathWipeOptions): {
+    el: HTMLElement;
+    reveal(opts?: PathWipeCallOptions): void;
+    conceal(opts?: PathWipeCallOptions): void;
+    show(): void;
+    hide(): void;
+    start(): void;
+    stop(): void;
+    destroy(): void;
+    isRunning(): boolean;
+  };
+  wrap(container: HTMLElement | string, options?: PathWipeOptions): {
+    el: HTMLElement;
+    reveal(opts?: PathWipeCallOptions): void;
+    conceal(opts?: PathWipeCallOptions): void;
+    show(): void;
+    hide(): void;
+    start(): void;
+    stop(): void;
+    destroy(): void;
+    isRunning(): boolean;
   };
 };

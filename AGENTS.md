@@ -110,6 +110,15 @@ change.
   swap-loader trades panels that already exist, this one owns the
   content lifecycle. Container-based, one-shot per `to()` call, newer
   calls cancel in-flight ones cleanly.
+- `src/styles/pathwipe-loader.js` — the path-wipe style
+  (`PathWipeLoader`): content unmasked (or masked) by a traveling
+  shaped edge — wave, zigzag, diagonal, arc, or your own path profile
+  — sweeping across the container as an SVG clip-path (one WAAPI
+  transform on the path inside the clipPath, no per-frame JS; optional
+  `edgeColor` overlay draws the front). Where route-loader's wipe
+  swaps content under a rectangular cover, this reveals or conceals
+  content that is already there, with a shaped edge. Container-based,
+  one-shot per reveal/conceal call.
 - `src/styles/swap-loader.js` — the swap style (`SwapLoader`): trades
   between panels that already exist in the DOM (log-in/sign-up flips,
   wizard steps) — panels you mount yourself, it only animates the

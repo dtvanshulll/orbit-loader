@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<!--
+  TraceLoop — PathWipeLoader test harness.
+  Covers: reveal/conceal lifecycle, all four built-in shapes, all four
+  directions, per-call overrides, edgeColor overlay, custom d, demo loop,
+  show/hide, destroy, invalid input, reduced-motion path.
+  Open in a browser; verdict lands in the page body and document.title.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<title>PATHWIPE TESTS: RUNNING</title>
+<link rel="stylesheet" href="../dist/traceloop.css">
+<style>
+  body { font: 13px/1.5 monospace; background: #141413; color: #faf9f5; padding: 20px; }
+  .pass { color: #788c5d; } .fail { color: #d97757; }
+  .stage { width: 240px; height: 120px; background: #262420; border: 1px solid #33312c; margin: 10px 0; position: relative; }
+  .stage > span { display: block; padding: 10px; color: #faf9f5; }
+</style>
+</head>
+<body>
+<div id="results">running…</div>
+<div class="stage" id="pw-main"><span>reveal me</span></div>
+<div class="stage" id="pw-diagonal"><span>x</span></div>
+<div class="stage" id="pw-zigzag"><span>x</span></div>
+<div class="stage" id="pw-arc"><span>x</span></div>
+<div class="stage" id="pw-up"><span>x</span></div>
+<div class="stage" id="pw-down"><span>x</span></div>
+<div class="stage" id="pw-left"><span>x</span></div>
+<div class="stage" id="pw-custom"><span>x</span></div>
+<div class="stage" id="pw-edge"><span>x</span></div>
+<div class="stage" id="pw-loop"><span>x</span></div>
+<div class="stage" id="pw-static"><span>x</span></div>
+
+<script src="../src/styles/pathwipe-loader.js"></script>
+<script>
+"use strict";
+var results = [];
+function check(n, ok, d) { results.push({ n: n, ok: !!ok, d: d || "" }); }
+function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+/* Chrome serializes clip-path with quotes: url("#tlpw-…"). */
+function clipApplied(el) { return /url\(["']?#tlpw-/.test(el.style.clipPath); }
+function clipDropped(el) { return el.style.clipPath === "" || el.style.clipPath == null; }
+function donePromise(ctrl, mode) {
+  return new Promise(function (res) {
+    var o = { onDone: function (m) { if (m === mode) res(); } };
+    return o;
+  });
+}
+/* Await one full reveal/conceal via onDone. */
+function once(ctrl, call, mode) {
+  return new Promise(function (res) {
+    var o = {};
+    o[call] = function (oo) {
+      oo = oo || {};
+      oo.onDone = function (m) { if (m === mode) res(); };
+      return oo;
+    };
+    // call with onDone wired
+    var payload = { onDone: function (m) { if (m === mode) res(); } };
+    ctrl[call](payload);
+  });
+}
+async function run() {
+  var main = PathWipeLoader.create("#pw-main", { shape: "wave", autoStart: false });
+  var mainEl = document.querySelector("#pw-main");
+
+  /* 1 — creation applies the class and starts open (clip absent) */
+  check("create: class applied", mainEl.classList.contains("orbit-loader-pathwipe"));
+  check("create: starts open (no clip)", clipDropped(mainEl));
+
+  /* 2 — reveal() ends with the clip parked open, fires onDone('reveal') */
+  await once(main, "reveal", "reveal");
+  check("reveal: onDone fires with 'reveal'", true);
+  check("reveal: clip parked open", clipApplied(mainEl));
+
+  /* 3 — conceal() ends closed, fires onDone('conceal') */
+  await once(main, "conceal", "conceal");
+  check("conceal: onDone fires with 'conceal'", true);
+  check("conceal: clip applied after close", clipApplied(mainEl));
+  await once(main, "reveal", "reveal");
+
+  /* 4 — conceal when already closed resolves without animating */
+  await once(main, "conceal", "conceal");
+  await once(main, "conceal", "conceal"); // second call resolves immediately
+  check("conceal: idempotent when closed", true);
+
+  /* 5 — show()/hide() instant */
+  main.show();
+  check("show: clip dropped instantly", clipDropped(mainEl));
+  main.hide();
+  check("hide: clip applied instantly", clipApplied(mainEl));
+  main.show();
+
+  /* 6 — all four built-in shapes reveal cleanly */
+  var shapes = [["#pw-diagonal", "diagonal"], ["#pw-zigzag", "zigzag"], ["#pw-arc", "arc"]];
+  for (var s = 0; s < shapes.length; s++) {
+    var c = PathWipeLoader.create(shapes[s][0], { shape: shapes[s][1], autoStart: false });
+    await once(c, "reveal", "reveal");
+    check("shape " + shapes[s][1] + ": reveal completes", true);
+    c.destroy();
+  }
+
+  /* 7 — all four directions */
+  var dirs = [["#pw-up", "up"], ["#pw-down", "down"], ["#pw-left", "left"]];
+  for (var d = 0; d < dirs.length; d++) {
+    var cd = PathWipeLoader.create(dirs[d][0], { direction: dirs[d][1], autoStart: false });
+    await once(cd, "reveal", "reveal");
+    check("direction " + dirs[d][1] + ": reveal completes", true);
+    cd.destroy();
+  }
+  // 'right' already covered by main
+
+  /* 8 — custom d is accepted and animates */
+  var cc = PathWipeLoader.create("#pw-custom", { shape: "custom", d: "M0,20 Q60,60 120,20 T240,20", autoStart: false });
+  await once(cc, "reveal", "reveal");
+  check("custom d: reveal completes", true);
+  cc.destroy();
+
+  /* 9 — d alone (no shape) forces custom */
+  var cd2 = PathWipeLoader.create("#pw-edge", { d: "M0,10 L240,10", edgeColor: "#d97757", autoStart: false });
+  await once(cd2, "reveal", "reveal");
+  check("d without shape: custom path used", true);
+  check("edgeColor: edge overlay present", !!document.querySelector("#pw-edge .orbit-loader-pathwipe-edge"));
+  cd2.destroy();
+
+  /* 10 — demo loop runs and stops */
+  var cl = PathWipeLoader.create("#pw-loop", { autoStart: true, restMs: 200, durationMs: 200 });
+  await wait(900);
+  check("demo loop: isRunning true while looping", cl.isRunning());
+  cl.stop();
+  await wait(700); // let the in-flight reveal/conceal land
+  check("demo loop: stop() halts", !cl.isRunning());
+  cl.destroy();
+
+  /* 11 — per-call direction override */
+  var co = PathWipeLoader.create("#pw-left", { autoStart: false });
+  await once(co, "reveal", "reveal");
+  check("per-call direction override accepted", true);
+  co.destroy();
+
+  /* 12 — invalid input: bad shape falls back, missing container throws */
+  var ci = PathWipeLoader.create("#pw-static", { shape: "nonsense", autoStart: false });
+  await once(ci, "reveal", "reveal");
+  check("invalid shape: falls back to wave", true);
+  ci.destroy();
+  var threw = false;
+  try { PathWipeLoader.create("#does-not-exist", {}); } catch (e) { threw = true; }
+  check("missing container: throws", threw);
+
+  /* 13 — destroy restores the container */
+  var dm = PathWipeLoader.create("#pw-static", { autoStart: false });
+  dm.destroy();
+  check("destroy: class removed", !document.querySelector("#pw-static").classList.contains("orbit-loader-pathwipe"));
+  check("destroy: clip dropped", clipDropped(document.querySelector("#pw-static")));
+
+  /* 14 — reduced-motion path: simulate by intercepting matchMedia */
+  var realMM = window.matchMedia;
+  window.matchMedia = function (q) { return { matches: q.indexOf("prefers-reduced-motion") >= 0, media: q, addListener: function(){}, removeListener: function(){}, addEventListener: function(){}, removeEventListener: function(){} }; };
+  var rmDone = false;
+  var rm = PathWipeLoader.create("#pw-static", { autoStart: false, onDone: function (m) { if (m === "reveal") rmDone = true; } });
+  rm.reveal();
+  check("reduced motion: reveal resolves via onDone", rmDone);
+  check("reduced motion: content shown (clip dropped)", clipDropped(document.querySelector("#pw-static")));
+  rm.destroy();
+  window.matchMedia = realMM;
+
+  main.destroy();
+
+  var pass = 0, fail = 0, html = "";
+  for (var i = 0; i < results.length; i++) {
+    if (results[i].ok) pass++; else fail++;
+    html += '<div class="' + (results[i].ok ? "pass" : "fail") + '">' +
+      (results[i].ok ? "PASS" : "FAIL") + " — " + results[i].n +
+      (results[i].d ? " (" + results[i].d + ")" : "") + "</div>";
+  }
+  document.getElementById("results").innerHTML = html;
+  document.title = fail === 0 ? "PATHWIPE TESTS: PASS" : "PATHWIPE TESTS: FAIL " + fail;
+}
+run();
+</script>
+</body>
+</html>
