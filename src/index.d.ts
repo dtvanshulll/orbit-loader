@@ -254,3 +254,55 @@ export interface TabsProps {
 }
 export declare function Tabs(props: TabsProps): React.ReactElement;
 export declare const Input: React.FC<ComponentProps>;
+
+export interface CountUpOptions {
+  from?: number;
+  value?: number;
+  durationMs?: number;
+  easing?: 'linear' | 'easeOutCubic' | 'easeOutExpo' | 'easeOutBack';
+  decimals?: number;
+  separator?: string | null;
+  prefix?: string;
+  suffix?: string;
+  restMs?: number;
+  autoStart?: boolean;
+}
+export const CountUpLoader: {
+  create(el: HTMLElement | string, options?: CountUpOptions): {
+    el: HTMLElement;
+    start(): void;
+    stop(): void;
+    destroy(): void;
+    isRunning(): boolean;
+  };
+  wrap(el: HTMLElement | string, options?: CountUpOptions): {
+    el: HTMLElement;
+    start(): void;
+    stop(): void;
+    destroy(): void;
+    isRunning(): boolean;
+  };
+};
+export interface ShakeOptions {
+  variant?: 'little' | 'default' | 'hard';
+  durationMs?: number;
+  decay?: number;
+  restMs?: number;
+  autoStart?: boolean;
+}
+export const ShakeLoader: {
+  create(el: HTMLElement | string, options?: ShakeOptions): {
+    el: HTMLElement;
+    start(): void;
+    stop(): void;
+    destroy(): void;
+    isRunning(): boolean;
+  };
+  wrap(el: HTMLElement | string, options?: ShakeOptions): {
+    el: HTMLElement;
+    start(): void;
+    stop(): void;
+    destroy(): void;
+    isRunning(): boolean;
+  };
+};

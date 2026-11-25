@@ -6,7 +6,7 @@ Loading and UI-transition animations that trace real SVG paths — zero dependen
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg)](package.json)
 
-**TraceLoop** draws a glowing segment that crawls along any `<path>` you give it: circles, squares, letters, words, infinity signs, your logo. Twenty styles — eight looping loaders, six one-shot transitions (tab switches, page loads, buttons, toasts, progress, panel swaps) and six component animations (search bars, modals, accordions, drawers, dropdowns, inputs) — all driven by the path itself, so the motion follows your shape instead of being bolted next to it.
+**TraceLoop** draws a glowing segment that crawls along any `<path>` you give it: circles, squares, letters, words, infinity signs, your logo. Twenty-two styles — eight looping loaders, seven one-shot transitions (tab switches, page loads, buttons, toasts, progress, panel swaps, attention shakes) and seven component animations (search bars, modals, accordions, drawers, dropdowns, inputs, counting numbers) — all driven by the path itself, so the motion follows your shape instead of being bolted next to it.
 
 ## Quick start
 
@@ -100,6 +100,8 @@ Most loader libraries give you a spinner: a shape rotated by CSS, blind to your 
 | `src/styles/button-loader.js` | `ButtonLoader` | the button's own border is its pending-progress track — one-shot |
 | `src/styles/toast-loader.js` | `ToastLoader` | the toast's lifetime drains along its bottom edge — one-shot |
 | `src/styles/swap-loader.js` | `SwapLoader` | two panels trading places — one accelerates out, the next decelerates in — one-shot |
+| `src/styles/countup-loader.js` | `CountUpLoader` | a number counting itself up to its value with an easing — stat cards, totals |
+| `src/styles/shake-loader.js` | `ShakeLoader` | a damped attention shake — the element judders and settles, for invalid fields and rejections |
 | `src/styles/progress-loader.js` | `ProgressLoader` | determinate progress filling along any path |
 | `src/styles/search-loader.js` | `SearchLoader` | a search field that widens while its underline draws out — one-shot |
 | `src/styles/modal-loader.js` | `ModalLoader` | a dialog whose border traces itself on arrival — one-shot |

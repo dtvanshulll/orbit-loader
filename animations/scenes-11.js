@@ -207,6 +207,52 @@
     ]
   }
 
+  ,
+  {
+    name: "Live Counter",
+    category: "Chart Card",
+    style: "countup",
+    note: "The number counts itself up with an expo tail while the trend line draws beneath it",
+    box: {
+      width: 320, height: 140,
+      html: "<div style='padding:14px 16px;display:flex;flex-direction:column;gap:6px;height:100%;box-sizing:border-box'>" +
+            "<span style='" + DISPLAY + "font-size:10.5px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:#8f8d84'>Requests today</span>" +
+            "<div class='tl-live-num' style='" + DISPLAY + "font-size:26px;font-weight:600;color:#faf9f5;font-variant-numeric:tabular-nums'>0</div>" +
+            "<div class='tl-live-spark' style='position:relative;flex:1'></div>" +
+            "</div>",
+      styleCss: CARD
+    },
+    parts: [
+      { style: "countup", el: ".tl-live-num",
+        options: { value: 48213, durationMs: 2600, easing: "easeOutExpo", separator: ",", restMs: 2400 } },
+      { style: "orbit", el: ".tl-live-spark",
+        options: { d: "M2,38 L34,30 L66,34 L98,20 L130,26 L162,12 L194,18 L226,6", viewBox: "0 0 228 42", durationMs: 2200, restMs: 2800, strokeWidth: 2, color: "#6a9bcc", guideOpacity: 0.2 } }
+    ]
+  },
+  {
+    name: "Invalid Field",
+    category: "Form",
+    style: "shake",
+    note: "The field judders and settles while the reason underlines itself — a no that decays into stillness",
+    box: {
+      width: 320, height: 160,
+      html: "<div style='padding:16px 18px;display:flex;flex-direction:column;gap:10px;height:100%;box-sizing:border-box'>" +
+            "<span style='" + DISPLAY + "font-size:13px;font-weight:600;color:#faf9f5'>Create account</span>" +
+            "<div class='tl-bad-field' style='position:relative;background:#262420;border:1px solid #d97757;border-radius:8px;padding:13px 12px 11px;height:40px;box-sizing:border-box'>" +
+            "<span style='position:absolute;top:0;left:8px;transform:translateY(-50%);background:#262420;padding:0 5px;" + DISPLAY + "font-size:11px;font-weight:500;color:#d97757'>Work email</span>" +
+            "<span style='position:absolute;left:13px;top:50%;transform:translateY(-50%);" + BODY + "font-size:12.5px;color:#faf9f5'>hi@traceloop</span></div>" +
+            "<span class='tl-why' style='position:relative;" + DISPLAY + "font-size:11px;color:#d97757;align-self:flex-start'>Missing a domain — add .com</span>" +
+            "</div>",
+      styleCss: CARD
+    },
+    parts: [
+      { style: "shake", el: ".tl-bad-field",
+        options: { variant: "default", durationMs: 650, restMs: 2600 } },
+      { style: "orbit", el: ".tl-why",
+        options: { d: "M2,6 C20,2 40,8 60,4 C75,2 88,7 98,5", viewBox: "0 0 100 10", durationMs: 1100, restMs: 3100, strokeWidth: 2, color: "#d97757", guideOpacity: 0.25, delayMs: 700 } }
+    ]
+  }
+
   );
 
   function checkRow(label, done, mode) {

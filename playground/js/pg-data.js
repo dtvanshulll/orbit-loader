@@ -22,10 +22,10 @@
 (function (global) {
   "use strict";
   var PG = global.PG = global.PG || {};
-  var GLOBALS = { orbit: "OrbitLoader", dot: "DotLoader", shimmer: "ShimmerLoader", ripple: "RippleLoader", pulse: "PulseLoader", chase: "ChaseLoader", typing: "TypingLoader", handshake: "HandshakeLoader", tab: "TabLoader", page: "PageLoader", button: "ButtonLoader", toast: "ToastLoader", progress: "ProgressLoader", search: "SearchLoader", modal: "ModalLoader", accordion: "AccordionLoader", drawer: "DrawerLoader", dropdown: "DropdownLoader", input: "InputLoader", swap: "SwapLoader" };
+  var GLOBALS = { orbit: "OrbitLoader", dot: "DotLoader", shimmer: "ShimmerLoader", ripple: "RippleLoader", pulse: "PulseLoader", chase: "ChaseLoader", typing: "TypingLoader", handshake: "HandshakeLoader", tab: "TabLoader", page: "PageLoader", button: "ButtonLoader", toast: "ToastLoader", progress: "ProgressLoader", search: "SearchLoader", modal: "ModalLoader", accordion: "AccordionLoader", drawer: "DrawerLoader", dropdown: "DropdownLoader", input: "InputLoader", swap: "SwapLoader", countup: "CountUpLoader", shake: "ShakeLoader" };
   var SCRIPTS = { orbit: "orbit-loader.js", dot: "dot-loader.js", shimmer: "shimmer-loader.js", ripple: "ripple-loader.js", pulse: "pulse-loader.js", chase: "chase-loader.js", typing: "typing-loader.js", handshake: "handshake-loader.js", tab: "tab-loader.js", page: "page-loader.js", button: "button-loader.js", toast: "toast-loader.js", progress: "progress-loader.js", search: "search-loader.js", modal: "modal-loader.js", accordion: "accordion-loader.js", drawer: "drawer-loader.js", dropdown: "dropdown-loader.js", input: "input-loader.js" };
   // Container-based styles: no path to trace, create() takes the box.
-  var CONTAINER_STYLES = { ripple: 1, pulse: 1, typing: 1, tab: 1, page: 1, button: 1, toast: 1, search: 1, modal: 1, accordion: 1, drawer: 1, dropdown: 1, input: 1, swap: 1 };
+  var CONTAINER_STYLES = { ripple: 1, pulse: 1, typing: 1, tab: 1, page: 1, button: 1, toast: 1, search: 1, modal: 1, accordion: 1, drawer: 1, dropdown: 1, input: 1, swap: 1, countup: 1, shake: 1 };
   // Shapes that return { d, ... } objects instead of a bare d string —
   // the copied snippet assigns them to a variable first.
   var OBJECT_SHAPES = { letterOutline: 1, text: 1, textBox: 1 };
