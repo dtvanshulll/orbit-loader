@@ -262,8 +262,8 @@
     };
   }
 
-  global.DrawerLoader = {
+  if (global) global.DrawerLoader = {
     create: create,
     wrap: create
   };
-})(window);
+})(typeof window !== "undefined" ? window : undefined);

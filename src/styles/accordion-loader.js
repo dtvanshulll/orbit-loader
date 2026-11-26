@@ -211,8 +211,8 @@
     };
   }
 
-  global.AccordionLoader = {
+  if (global) global.AccordionLoader = {
     create: create,
     wrap: create
   };
-})(window);
+})(typeof window !== "undefined" ? window : undefined);

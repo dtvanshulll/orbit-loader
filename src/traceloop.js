@@ -11,6 +11,11 @@
  * The UMD build (dist/traceloop.umd.js) exposes the same names on a
  * single global, `TraceLoop`, for script-tag users who want one file
  * instead of many.
+ *
+ * SSR-safe import: every IIFE tail and every export here is guarded
+ * with `typeof window`, so importing the bundle in Node (Next.js,
+ * Remix, Astro SSR) succeeds — the exports are simply undefined and
+ * nothing touches the DOM. Animations only run client-side.
  */
 import './styles/orbit-loader.js';
 import './styles/dot-loader.js';
@@ -42,32 +47,32 @@ import './shapes/shapes-text.js';
 import './shapes/shapes-outline.js';
 import './shapes/outline-glyphs.js';
 
-export const OrbitLoader = window.OrbitLoader;
-export const DotLoader = window.DotLoader;
-export const RippleLoader = window.RippleLoader;
-export const PulseLoader = window.PulseLoader;
-export const ChaseLoader = window.ChaseLoader;
-export const TypingLoader = window.TypingLoader;
-export const HandshakeLoader = window.HandshakeLoader;
-export const TabLoader = window.TabLoader;
-export const PageLoader = window.PageLoader;
-export const ButtonLoader = window.ButtonLoader;
-export const ToastLoader = window.ToastLoader;
-export const SwapLoader = window.SwapLoader;
-export const RouteLoader = window.RouteLoader;
-export const PathWipeLoader = window.PathWipeLoader;
-export const CountUpLoader = window.CountUpLoader;
-export const ShakeLoader = window.ShakeLoader;
-export const ShuffleLoader = window.ShuffleLoader;
-export const ProgressLoader = window.ProgressLoader;
-export const SearchLoader = window.SearchLoader;
-export const ModalLoader = window.ModalLoader;
-export const AccordionLoader = window.AccordionLoader;
-export const DrawerLoader = window.DrawerLoader;
-export const DropdownLoader = window.DropdownLoader;
-export const InputLoader = window.InputLoader;
-export const SequenceLoader = window.SequenceLoader;
-export const shapes = window.OrbitLoaderShapes;
+export const OrbitLoader = typeof window !== "undefined" ? window.OrbitLoader : undefined;
+export const DotLoader = typeof window !== "undefined" ? window.DotLoader : undefined;
+export const RippleLoader = typeof window !== "undefined" ? window.RippleLoader : undefined;
+export const PulseLoader = typeof window !== "undefined" ? window.PulseLoader : undefined;
+export const ChaseLoader = typeof window !== "undefined" ? window.ChaseLoader : undefined;
+export const TypingLoader = typeof window !== "undefined" ? window.TypingLoader : undefined;
+export const HandshakeLoader = typeof window !== "undefined" ? window.HandshakeLoader : undefined;
+export const TabLoader = typeof window !== "undefined" ? window.TabLoader : undefined;
+export const PageLoader = typeof window !== "undefined" ? window.PageLoader : undefined;
+export const ButtonLoader = typeof window !== "undefined" ? window.ButtonLoader : undefined;
+export const ToastLoader = typeof window !== "undefined" ? window.ToastLoader : undefined;
+export const SwapLoader = typeof window !== "undefined" ? window.SwapLoader : undefined;
+export const RouteLoader = typeof window !== "undefined" ? window.RouteLoader : undefined;
+export const PathWipeLoader = typeof window !== "undefined" ? window.PathWipeLoader : undefined;
+export const CountUpLoader = typeof window !== "undefined" ? window.CountUpLoader : undefined;
+export const ShakeLoader = typeof window !== "undefined" ? window.ShakeLoader : undefined;
+export const ShuffleLoader = typeof window !== "undefined" ? window.ShuffleLoader : undefined;
+export const ProgressLoader = typeof window !== "undefined" ? window.ProgressLoader : undefined;
+export const SearchLoader = typeof window !== "undefined" ? window.SearchLoader : undefined;
+export const ModalLoader = typeof window !== "undefined" ? window.ModalLoader : undefined;
+export const AccordionLoader = typeof window !== "undefined" ? window.AccordionLoader : undefined;
+export const DrawerLoader = typeof window !== "undefined" ? window.DrawerLoader : undefined;
+export const DropdownLoader = typeof window !== "undefined" ? window.DropdownLoader : undefined;
+export const InputLoader = typeof window !== "undefined" ? window.InputLoader : undefined;
+export const SequenceLoader = typeof window !== "undefined" ? window.SequenceLoader : undefined;
+export const shapes = typeof window !== "undefined" ? window.OrbitLoaderShapes : undefined;
 
 /** Every style keyed by name — handy for config-driven UIs. */
 export const styles = {

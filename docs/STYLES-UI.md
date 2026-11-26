@@ -274,6 +274,7 @@ seq.play();
 | `loop` | `false` | replay the whole timeline after `loopRestMs` |
 | `loopRestMs` | `800` | the pause between loop replays |
 | `onDone` | `null` | called when the timeline finishes (not on `stop()`) |
+| `onError` | `null` | called with `(error, stepIndex)` if a step's `do` throws — the sequence then stops as if `stop()` had been called; the error is still rethrown to the console |
 | `autoPlay` | `false` | `play()` at creation |
 
 Controller: `play()` (restarts a running sequence), `stop()` (fired

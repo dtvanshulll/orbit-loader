@@ -203,6 +203,7 @@ export const SequenceLoader: {
     loop?: boolean;
     loopRestMs?: number;
     onDone?: () => void;
+    onError?: (err: unknown, stepIndex: number) => void;
     autoPlay?: boolean;
   }): {
     play(): void;
@@ -216,6 +217,7 @@ export const SequenceLoader: {
     loop?: boolean;
     loopRestMs?: number;
     onDone?: () => void;
+    onError?: (err: unknown, stepIndex: number) => void;
     autoPlay?: boolean;
   }): {
     play(): void;
@@ -282,12 +284,6 @@ export declare const Accordion: React.FC<ComponentProps>;
 export declare const Drawer: React.FC<ComponentProps>;
 export declare const Dropdown: React.FC<ComponentProps>;
 export declare const Input: React.FC<ComponentProps>;
-export declare const Progress: React.FC<ComponentProps>;
-export declare const Search: React.FC<ComponentProps>;
-export declare const Modal: React.FC<ComponentProps>;
-export declare const Accordion: React.FC<ComponentProps>;
-export declare const Drawer: React.FC<ComponentProps>;
-export declare const Dropdown: React.FC<ComponentProps>;
 
 export interface TabsProps {
   items: string[];
@@ -300,7 +296,6 @@ export interface TabsProps {
   children?: React.ReactNode;
 }
 export declare function Tabs(props: TabsProps): React.ReactElement;
-export declare const Input: React.FC<ComponentProps>;
 
 export interface CountUpOptions {
   from?: number;

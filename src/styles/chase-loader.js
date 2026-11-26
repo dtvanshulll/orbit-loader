@@ -191,5 +191,5 @@
     return controller;
   }
 
-  global.ChaseLoader = { create: create, wrap: wrap };
-})(typeof window !== "undefined" ? window : this);
+  if (global) global.ChaseLoader = { create: create, wrap: wrap };
+})(typeof window !== "undefined" ? window : undefined);

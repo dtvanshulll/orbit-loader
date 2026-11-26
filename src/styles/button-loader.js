@@ -390,8 +390,8 @@
       start: start, stop: stop, destroy: destroy, isRunning: function () { return false; }
     };
   }
-  global.ButtonLoader = {
+  if (global) global.ButtonLoader = {
     create: create,
     wrap: create
   };
-})(window);
+})(typeof window !== "undefined" ? window : undefined);

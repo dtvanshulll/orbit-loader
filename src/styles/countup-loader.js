@@ -172,5 +172,5 @@
     };
   }
 
-  global.CountUpLoader = { create: create, wrap: create };
-})(typeof window !== "undefined" ? window : this);
+  if (global) global.CountUpLoader = { create: create, wrap: create };
+})(typeof window !== "undefined" ? window : undefined);

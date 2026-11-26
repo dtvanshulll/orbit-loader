@@ -396,5 +396,5 @@
     };
   }
 
-  global.PathWipeLoader = { create: create, wrap: create };
-})(typeof window !== "undefined" ? window : this);
+  if (global) global.PathWipeLoader = { create: create, wrap: create };
+})(typeof window !== "undefined" ? window : undefined);

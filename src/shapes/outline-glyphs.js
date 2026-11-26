@@ -8,7 +8,10 @@
 (function (global) {
   "use strict";
 
-  var api = global.OrbitLoaderShapes = global.OrbitLoaderShapes || {};
+  var api = global ? (global.OrbitLoaderShapes = global.OrbitLoaderShapes || {}) : {};
+  // SSR import: the geometry namespace only exists through a real
+  // global, so without a window there is nothing to build — stop here.
+  if (!global) return;
   // The contour data below is built at load time from the point math
   // in shapes-core.js.
   var PI = Math.PI;
@@ -344,4 +347,4 @@
 
   // Internal: consumed by shapes-outline.js, not consumer API.
   api._outlineGlyphs = OUTLINE_GLYPHS;
-})(typeof window !== "undefined" ? window : this);
+})(typeof window !== "undefined" ? window : undefined);

@@ -64,18 +64,25 @@ What's still open here:
 
 ## Components and page transitions
 
-- Component animations beyond search/modal/accordion: dropdown,
-  input focus, notification badge, skeleton-to-content.
-- Page transitions: simple (fade/slide/wipe) through complex
-  (path-wipe reveals, choreographed sequences) — see PRD.md phases.
-- A choreography API: sequence/timeline of one-shot styles.
+Shipped (no longer open): dropdown, input focus, notification-badge
+and skeleton territory (skeletons were removed as a style — see the
+tracker), simple page transitions (route fade/slide/wipe), the
+path-wipe reveal, and the choreography API (`SequenceLoader`, a
+timeline of one-shot style calls).
 
-**Explicitly not planned:** framework-specific wrapper packages (a React
-`<OrbitLoader>` component, a Vue directive, etc.). Any framework can call
-`OrbitLoader.wrap()`/`create()` directly inside its own lifecycle hooks
-(`useEffect`, `onMounted`, ...) with no wrapper needed; maintaining one
-wrapper per framework is a maintenance cost this library doesn't need to
-take on.
+Still open in this area:
+
+- Notification badge and skeleton-to-content component patterns, if
+  a real use case shows up.
+
+**Framework wrappers:** the React adapter ships in-package
+(`traceloop/react`, one component per style — see README). Further
+framework-specific wrapper packages (a Vue directive, a Svelte store,
+etc.) remain explicitly not planned: any framework can call
+`OrbitLoader.wrap()`/`create()` directly inside its own lifecycle
+hooks (`onMounted`, `$effect`, ...) with no wrapper needed;
+maintaining one wrapper per framework is a maintenance cost this
+library doesn't need to take on.
 
 ## Other ideas worth revisiting if a real need comes up
 

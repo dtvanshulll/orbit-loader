@@ -306,8 +306,8 @@
     };
   }
 
-  global.DropdownLoader = {
+  if (global) global.DropdownLoader = {
     create: create,
     wrap: create
   };
-})(window);
+})(typeof window !== "undefined" ? window : undefined);

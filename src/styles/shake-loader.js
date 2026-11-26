@@ -125,5 +125,5 @@
     };
   }
 
-  global.ShakeLoader = { create: create, wrap: create };
-})(typeof window !== "undefined" ? window : this);
+  if (global) global.ShakeLoader = { create: create, wrap: create };
+})(typeof window !== "undefined" ? window : undefined);

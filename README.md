@@ -6,7 +6,7 @@ Loading and UI-transition animations that trace real SVG paths — zero dependen
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg)](package.json)
 
-**TraceLoop** draws a glowing segment that crawls along any `<path>` you give it: circles, squares, letters, words, infinity signs, your logo. Twenty-four styles — seven looping loaders, nine one-shot transitions (tab switches, page loads, buttons, toasts, progress, panel swaps, route changes, attention shakes, path-wipe reveals) and eight component animations (search bars, modals, accordions, drawers, dropdowns, inputs, counting numbers, list shuffles) — all driven by the path itself, so the motion follows your shape instead of being bolted next to it.
+**TraceLoop** draws a glowing segment that crawls along any `<path>` you give it: circles, squares, letters, words, infinity signs, your logo. Twenty-five styles — seven looping loaders, nine one-shot transitions (tab switches, page loads, buttons, toasts, progress, panel swaps, route changes, attention shakes, path-wipe reveals), eight component animations (search bars, modals, accordions, drawers, dropdowns, inputs, counting numbers, list shuffles) and a choreography API that sequences one-shot calls on a timeline — all driven by the path itself, so the motion follows your shape instead of being bolted next to it.
 
 ## Quick start
 
@@ -83,7 +83,7 @@ Most loader libraries give you a spinner: a shape rotated by CSS, blind to your 
 
 **What it doesn't do:** spinners, skeleton screens, Lottie-grade character animation, or React components — it's DOM in, DOM out; wrap it yourself.
 
-## The twenty-four styles
+## The twenty-five styles
 
 | File | Global | What it does |
 |---|---|---|

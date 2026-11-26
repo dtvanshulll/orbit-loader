@@ -218,5 +218,5 @@
     return controller;
   }
 
-  global.HandshakeLoader = { create: create, wrap: wrap };
-})(typeof window !== "undefined" ? window : this);
+  if (global) global.HandshakeLoader = { create: create, wrap: wrap };
+})(typeof window !== "undefined" ? window : undefined);

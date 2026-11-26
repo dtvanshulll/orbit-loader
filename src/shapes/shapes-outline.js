@@ -10,7 +10,10 @@
   "use strict";
 
   var PI = Math.PI;
-  var api = global.OrbitLoaderShapes = global.OrbitLoaderShapes || {};
+  var api = global ? (global.OrbitLoaderShapes = global.OrbitLoaderShapes || {}) : {};
+  // SSR import: the geometry namespace only exists through a real
+  // global, so without a window there is nothing to build — stop here.
+  if (!global) return;
   // Internals registered by the earlier files (underscore keys â€” see
   // shapes-core.js). Aliased locally so the math below reads as written.
   var GLYPH_ASPECT = api._aspect;
@@ -213,5 +216,5 @@
   // time, so it must be on the api before that file loads.
   api._skeletonOutline = skeletonOutline;
 
-  if (global.OrbitLoader) global.OrbitLoader.shapes = api;
-})(typeof window !== "undefined" ? window : this);
+  if (global && global.OrbitLoader) global.OrbitLoader.shapes = api;
+})(typeof window !== "undefined" ? window : undefined);

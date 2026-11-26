@@ -284,8 +284,8 @@
     };
   }
 
-  global.InputLoader = {
+  if (global) global.InputLoader = {
     create: create,
     wrap: create
   };
-})(window);
+})(typeof window !== "undefined" ? window : undefined);

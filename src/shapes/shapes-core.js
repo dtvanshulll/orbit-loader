@@ -203,7 +203,10 @@
   // optionally shifted right by `offsetX` (how text() places letters
   // side by side without needing per-glyph metrics).
 
-  var api = global.OrbitLoaderShapes = global.OrbitLoaderShapes || {};
+  var api = global ? (global.OrbitLoaderShapes = global.OrbitLoaderShapes || {}) : {};
+  // SSR import: the geometry namespace only exists through a real
+  // global, so without a window there is nothing to build — stop here.
+  if (!global) return;
   api.roundedSquare = roundedSquare;
   api.roundRect = roundRect;
   api.circle = circle;
@@ -218,5 +221,5 @@
   // Load orbit-loader.js first and these attach at OrbitLoader.shapes, as
   // the examples and README use them; load this file alone and they're
   // still reachable at OrbitLoaderShapes.
-  if (global.OrbitLoader) global.OrbitLoader.shapes = api;
-})(typeof window !== "undefined" ? window : this);
+  if (global && global.OrbitLoader) global.OrbitLoader.shapes = api;
+})(typeof window !== "undefined" ? window : undefined);

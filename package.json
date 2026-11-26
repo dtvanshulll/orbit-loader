@@ -1,7 +1,7 @@
 {
   "name": "traceloop",
   "version": "0.1.0",
-  "description": "TraceLoop — loading and UI-transition animations that trace real SVG paths: crawling segments, traveling dots, shimmer bands, ripples, typing waves, plus one-shot tab/page/button/toast/progress transitions. Import and go. No runtime dependencies.",
+  "description": "TraceLoop — loading and UI-transition animations that trace real SVG paths: crawling segments, traveling dots, ripples, typing waves, plus one-shot tab/page/button/toast/progress transitions, component animations and a sequence API that choreographs them. Import and go. No runtime dependencies.",
   "main": "dist/traceloop.umd.js",
   "module": "dist/traceloop.esm.js",
   "unpkg": "dist/traceloop.umd.js",
@@ -9,11 +9,13 @@
   "types": "src/index.d.ts",
   "exports": {
     ".": {
+      "types": "./src/index.d.ts",
       "import": "./dist/traceloop.esm.js",
       "require": "./dist/traceloop.umd.js",
       "default": "./dist/traceloop.esm.js"
     },
     "./react": {
+      "types": "./src/index.d.ts",
       "import": "./dist/react.js",
       "default": "./dist/react.js"
     },
@@ -34,7 +36,8 @@
     "build:umd": "esbuild src/traceloop.js --bundle --minify --format=iife --global-name=TraceLoop --outfile=dist/traceloop.umd.js --legal-comments=none",
     "build:react": "esbuild react/index.js --bundle --minify --format=esm --external:react --outfile=dist/react.js --legal-comments=none",
     "build:css": "node scripts/build-css.js",
-    "test": "node scripts/smoke.js"
+    "test": "node scripts/smoke.js",
+    "prepare": "npm run build"
   },
   "keywords": [
     "loading",
@@ -50,6 +53,9 @@
     "no-dependencies"
   ],
   "license": "MIT",
+  "author": "Anshul (https://github.com/dtvanshulll)",
+  "homepage": "https://github.com/dtvanshulll/traceloop#readme",
+  "bugs": "https://github.com/dtvanshulll/traceloop/issues",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dtvanshulll/traceloop.git"

@@ -244,8 +244,8 @@
     };
   }
 
-  global.ModalLoader = {
+  if (global) global.ModalLoader = {
     create: create,
     wrap: create
   };
-})(window);
+})(typeof window !== "undefined" ? window : undefined);

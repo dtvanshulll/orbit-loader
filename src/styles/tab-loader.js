@@ -265,8 +265,8 @@
     };
   }
 
-  global.TabLoader = {
+  if (global) global.TabLoader = {
     create: create,
     wrap: create
   };
-})(window);
+})(typeof window !== "undefined" ? window : undefined);

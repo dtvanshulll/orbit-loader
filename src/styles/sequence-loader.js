@@ -46,6 +46,9 @@
    *   onDone      (default null)   called when the timeline finishes
    *                                (not fired on stop(); fired on
    *                                every loop completion)
+   *   onError     (default null)   called with (error, stepIndex) if
+   *                                a step's do throws — the sequence
+   *                                then stops like stop() did
    *   autoPlay    (default false)  play() at creation
    */
   function create(steps, options) {
@@ -85,6 +88,7 @@
     var loop = options.loop === true;
     var loopRestMs = Math.max(0, options.loopRestMs != null ? options.loopRestMs : 800);
     var onDone = typeof options.onDone === "function" ? options.onDone : null;
+    var onError = typeof options.onError === "function" ? options.onError : null;
     var autoPlay = options.autoPlay === true;
 
     var total = timeline[timeline.length - 1].t;
@@ -110,7 +114,17 @@
       if (!running) return;
       timer = null;
       fired.push(step.i);
-      step.do();
+      // A throwing step must not wedge the sequence: stop cleanly
+      // (pending steps never run, isRunning() goes false), report via
+      // onError when one is wired, then rethrow so the bug stays
+      // visible in the console.
+      try {
+        step.do();
+      } catch (e) {
+        running = false;
+        if (onError) onError(e, step.i);
+        throw e;
+      }
       cursor++;
       if (cursor >= timeline.length) {
         // The timeline is done. Loop replays after the rest; a plain
@@ -174,8 +188,8 @@
     };
   }
 
-  global.SequenceLoader = {
+  if (global) global.SequenceLoader = {
     create: create,
     wrap: create
   };
-})(window);
+})(typeof window !== "undefined" ? window : undefined);

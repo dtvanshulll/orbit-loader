@@ -11,7 +11,10 @@
   "use strict";
 
   var PI = Math.PI;
-  var api = global.OrbitLoaderShapes = global.OrbitLoaderShapes || {};
+  var api = global ? (global.OrbitLoaderShapes = global.OrbitLoaderShapes || {}) : {};
+  // SSR import: the geometry namespace only exists through a real
+  // global, so without a window there is nothing to build — stop here.
+  if (!global) return;
   // textBoxForElement draws a rounded box via core geometry.
   var roundRect = api.roundRect;
   var rnd = api._rnd;
@@ -220,5 +223,5 @@ var arcPoints = api._arcPoints;
   api._aspect = GLYPH_ASPECT;
   api._glyphs = GLYPHS;
 
-  if (global.OrbitLoader) global.OrbitLoader.shapes = api;
-})(typeof window !== "undefined" ? window : this);
+  if (global && global.OrbitLoader) global.OrbitLoader.shapes = api;
+})(typeof window !== "undefined" ? window : undefined);

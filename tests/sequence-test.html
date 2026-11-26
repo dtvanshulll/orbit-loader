@@ -135,6 +135,23 @@ async function run() {
   await wait(150);
   check("autoPlay: runs at creation", ran);
 
+  /* 10 — a throwing step stops the sequence cleanly, reports onError */
+  var errs = [];
+  var s9 = SequenceLoader.create([
+    { at: 20, do: function () { throw new Error("step explodes"); } },
+    { after: 100, do: function () {} }
+  ], { onError: function (e, i) { errs.push(i + ":" + e.message); } });
+  s9.play();
+  await wait(250);
+  check("throwing step: sequence stops (isRunning false)", !s9.isRunning());
+  check("throwing step: onError called with index + error", errs[0] === "0:step explodes", errs[0]);
+  check("throwing step: later step never ran", s9.firedSteps().join(",") === "0", s9.firedSteps().join(","));
+  s9.destroy();
+  var s10 = SequenceLoader.create([{ at: 20, do: function () {} }]);
+  s10.play();
+  await wait(150);
+  check("throwing step: other sequences unaffected", !s10.isRunning());
+
   var pass = 0, fail = 0, html = "";
   for (var i = 0; i < results.length; i++) {
     if (results[i].ok) pass++; else fail++;

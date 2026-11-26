@@ -263,8 +263,8 @@
     };
   }
 
-  global.SearchLoader = {
+  if (global) global.SearchLoader = {
     create: create,
     wrap: create
   };
-})(window);
+})(typeof window !== "undefined" ? window : undefined);

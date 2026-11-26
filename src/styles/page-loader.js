@@ -373,8 +373,8 @@
     };
   }
 
-  global.PageLoader = {
+  if (global) global.PageLoader = {
     create: create,
     wrap: create
   };
-})(window);
+})(typeof window !== "undefined" ? window : undefined);

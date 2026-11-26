@@ -352,8 +352,8 @@
     };
   }
 
-  global.ProgressLoader = {
+  if (global) global.ProgressLoader = {
     create: create,
     wrap: create
   };
-})(window);
+})(typeof window !== "undefined" ? window : undefined);

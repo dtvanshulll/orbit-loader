@@ -275,5 +275,5 @@
     return controller;
   }
 
-  global.OrbitLoader = { create: create, wrap: wrap };
-})(typeof window !== "undefined" ? window : this);
+  if (global) global.OrbitLoader = { create: create, wrap: wrap };
+})(typeof window !== "undefined" ? window : undefined);

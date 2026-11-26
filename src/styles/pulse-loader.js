@@ -195,5 +195,5 @@
   // The pulse doesn't trace a path, so there's nothing for wrap() to
   // build — it's the same call as create(), kept for API symmetry with
   // the other styles so drop-in swaps stay drop-in.
-  global.PulseLoader = { create: create, wrap: create };
-})(typeof window !== "undefined" ? window : this);
+  if (global) global.PulseLoader = { create: create, wrap: create };
+})(typeof window !== "undefined" ? window : undefined);

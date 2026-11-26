@@ -368,5 +368,5 @@
     return controller;
   }
 
-  global.DotLoader = { create: create, wrap: wrap };
-})(typeof window !== "undefined" ? window : this);
+  if (global) global.DotLoader = { create: create, wrap: wrap };
+})(typeof window !== "undefined" ? window : undefined);
